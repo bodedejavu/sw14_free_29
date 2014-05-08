@@ -1,10 +1,19 @@
 package at.software2014.trackme;
 
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -49,23 +58,23 @@ public class StartActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+        if (position == 0) {
+	        fragmentManager.beginTransaction()
+	                .replace(R.id.container, GMapFragment.newInstance(position + 1))
+	                .commit();
+	        }
+        else {
+	        fragmentManager.beginTransaction()
+	               .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+	               .commit();
+	        }
     }
 
     public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
+    	Resources res = getResources();
+    	String[] navigationMenu = res.getStringArray(R.array.navigation_menu);
+    	
+    	mTitle = navigationMenu[number - 1];
     }
 
     public void restoreActionBar() {
@@ -99,6 +108,75 @@ public class StartActivity extends Activity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    /**
+     * A fragment containing a google map.
+     */
+    public static class GMapFragment extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static GMapFragment newInstance(int sectionNumber) {
+            GMapFragment fragment = new GMapFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public GMapFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+        	View rootView = inflater.inflate(R.layout.fragment_gmap, container, false);
+            return rootView;
+        }
+        
+        @Override
+        public void onViewCreated(View v, Bundle savedInstanceState) {
+        	super.onViewCreated(v, savedInstanceState);
+            
+            GoogleMap googleMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+            
+            Marker paul = googleMap.addMarker(new MarkerOptions().position(new LatLng(53.5, 9.9)).title("Me (Paul)").snippet("0m"));
+            Marker rainer = googleMap.addMarker(new MarkerOptions().position(new LatLng(53.5, 10.0)).title("Rainer").snippet("10km"));
+            Marker eva = googleMap.addMarker(new MarkerOptions().position(new LatLng(53.6, 9.9)).title("Eva").snippet("15km"));
+            Marker benjamin = googleMap.addMarker(new MarkerOptions().position(new LatLng(53.6, 9.8)).title("Benjamin").snippet("20m"));
+            
+            paul.showInfoWindow();
+            
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(53.5, 9.9), 5));
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+        }
+        
+        @Override
+        public void onDestroyView() {
+        	super.onDestroyView();
+        	
+        	FragmentManager fragmentManager = getFragmentManager();
+            Fragment fragment = fragmentManager.findFragmentById(R.id.map);
+            
+            fragmentManager.beginTransaction()
+    	                .remove(fragment)
+    	                .commit();
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            ((StartActivity) activity).onSectionAttached(
+                    getArguments().getInt(ARG_SECTION_NUMBER));
+        }
     }
 
     /**

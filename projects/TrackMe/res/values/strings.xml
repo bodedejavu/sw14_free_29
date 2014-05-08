@@ -11,5 +11,12 @@
     <string name="action_settings">Settings</string>
     
     <string name="action_refresh">Refresh</string>
+    
+    <string-array name="navigation_menu">
+        <item>Map</item>
+        <item>Friends</item>
+        <item>Settings</item>
+        <item>Quit</item>
+    </string-array>
 
 </resources>
