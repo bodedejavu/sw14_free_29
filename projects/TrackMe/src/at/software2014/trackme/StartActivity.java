@@ -1,10 +1,14 @@
 package at.software2014.trackme;
 
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -38,6 +42,7 @@ public class StartActivity extends Activity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private int mPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,19 +60,44 @@ public class StartActivity extends Activity
     }
 
     @Override
+    public void onPause() {
+    	super.onPause();
+
+    	FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+        if (fragment != null) {
+            fragmentManager.beginTransaction()
+            	.remove(fragment)
+            	.commit();
+            }
+    }
+
+    @Override
+    public void onResume() {
+    	super.onResume();
+
+    	FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+        if (fragment == null) {
+        	onNavigationDrawerItemSelected(mPosition);
+            }
+    }
+
+    @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
         if (position == 0) {
 	        fragmentManager.beginTransaction()
-	                .replace(R.id.container, GMapFragment.newInstance(position + 1))
-	                .commit();
+        		.replace(R.id.container, GMapFragment.newInstance(position + 1))
+        		.commit();
 	        }
         else {
 	        fragmentManager.beginTransaction()
-	               .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-	               .commit();
+        		.replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+        		.commit();
 	        }
+        mPosition = position;
     }
 
     public void onSectionAttached(int number) {
@@ -119,6 +149,8 @@ public class StartActivity extends Activity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private GoogleMap mGoogleMap = null;
+        private LatLngBounds mBounds = null;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -146,17 +178,34 @@ public class StartActivity extends Activity
         public void onViewCreated(View v, Bundle savedInstanceState) {
         	super.onViewCreated(v, savedInstanceState);
             
-            GoogleMap googleMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-            
-            Marker paul = googleMap.addMarker(new MarkerOptions().position(new LatLng(53.5, 9.9)).title("Me (Paul)").snippet("0m"));
-            Marker rainer = googleMap.addMarker(new MarkerOptions().position(new LatLng(53.5, 10.0)).title("Rainer").snippet("10km"));
-            Marker eva = googleMap.addMarker(new MarkerOptions().position(new LatLng(53.6, 9.9)).title("Eva").snippet("15km"));
-            Marker benjamin = googleMap.addMarker(new MarkerOptions().position(new LatLng(53.6, 9.8)).title("Benjamin").snippet("20m"));
-            
-            paul.showInfoWindow();
-            
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(53.5, 9.9), 5));
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+        	FragmentManager fragmentManager = getFragmentManager();
+        	Fragment fragment = fragmentManager.findFragmentById(R.id.map);
+        	
+        	if (fragment != null) {
+	        	mGoogleMap = ((MapFragment) fragment).getMap();
+	            
+	        	Marker anna = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(47.1, 15.4)).title("Anna").snippet("Distance: 5km"));
+	            Marker rainer = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(47.08, 15.35)).title("Rainer").snippet("Distance: 6km"));
+	            Marker benjamin = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(47.0, 15.5)).title("Benjamin").snippet("Distance: 10km"));
+	            
+	            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+	            builder.include(rainer.getPosition());
+	            builder.include(anna.getPosition());
+	            builder.include(benjamin.getPosition());
+	            mBounds = builder.build();
+	            
+	            mGoogleMap.setOnCameraChangeListener(new OnCameraChangeListener() {
+					
+					@Override
+					public void onCameraChange(CameraPosition arg0) {
+						CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(mBounds, 100);
+						mGoogleMap.moveCamera(cu);
+						mGoogleMap.setOnCameraChangeListener(null);
+					}
+				});
+	            
+	            mGoogleMap.setMyLocationEnabled(true);
+        	}
         }
         
         @Override
@@ -164,11 +213,12 @@ public class StartActivity extends Activity
         	super.onDestroyView();
         	
         	FragmentManager fragmentManager = getFragmentManager();
-            Fragment fragment = fragmentManager.findFragmentById(R.id.map);
-            
-            fragmentManager.beginTransaction()
-    	                .remove(fragment)
-    	                .commit();
+        	Fragment fragment = fragmentManager.findFragmentById(R.id.map);
+            if (fragment != null) {
+	            fragmentManager.beginTransaction()
+	            	.remove(fragment)
+	                .commit();
+	            }
         }
 
         @Override

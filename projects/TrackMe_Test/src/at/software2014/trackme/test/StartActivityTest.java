@@ -27,4 +27,7 @@ public class StartActivityTest extends ActivityInstrumentationTestCase2<StartAct
 
 	
 	
+	public void testActionBar() {
+		mSolo.clickOnView(mSolo.getView("action_refresh"));
+	}
 }
