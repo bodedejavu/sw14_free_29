@@ -1,6 +1,10 @@
 package at.software2014.trackme;
 
 
+import java.util.ArrayList;
+import java.util.Arrays; 
+import java.util.List;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -12,6 +16,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.R.string;
+import android.R.style;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -20,6 +26,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +35,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class StartActivity extends Activity
@@ -92,6 +101,14 @@ public class StartActivity extends Activity
         		.replace(R.id.container, GMapFragment.newInstance(position + 1))
         		.commit();
 	        }
+        else if (position == 1) {
+	        fragmentManager.beginTransaction()
+        		.replace(R.id.container, FriendsListFragment.newInstance(position + 1))
+        		.commit();
+	        }
+        else if (position == 3) {
+        	System.exit(0);
+        	}
         else {
 	        fragmentManager.beginTransaction()
         		.replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
@@ -229,6 +246,85 @@ public class StartActivity extends Activity
         }
     }
 
+    /**
+     * A fragment containing a friends list.
+     */
+    public static class FriendsListFragment extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
+        private ListAdapter mListAdapter;
+        private ListView mListView;
+        
+        public static  FriendsListFragment newInstance(int sectionNumber) {
+        	 FriendsListFragment fragment = new  FriendsListFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public  FriendsListFragment() {
+        }
+        
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+        	
+        	Context context = new ContextThemeWrapper(getActivity(), R.style.AppTheme);
+			LayoutInflater localInflater = inflater.cloneInContext(context);
+			View view = localInflater.inflate(R.layout.fragment_frindslist, container, false);
+			
+			// TODO: load values
+    	    String[] values =  new String[] {
+    	    		"Anna Weber                    200m   10:30", 
+    	    		"Benjamin Steinacher     250m   10:15", 
+    	    		"Rainer Lankmayr              2km   10:30"};
+    	    ArrayList<String> friendsList = new ArrayList<String>();  
+    	    friendsList.addAll(Arrays.asList(values)); 
+    	    
+    	    mListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, friendsList);
+	        mListView = (ListView) view.findViewById(R.id.friendslist_listView);
+	        mListView.setAdapter(mListAdapter);
+	        
+            return view;
+        }
+        
+        @Override
+        public void onViewCreated(View v, Bundle savedInstanceState) {
+        	super.onViewCreated(v, savedInstanceState);
+            
+        	FragmentManager fragmentManager = getFragmentManager();
+        	Fragment fragment = fragmentManager.findFragmentById(R.id.friendslist);
+        	
+         	if (fragment != null) {
+        		// TODO: load values
+        	}
+        }
+        
+        @Override
+        public void onDestroyView() {
+        	super.onDestroyView();
+        	
+        	FragmentManager fragmentManager = getFragmentManager();
+        	Fragment fragment = fragmentManager.findFragmentById(R.id.friendslist);
+            if (fragment != null) {
+	            fragmentManager.beginTransaction()
+	            	.remove(fragment)
+	                .commit();
+	            }
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            ((StartActivity) activity).onSectionAttached(
+                    getArguments().getInt(ARG_SECTION_NUMBER));
+        }
+    }
+    
     /**
      * A placeholder fragment containing a simple view.
      */
