@@ -5,12 +5,12 @@ import at.software2014.trackme.*;
 import com.robotium.solo.Solo;
 import android.test.ActivityInstrumentationTestCase2;
 
-public class StartActivityTest extends ActivityInstrumentationTestCase2<StartActivity> {
+public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
 	private Solo mSolo;
 
-	public StartActivityTest() {
-		super(StartActivity.class);
+	public MainActivityTest() {
+		super(MainActivity.class);
 	}
 
 	@Override
