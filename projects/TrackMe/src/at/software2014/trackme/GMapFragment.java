@@ -48,14 +48,14 @@ public class GMapFragment extends MapFragment {
     	
     	mGoogleMap = getMap();
         
-    	Marker anna = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(47.1, 15.4)).title("Anna").snippet("Distance: 5km"));
-        Marker rainer = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(47.08, 15.35)).title("Rainer").snippet("Distance: 6km"));
-        Marker benjamin = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(47.0, 15.5)).title("Benjamin").snippet("Distance: 10km"));
+    	Marker anna = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(47.1, 15.4)).title("Anna Weber").snippet("Distance: 200m\nLast Update: 10:30"));
+        Marker benjamin = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(47.08, 15.35)).title("Benjamin Steinacher").snippet("Distance: 250m\nLast Update: 10:15"));
+        Marker rainer = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(47.0, 15.5)).title("Rainer Lankmayr").snippet("Distance: 2km\nLast Update: 10:30"));
         
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(rainer.getPosition());
         builder.include(anna.getPosition());
         builder.include(benjamin.getPosition());
+        builder.include(rainer.getPosition());
         mBounds = builder.build();
         
         mGoogleMap.setOnCameraChangeListener(new OnCameraChangeListener() {
@@ -67,6 +67,8 @@ public class GMapFragment extends MapFragment {
 				mGoogleMap.setOnCameraChangeListener(null);
 			}
 		});
+        
+        mGoogleMap.setInfoWindowAdapter(new GInfoWindowAdapter(getActivity()));
         
         mGoogleMap.setMyLocationEnabled(true);
     	
