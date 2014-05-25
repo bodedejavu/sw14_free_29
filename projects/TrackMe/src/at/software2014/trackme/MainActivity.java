@@ -172,6 +172,8 @@ public class MainActivity extends Activity {
 			fragment = ContactsFragment.newInstance(position);
 			break;
 		case 3:
+			break;
+		case 4:
 			// TODO: unregister future services before exit
 			// System.exit(0);
 		}
