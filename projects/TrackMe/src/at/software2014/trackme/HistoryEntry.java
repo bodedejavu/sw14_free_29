@@ -67,7 +67,22 @@ public class HistoryEntry {
 		
 		distance = locationA.distanceTo(locationB);
 		
-		return distance; 
+		return distance;
+	}
+	
+	public String getDistanceFormatted(LatLng latLngTo) {
+		String distanceFormatted;
+		
+		float distance = getDistance(latLngTo);
+		
+		if (distance < 1000.0) {
+			distanceFormatted = String.format("%.0f", distance) + " m";
+		}
+		else {
+			distanceFormatted = String.format("%.2f", distance / 1000.0) + " km";
+		}
+		
+		return distanceFormatted;
 	}
 	
 }

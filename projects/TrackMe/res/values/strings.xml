@@ -18,11 +18,14 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_add">Add</string>
     
+    <string name="information_unknown">Unknown</string>
+    <string name="information_distance">Distance</string>
+    <string name="information_last_update">Last Update</string>
+    
     <string-array name="navigation_menu">
         <item>Map</item>
         <item>Friends</item>
         <item>Contacts</item>
-        <item>Settings</item>
         <item>Quit</item>
     </string-array>
 

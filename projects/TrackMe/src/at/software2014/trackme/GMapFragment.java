@@ -1,5 +1,7 @@
 package at.software2014.trackme;
 
+import java.util.HashMap;
+import java.util.List;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -10,7 +12,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import at.software2014.trackme.R.string;
 
 
 /**
@@ -47,15 +52,36 @@ public class GMapFragment extends MapFragment {
     	super.onActivityCreated(savedInstanceState);
     	
     	mGoogleMap = getMap();
-        
-    	Marker anna = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(47.1, 15.4)).title("Anna Weber").snippet("Distance: 200m\nLast Update: 10:30"));
-        Marker benjamin = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(47.08, 15.35)).title("Benjamin Steinacher").snippet("Distance: 250m\nLast Update: 10:15"));
-        Marker rainer = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(47.0, 15.5)).title("Rainer Lankmayr").snippet("Distance: 2km\nLast Update: 10:30"));
-        
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(anna.getPosition());
-        builder.include(benjamin.getPosition());
-        builder.include(rainer.getPosition());
+
+    	LocationManager locationManager = (LocationManager)getActivity().getSystemService(getActivity().LOCATION_SERVICE);
+    	Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    	
+    	HashMap<String, ContactEntry> contacts = ((MainActivity)getActivity()).getContacts();
+    	HashMap<String, List<HistoryEntry>> history = ((MainActivity)getActivity()).getHistory();
+    	
+    	LatLngBounds.Builder builder = new LatLngBounds.Builder();
+    	
+    	for (String key: contacts.keySet()) {
+    		ContactEntry contactEntry = contacts.get(key);
+    		HistoryEntry historyEntry = history.get(key).get(history.get(key).size() - 1);
+    		
+    		String title = contactEntry.getFirstName() + " " + contactEntry.getSecondName();
+    		
+    		LatLng position = historyEntry.getLatLng();
+    		
+    		String timestamp = historyEntry.getTimestamp().toLocaleString();
+    		String distance = getResources().getString(R.string.information_unknown);
+        	if (lastLocation != null) {
+        		LatLng myPosition = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+        		distance = historyEntry.getDistanceFormatted(myPosition);
+        	}
+        	String snippet = getResources().getString(R.string.information_distance) + ": " + distance + "\n" + getResources().getString(R.string.information_last_update) + ": " + timestamp;
+        	
+    		Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(position).title(title).snippet(snippet));
+			
+    		builder.include(marker.getPosition());
+    	}
+    	
         mBounds = builder.build();
         
         mGoogleMap.setOnCameraChangeListener(new OnCameraChangeListener() {
@@ -67,11 +93,10 @@ public class GMapFragment extends MapFragment {
 				mGoogleMap.setOnCameraChangeListener(null);
 			}
 		});
-        
+
         mGoogleMap.setInfoWindowAdapter(new GInfoWindowAdapter(getActivity()));
-        
         mGoogleMap.setMyLocationEnabled(true);
-    	
+
     }
 
 }

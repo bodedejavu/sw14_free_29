@@ -158,7 +158,7 @@ public class MainActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	public void loadData() {
 		mContacts = new HashMap();
 		mContacts.put("anna_weber", new ContactEntry("Anna", "Weber"));
@@ -168,15 +168,15 @@ public class MainActivity extends Activity {
 		mHistory = new HashMap();
 		List<HistoryEntry> historyList1 = new ArrayList<HistoryEntry>();
 		historyList1.add(new HistoryEntry(new Date(0), new LatLng(46.1, 15.4), 0, ""));
-		historyList1.add(new HistoryEntry(new Date(1), new LatLng(47.1, 15.4), 0, ""));
+		historyList1.add(new HistoryEntry(new Date((long)1401216003*1000), new LatLng(47.1, 15.4), 0, ""));
 		mHistory.put("anna_weber", historyList1);
 		List<HistoryEntry> historyList2 = new ArrayList<HistoryEntry>();
 		historyList2.add(new HistoryEntry(new Date(0), new LatLng(46.08, 15.35), 0, ""));
-		historyList2.add(new HistoryEntry(new Date(1), new LatLng(47.08, 15.35), 0, ""));
+		historyList2.add(new HistoryEntry(new Date((long)1401216000*1000), new LatLng(47.08, 15.35), 0, ""));
 		mHistory.put("benjamin_steinacher", historyList2);
 		List<HistoryEntry> historyList3 = new ArrayList<HistoryEntry>();
 		historyList3.add(new HistoryEntry(new Date(0), new LatLng(46.0, 15.5), 0, ""));
-		historyList3.add(new HistoryEntry(new Date(1), new LatLng(47.0, 15.5), 0, ""));
+		historyList3.add(new HistoryEntry(new Date((long)1401215993*1000), new LatLng(47.0, 15.5), 0, ""));
 		mHistory.put("rainer_lankmayr", historyList3);
 	}
 
@@ -211,10 +211,8 @@ public class MainActivity extends Activity {
 			fragment = ContactsFragment.newInstance(position);
 			break;
 		case 3:
-			break;
-		case 4:
 			// TODO: unregister future services before exit
-			// System.exit(0);
+			System.exit(0);
 		}
 
 		FragmentManager fragmentManager = getFragmentManager();

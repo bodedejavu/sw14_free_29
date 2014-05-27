@@ -25,4 +25,5 @@ public class ContactEntry {
 	public void setSecondName(String secondName) {
 		this.secondName = secondName;
 	}
+	
 }
