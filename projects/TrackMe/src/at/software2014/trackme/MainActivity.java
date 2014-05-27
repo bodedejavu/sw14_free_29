@@ -180,6 +180,14 @@ public class MainActivity extends Activity {
 		mHistory.put("rainer_lankmayr", historyList3);
 	}
 
+	public HashMap<String, ContactEntry> getContacts() {
+		return mContacts;
+	}
+
+	public HashMap<String, List<HistoryEntry>> getHistory() {
+		return mHistory;
+	}
+
 	/* The click listner for ListView in the navigation drawer */
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
