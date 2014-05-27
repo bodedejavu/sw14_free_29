@@ -32,6 +32,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * This code is based on the android navigation drawer example
@@ -67,11 +72,16 @@ public class MainActivity extends Activity {
 	private CharSequence mTitle;
 	private String[] mMenuTitles;
 
+	private HashMap<String, ContactEntry> mContacts;
+	private HashMap<String, List<HistoryEntry>> mHistory;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		loadData();
+		
 		mTitle = mDrawerTitle = getTitle();
 		mMenuTitles = getResources().getStringArray(R.array.navigation_menu);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -147,6 +157,27 @@ public class MainActivity extends Activity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	public void loadData() {
+		mContacts = new HashMap();
+		mContacts.put("anna_weber", new ContactEntry("Anna", "Weber"));
+		mContacts.put("benjamin_steinacher", new ContactEntry("Benjamin", "Steinacher"));
+		mContacts.put("rainer_lankmayr", new ContactEntry("Rainer", "Lankmayr"));
+		
+		mHistory = new HashMap();
+		List<HistoryEntry> historyList1 = new ArrayList<HistoryEntry>();
+		historyList1.add(new HistoryEntry(new Date(0), new LatLng(46.1, 15.4), 0, ""));
+		historyList1.add(new HistoryEntry(new Date(1), new LatLng(47.1, 15.4), 0, ""));
+		mHistory.put("anna_weber", historyList1);
+		List<HistoryEntry> historyList2 = new ArrayList<HistoryEntry>();
+		historyList2.add(new HistoryEntry(new Date(0), new LatLng(46.08, 15.35), 0, ""));
+		historyList2.add(new HistoryEntry(new Date(1), new LatLng(47.08, 15.35), 0, ""));
+		mHistory.put("benjamin_steinacher", historyList2);
+		List<HistoryEntry> historyList3 = new ArrayList<HistoryEntry>();
+		historyList3.add(new HistoryEntry(new Date(0), new LatLng(46.0, 15.5), 0, ""));
+		historyList3.add(new HistoryEntry(new Date(1), new LatLng(47.0, 15.5), 0, ""));
+		mHistory.put("rainer_lankmayr", historyList3);
 	}
 
 	/* The click listner for ListView in the navigation drawer */
