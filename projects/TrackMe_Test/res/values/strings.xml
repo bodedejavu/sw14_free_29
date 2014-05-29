@@ -3,4 +3,12 @@
 
     <string name="app_name">TrackMe_TestTest</string>
 
+    <string name="friends">Friends</string>
+    <string name="your_contacts">Your Contacts</string>
+    <string name="image_description">Image</string>
+    
+    <string name="action_contact_add_successful">Contact added</string>
+    <string name="action_contact_delete_successful">Contact deleted</string>
+    
+
 </resources>

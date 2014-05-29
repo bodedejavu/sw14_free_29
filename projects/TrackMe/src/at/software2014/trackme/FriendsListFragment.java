@@ -19,13 +19,15 @@ public class FriendsListFragment extends Fragment {
 	private FriendsListAdapter mListAdapter;
 
 	public static Fragment newInstance(int position) {
-
 		FriendsListFragment fragment = new FriendsListFragment();
 
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, position);
 		fragment.setArguments(args);
 		return fragment;
+	}
+	
+	public FriendsListFragment() {
 	}
 
 	@Override
