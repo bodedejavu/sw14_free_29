@@ -54,7 +54,7 @@ public class FriendsListFragment extends Fragment {
 					int position, long id) {
 
 				// TODO: center friend on map
-				Fragment fragment = GMapFragment.newInstance(position);
+				Fragment fragment = GMapFragment.newInstance(position, "rainer_lankmayr");
 				FragmentManager fragmentManager = getFragmentManager();
 				fragmentManager.beginTransaction()
 						.replace(R.id.content_frame, fragment).commit();

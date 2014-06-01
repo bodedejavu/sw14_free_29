@@ -32,10 +32,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -160,12 +162,12 @@ public class MainActivity extends Activity {
 	}
 
 	public void loadData() {
-		mContacts = new HashMap();
+		mContacts = new HashMap<String, ContactEntry>();
 		mContacts.put("anna_weber", new ContactEntry("Anna", "Weber"));
 		mContacts.put("benjamin_steinacher", new ContactEntry("Benjamin", "Steinacher"));
 		mContacts.put("rainer_lankmayr", new ContactEntry("Rainer", "Lankmayr"));
 		
-		mHistory = new HashMap();
+		mHistory = new HashMap<String, List<HistoryEntry>>();
 		List<HistoryEntry> historyList1 = new ArrayList<HistoryEntry>();
 		historyList1.add(new HistoryEntry(new Date(0), new LatLng(46.1, 15.4), 0, ""));
 		historyList1.add(new HistoryEntry(new Date((long)1401216003*1000), new LatLng(47.1, 15.4), 0, ""));
