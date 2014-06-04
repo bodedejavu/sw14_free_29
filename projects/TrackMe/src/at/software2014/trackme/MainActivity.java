@@ -19,6 +19,7 @@ package at.software2014.trackme;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -108,13 +109,13 @@ public class MainActivity extends Activity {
 				R.string.drawer_close  /* "close drawer" description for accessibility */
 				) {
 			public void onDrawerClosed(View view) {
-				getActionBar().setTitle(mTitle);
-				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+				//getActionBar().setTitle(mTitle);
+				//invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
 
 			public void onDrawerOpened(View drawerView) {
-				getActionBar().setTitle(mDrawerTitle);
-				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+				//getActionBar().setTitle(mDrawerTitle);
+				//invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -135,8 +136,8 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// If the nav drawer is open, hide action items related to the content view
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-		menu.findItem(R.id.action_refresh).setVisible(!drawerOpen);
+//		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+//		menu.findItem(R.id.action_refresh).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -155,6 +156,7 @@ public class MainActivity extends Activity {
 			Toast.makeText(this, "Refresh", Toast.LENGTH_LONG).show();
 			return true;
 		case R.id.action_settings:
+			startActivity(new Intent(MainActivity.this, RegisterActivity.class));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
