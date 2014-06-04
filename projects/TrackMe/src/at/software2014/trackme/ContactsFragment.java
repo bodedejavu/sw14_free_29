@@ -22,7 +22,7 @@ public class ContactsFragment extends Fragment {
 	private static final String ARG_SECTION_NUMBER = "section_number";
 	private ListView mListView;
 	private ContactsAdapter mListAdapter;
-	private ContactsItem selectedItem;
+	private ContactsItem mSelectedItem;
 
 	public static Fragment newInstance(int position) {
 		ContactsFragment fragment = new ContactsFragment();
@@ -42,6 +42,7 @@ public class ContactsFragment extends Fragment {
 				false);
 		setHasOptionsMenu(true);
 
+		mListAdapter = new ContactsAdapter(getActivity());
 		setListData();
 		// mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		mListView = (ListView) view.findViewById(R.id.contacts_listView);
@@ -51,7 +52,7 @@ public class ContactsFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View mListView,
 					int position, long id) {
-				selectedItem = mListAdapter.getItem(position);
+				mSelectedItem = mListAdapter.getItem(position);
 			}
 		});
 		return view;
@@ -114,7 +115,7 @@ public class ContactsFragment extends Fragment {
 					+ contactEntry.getSecondName();
 			contactsList.add(new ContactsItem(key, name));
 		}
-		mListAdapter = new ContactsAdapter(getActivity());
+
 		mListAdapter.setData(contactsList);
 	}
 
@@ -125,17 +126,25 @@ public class ContactsFragment extends Fragment {
 	}
 
 	private void deleteContact() {
-		// TODO: implement deleteContact
-		
-		if (selectedItem != null) {
-			String key = selectedItem.getKey();
-			
+
+		if (mSelectedItem != null) {
+			String key = mSelectedItem.getKey();
+			if (((MainActivity) getActivity()).deleteContact(key)) {
+				setListData();
+				mListAdapter.notifyDataSetChanged();
+
+				Toast.makeText(getActivity(),
+						R.string.action_contact_delete_successful,
+						Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(getActivity(),
+						R.string.action_contact_delete_failed,
+						Toast.LENGTH_LONG).show();
+			}
+		} else {
 			Toast.makeText(getActivity(),
-			R.string.action_contact_delete_successful, Toast.LENGTH_LONG)
-			.show();
-		}
-		else {
-			Toast.makeText(getActivity(), "No Contact selected", Toast.LENGTH_LONG).show();
+					R.string.action_contact_delete_no_selection,
+					Toast.LENGTH_LONG).show();
 		}
 	}
 }

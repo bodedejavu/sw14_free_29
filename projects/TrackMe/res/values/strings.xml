@@ -20,6 +20,8 @@
     <string name="action_contact_add_successful">Contact added</string>
     <string name="action_contact_delete">Delete</string>
     <string name="action_contact_delete_successful">Contact deleted</string>
+    <string name="action_contact_delete_failed">Delition failed</string>
+    <string name="action_contact_delete_no_selection">No Contact selected</string>
     
     <string name="information_unknown">Unknown</string>
     <string name="information_distance">Distance</string>

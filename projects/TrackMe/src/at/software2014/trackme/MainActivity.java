@@ -191,6 +191,17 @@ public class MainActivity extends Activity {
 	public HashMap<String, List<HistoryEntry>> getHistory() {
 		return mHistory;
 	}
+	
+	public boolean deleteContact(String key) {
+		if(mHistory.containsKey(key)) {
+			mHistory.remove(key);
+		}
+		if(mContacts.containsKey(key)) {
+			mContacts.remove(key);
+			return true;
+		}
+		return false;
+	}
 
 	/* The click listner for ListView in the navigation drawer */
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {

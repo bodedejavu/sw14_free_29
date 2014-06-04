@@ -125,14 +125,22 @@ public class MainActivityTest extends
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(3);
 		mSolo.clickOnView(mSolo.getView("action_contact_delete"));
-		assertTrue(this.mSolo.searchText("No Contact selected")); 
+		assertTrue(this.mSolo.searchText("No Contact selected"));
 	}
-	
+
 	public void testContacts_ActionDeleteContactSuccess() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(3);
 		mSolo.clickInList(0);
 		mSolo.clickOnView(mSolo.getView("action_contact_delete"));
-		assertTrue(this.mSolo.searchText("Contact deleted")); 
+		assertTrue(this.mSolo.searchText("Contact deleted"));
+		ListView lv = (ListView) mSolo.getView(
+				at.software2014.trackme.R.id.contacts).findViewById(
+				at.software2014.trackme.R.id.contacts_listView);
+		View view = lv.getChildAt(0);
+		TextView name = (TextView) view
+				.findViewById(at.software2014.trackme.R.id.contacts_name);
+		assertEquals("Name not found", "Benjamin Steinacher", name.getText()
+				.toString());
 	}
 }
