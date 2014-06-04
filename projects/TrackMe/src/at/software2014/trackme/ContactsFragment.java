@@ -1,6 +1,7 @@
 package at.software2014.trackme;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -21,6 +22,7 @@ public class ContactsFragment extends Fragment {
 	private static final String ARG_SECTION_NUMBER = "section_number";
 	private ListView mListView;
 	private ContactsAdapter mListAdapter;
+	private ContactsItem selectedItem;
 
 	public static Fragment newInstance(int position) {
 		ContactsFragment fragment = new ContactsFragment();
@@ -40,14 +42,8 @@ public class ContactsFragment extends Fragment {
 				false);
 		setHasOptionsMenu(true);
 
-		// TODO: load values
-		ArrayList<ContactsItem> contactsList = new ArrayList<ContactsItem>();
-		contactsList.add(new ContactsItem("Anna Weber"));
-		contactsList.add(new ContactsItem("Benjamin Steinacher"));
-		contactsList.add(new ContactsItem("Rainer Lankmayr"));
-
-		mListAdapter = new ContactsAdapter(getActivity());
-		mListAdapter.setData(contactsList);
+		setListData();
+		// mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		mListView = (ListView) view.findViewById(R.id.contacts_listView);
 		mListView.setAdapter(mListAdapter);
 		mListView.setSelector(R.drawable.selector_background);
@@ -55,7 +51,7 @@ public class ContactsFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View mListView,
 					int position, long id) {
-
+				selectedItem = mListAdapter.getItem(position);
 			}
 		});
 		return view;
@@ -97,19 +93,49 @@ public class ContactsFragment extends Fragment {
 		// handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_contact_add:
-			// TODO: add contact
-			Toast.makeText(getActivity(),
-					R.string.action_contact_add_successful, Toast.LENGTH_LONG)
-					.show();
+			addContact();
 			return true;
 		case R.id.action_contact_delete:
-			// TODO: delete contact
-			Toast.makeText(getActivity(),
-					R.string.action_contact_delete_successful,
-					Toast.LENGTH_LONG).show();
+			deleteContact();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	private void setListData() {
+		HashMap<String, ContactEntry> contacts = ((MainActivity) getActivity())
+				.getContacts();
+		ArrayList<ContactsItem> contactsList = new ArrayList<ContactsItem>();
+
+		for (String key : contacts.keySet()) {
+			ContactEntry contactEntry = contacts.get(key);
+			String name = contactEntry.getFirstName() + " "
+					+ contactEntry.getSecondName();
+			contactsList.add(new ContactsItem(key, name));
+		}
+		mListAdapter = new ContactsAdapter(getActivity());
+		mListAdapter.setData(contactsList);
+	}
+
+	private void addContact() {
+		// TODO: implement addContact
+		Toast.makeText(getActivity(), R.string.action_contact_add_successful,
+				Toast.LENGTH_LONG).show();
+	}
+
+	private void deleteContact() {
+		// TODO: implement deleteContact
+		
+		if (selectedItem != null) {
+			String key = selectedItem.getKey();
+			
+			Toast.makeText(getActivity(),
+			R.string.action_contact_delete_successful, Toast.LENGTH_LONG)
+			.show();
+		}
+		else {
+			Toast.makeText(getActivity(), "No Contact selected", Toast.LENGTH_LONG).show();
 		}
 	}
 }
