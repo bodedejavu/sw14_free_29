@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -41,6 +42,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -68,7 +74,7 @@ import com.google.android.gms.maps.model.LatLng;
  * An action should be an operation performed on the current contents of the window,
  * for example enabling or disabling a data overlay on top of the current content.</p>
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 	private static final String FIRST_LAUNCH = "first_launch";
 	private static final String TRACK_ME_PREFERENCES = "TrackMePreferences";
 	private DrawerLayout mDrawerLayout;
@@ -78,16 +84,20 @@ public class MainActivity extends Activity {
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
 	private String[] mMenuTitles;
+	private int mCurrentPosition;
 
 	private HashMap<String, ContactEntry> mContacts;
 	private HashMap<String, List<HistoryEntry>> mHistory;
+	
+	LocationClient mLocationClient;
+	LocationRequest mLocationRequest;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		registerUserAtFirstLaunch();
+		//registerUserAtFirstLaunch();
 		
 		loadData();
 		
@@ -129,6 +139,13 @@ public class MainActivity extends Activity {
 		if (savedInstanceState == null) {
 			selectItem(0);
 		}
+		
+		mLocationRequest = LocationRequest.create();
+		mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+		mLocationRequest.setInterval(5000);
+		mLocationRequest.setFastestInterval(1000);
+		
+		mLocationClient = new LocationClient(this, this, this);
 	}
 
 	private void registerUserAtFirstLaunch() {
@@ -245,6 +262,8 @@ public class MainActivity extends Activity {
 		// update the main content by replacing fragments
 		Fragment fragment = GMapFragment.newInstance(position);
 
+		mCurrentPosition = position;
+		
 		switch(position) {
 		case 0:
 			fragment = GMapFragment.newInstance(position);
@@ -257,6 +276,7 @@ public class MainActivity extends Activity {
 			break;
 		case 3:
 			// TODO: unregister future services before exit
+			closeConnection();
 			System.exit(0);
 		}
 
@@ -294,4 +314,50 @@ public class MainActivity extends Activity {
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		mLocationClient.connect();
+	}
+	
+	@Override
+	protected void onStop() {
+		closeConnection();
+		super.onStop();
+	}
+	
+	public void closeConnection() {
+		if (mLocationClient.isConnected()) {
+			mLocationClient.removeLocationUpdates(this);
+		}
+		mLocationClient.disconnect();		
+	}
+	
+	@Override
+	public void onConnected(Bundle dataBundle) {
+		mLocationClient.requestLocationUpdates(mLocationRequest, this);
+	}
+	
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLocationChanged(Location arg0) {
+		// TODO Auto-generated method stub
+		
+		if (mCurrentPosition == 0) {
+			Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame);
+			((GMapFragment) fragment).refreshLocation(arg0);	
+		}
+		
+	}
 }

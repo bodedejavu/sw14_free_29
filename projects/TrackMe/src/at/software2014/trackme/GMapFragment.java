@@ -16,9 +16,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import android.content.Context;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 
@@ -26,7 +24,7 @@ import android.text.format.DateFormat;
 /**
  * A fragment containing a google map.
  */
-public class GMapFragment extends MapFragment implements android.location.LocationListener {
+public class GMapFragment extends MapFragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -126,16 +124,11 @@ public class GMapFragment extends MapFragment implements android.location.Locati
     		mMoveToContactKey = bundle.getString("MOVE_TO_CONTACT_KEY");
     	}
     	
-		LocationManager locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
-    	Location myLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-    	
-    	createMarkers(myLocation, true);
+    	createMarkers(null, true);
     	
         mGoogleMap.setInfoWindowAdapter(new GInfoWindowAdapter(getActivity()));
         mGoogleMap.setMyLocationEnabled(true);
     	
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
-		
         mGoogleMap.setOnMapClickListener(new OnMapClickListener() {
 			
 			@Override
@@ -160,62 +153,36 @@ public class GMapFragment extends MapFragment implements android.location.Locati
         	@Override
         	public void onCameraChange(CameraPosition arg0) {
         		
-        		LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        		
-        		if (mMoveToContactKey != "") {
-        			Marker marker = mMarkers.get(mMoveToContactKey);
-        			builder.include(marker.getPosition());
-					marker.showInfoWindow();
-    				mActiveMarker = marker;
-        		}
-        		else {
-        			for (String key: mMarkers.keySet()) {
-        				Marker marker = mMarkers.get(key);
-        				builder.include(marker.getPosition());
+        		if (mMarkers.size() > 0) {
+        			LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            		
+            		if (mMoveToContactKey != "") {
+            			Marker marker = mMarkers.get(mMoveToContactKey);
+            			builder.include(marker.getPosition());
+    					marker.showInfoWindow();
+        				mActiveMarker = marker;
             		}
+            		else {
+            			for (String key: mMarkers.keySet()) {
+            				Marker marker = mMarkers.get(key);
+            				builder.include(marker.getPosition());
+                		}
+            		}
+            		
+            		LatLngBounds bounds = builder.build();
+            		
+            		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+    				
+    				mGoogleMap.moveCamera(cu);
+    				mGoogleMap.setOnCameraChangeListener(null);
         		}
-        		
-        		LatLngBounds bounds = builder.build();
-        		
-        		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-				
-				mGoogleMap.moveCamera(cu);
-				mGoogleMap.setOnCameraChangeListener(null);
 			}
 		});
 
     }
     
-    @Override
-    public void onDestroyView() {
-    	super.onDestroyView();
-    	
-		LocationManager locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
-    	locationManager.removeUpdates(this);
+    public void refreshLocation(Location location) {
+    	createMarkers(location, false);	
     }
-    
-    @Override
-	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
-		createMarkers(location, false);
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
