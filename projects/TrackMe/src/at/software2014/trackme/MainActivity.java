@@ -20,6 +20,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -67,6 +69,8 @@ import com.google.android.gms.maps.model.LatLng;
  * for example enabling or disabling a data overlay on top of the current content.</p>
  */
 public class MainActivity extends Activity {
+	private static final String FIRST_LAUNCH = "first_launch";
+	private static final String TRACK_ME_PREFERENCES = "TrackMePreferences";
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -82,7 +86,9 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
+		registerUserAtFirstLaunch();
+		
 		loadData();
 		
 		mTitle = mDrawerTitle = getTitle();
@@ -123,6 +129,30 @@ public class MainActivity extends Activity {
 		if (savedInstanceState == null) {
 			selectItem(0);
 		}
+	}
+
+	private void registerUserAtFirstLaunch() {
+		
+		if(isFirstAppStart()) {
+			
+			// TODO get device user email and name
+			// ...
+			
+			SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
+			Editor editor = prefs.edit();
+			editor.putBoolean(FIRST_LAUNCH, false);
+			
+			// save it to shared prefs
+			// editor.putString("email", "asdf@asdg.com")
+			
+			editor.commit();
+		}
+		
+	}
+
+	private boolean isFirstAppStart() {
+		SharedPreferences sharedPreferences = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
+		return sharedPreferences.getBoolean(FIRST_LAUNCH, true);		
 	}
 
 	@Override
