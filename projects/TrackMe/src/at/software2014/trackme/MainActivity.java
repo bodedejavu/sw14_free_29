@@ -16,7 +16,6 @@
 
 package at.software2014.trackme;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -44,6 +43,7 @@ import java.util.List;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -74,49 +74,41 @@ import com.google.android.gms.maps.model.LatLng;
  * An action should be an operation performed on the current contents of the window,
  * for example enabling or disabling a data overlay on top of the current content.</p>
  */
-public class MainActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
+public class MainActivity extends BaseActivity implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 	private static final String FIRST_LAUNCH = "first_launch";
 	private static final String TRACK_ME_PREFERENCES = "TrackMePreferences";
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
 
-	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
 	private String[] mMenuTitles;
-	private int mCurrentPosition;
+	private int mCurrentPosition = 0;
 
 	private HashMap<String, ContactEntry> mContacts;
 	private HashMap<String, List<HistoryEntry>> mHistory;
-	
+
 	LocationClient mLocationClient;
 	LocationRequest mLocationRequest;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		//registerUserAtFirstLaunch();
-		
+
 		loadData();
-		
-		mTitle = mDrawerTitle = getTitle();
+
+		mTitle = getTitle();
 		mMenuTitles = getResources().getStringArray(R.array.navigation_menu);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-		// set a custom shadow that overlays the main content when the drawer opens
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
 		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mMenuTitles));
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
-
-		// ActionBarDrawerToggle ties together the the proper interactions
-		// between the sliding drawer and the action bar app icon
 		mDrawerToggle = new ActionBarDrawerToggle(
 				this,                  /* host Activity */
 				mDrawerLayout,         /* DrawerLayout object */
@@ -124,47 +116,51 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 				R.string.drawer_open,  /* "open drawer" description for accessibility */
 				R.string.drawer_close  /* "close drawer" description for accessibility */
 				) {
-			public void onDrawerClosed(View view) {
-				//getActionBar().setTitle(mTitle);
-				//invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-			}
-
-			public void onDrawerOpened(View drawerView) {
-				//getActionBar().setTitle(mDrawerTitle);
-				//invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-			}
 		};
+
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
 		if (savedInstanceState == null) {
-			selectItem(0);
+			if(isGooglePlayServicesConnected()){				
+				selectItem(0);
+			}
 		}
-		
+
 		mLocationRequest = LocationRequest.create();
 		mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 		mLocationRequest.setInterval(5000);
 		mLocationRequest.setFastestInterval(1000);
-		
+
 		mLocationClient = new LocationClient(this, this, this);
+
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		if(ConnectionResult.SUCCESS == GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext())) {			
+			selectItem(mCurrentPosition);
+		}
 	}
 
 	private void registerUserAtFirstLaunch() {
-		
+
 		if(isFirstAppStart()) {
-			
+
 			// TODO get device user email and name
 			// ...
-			
+
 			SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
 			Editor editor = prefs.edit();
 			editor.putBoolean(FIRST_LAUNCH, false);
-			
+
 			// save it to shared prefs
 			// editor.putString("email", "asdf@asdg.com")
-			
+
 			editor.commit();
 		}
-		
+
 	}
 
 	private boolean isFirstAppStart() {
@@ -182,22 +178,16 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the content view
-//		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-//		menu.findItem(R.id.action_refresh).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		// The action bar home/up action should open or close the drawer.
-		// ActionBarDrawerToggle will take care of this.
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
 
-		// Handle action buttons
 		switch(item.getItemId()) {		
 		case R.id.action_refresh:
 			Toast.makeText(this, "Refresh", Toast.LENGTH_LONG).show();
@@ -215,7 +205,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 		mContacts.put("anna_weber", new ContactEntry("Anna", "Weber"));
 		mContacts.put("benjamin_steinacher", new ContactEntry("Benjamin", "Steinacher"));
 		mContacts.put("rainer_lankmayr", new ContactEntry("Rainer", "Lankmayr"));
-		
+
 		mHistory = new HashMap<String, List<HistoryEntry>>();
 		List<HistoryEntry> historyList1 = new ArrayList<HistoryEntry>();
 		historyList1.add(new HistoryEntry(new Date(0), new LatLng(46.1, 15.4), 0, ""));
@@ -238,7 +228,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 	public HashMap<String, List<HistoryEntry>> getHistory() {
 		return mHistory;
 	}
-	
+
 	public boolean deleteContact(String key) {
 		if(mHistory.containsKey(key)) {
 			mHistory.remove(key);
@@ -259,11 +249,11 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 	}
 
 	private void selectItem(int position) {
-		// update the main content by replacing fragments
+
 		Fragment fragment = GMapFragment.newInstance(position);
 
 		mCurrentPosition = position;
-		
+
 		switch(position) {
 		case 0:
 			fragment = GMapFragment.newInstance(position);
@@ -275,7 +265,6 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 			fragment = ContactsFragment.newInstance(position);
 			break;
 		case 3:
-			// TODO: unregister future services before exit
 			closeConnection();
 			System.exit(0);
 		}
@@ -303,6 +292,7 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
+
 		// Sync the toggle state after onRestoreInstanceState has occurred.
 		mDrawerToggle.syncState();
 	}
@@ -310,8 +300,10 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
+
 		// Pass any configuration change to the drawer toggls
 		mDrawerToggle.onConfigurationChanged(newConfig);
+
 	}
 
 	@Override
@@ -319,45 +311,45 @@ public class MainActivity extends Activity implements GooglePlayServicesClient.C
 		super.onStart();
 		mLocationClient.connect();
 	}
-	
+
 	@Override
 	protected void onStop() {
 		closeConnection();
 		super.onStop();
 	}
-	
+
 	public void closeConnection() {
 		if (mLocationClient.isConnected()) {
 			mLocationClient.removeLocationUpdates(this);
 		}
 		mLocationClient.disconnect();		
 	}
-	
+
 	@Override
 	public void onConnected(Bundle dataBundle) {
 		mLocationClient.requestLocationUpdates(mLocationRequest, this);
 	}
-	
+
 	@Override
 	public void onDisconnected() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onLocationChanged(Location arg0) {
 		// TODO Auto-generated method stub
-		
+
 		if (mCurrentPosition == 0) {
 			Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame);
 			((GMapFragment) fragment).refreshLocation(arg0);	
 		}
-		
+
 	}
 }
