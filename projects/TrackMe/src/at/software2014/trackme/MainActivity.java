@@ -16,6 +16,8 @@
 
 package at.software2014.trackme;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -27,6 +29,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -40,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -96,7 +101,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		//registerUserAtFirstLaunch();
+		registerUserAtFirstLaunch();
 
 		loadData();
 
@@ -135,6 +140,42 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 	}
 
+	private String getEmailAddress() {
+		String emailAddress = "";
+		
+		Pattern emailPattern = Patterns.EMAIL_ADDRESS;
+		Account[] accounts = AccountManager.get(getBaseContext()).getAccounts();
+		
+		for (Account account: accounts) {
+			if (emailPattern.matcher(account.name).matches() && account.name.endsWith("gmail.com")) {
+				emailAddress = account.name;
+				break;
+			}
+		}
+		
+		return emailAddress;
+	}
+	
+	private String capitalizeString(String string) {
+		String stringCapitalized = Character.toUpperCase(string.charAt(0)) + string.substring(1);
+		return stringCapitalized;
+	}
+	
+	private List<String> extractNamesFromEmailAddress(String emailAddress) {
+		List<String> names = new ArrayList<String>();
+		
+		String[] parts = emailAddress.split("@");
+		if (parts.length > 0) {
+			String[] parts2 = parts[0].split("\\.");
+			
+			for (int i=0; i<parts2.length; i++) {
+				names.add(capitalizeString(parts2[i]));
+			}
+		}
+		
+		return names;
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -146,17 +187,30 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 	private void registerUserAtFirstLaunch() {
 
-		if(isFirstAppStart()) {
-
-			// TODO get device user email and name
-			// ...
-
+		if(isFirstAppStart() || true) {
 			SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
 			Editor editor = prefs.edit();
 			editor.putBoolean(FIRST_LAUNCH, false);
 
-			// save it to shared prefs
-			// editor.putString("email", "asdf@asdg.com")
+			// get user info and save it to shared prefs
+			String emailAddress = getEmailAddress();
+			List<String> names = extractNamesFromEmailAddress(emailAddress);
+			String firstName = "";
+			String secondName = "";
+			if (names.size() > 0) {
+				firstName = names.get(0);
+			}
+			if (names.size() > 1) {
+				secondName = names.get(1);
+			}
+			
+			Log.d("INFORMATION", emailAddress);
+			Log.d("INFORMATION", firstName);
+			Log.d("INFORMATION", secondName);
+			
+			editor.putString("email", emailAddress);
+			editor.putString("first_name", firstName);
+			editor.putString("second_name", secondName);
 
 			editor.commit();
 		}
