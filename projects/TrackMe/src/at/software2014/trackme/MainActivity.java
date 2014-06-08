@@ -121,6 +121,13 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 				R.string.drawer_open,  /* "open drawer" description for accessibility */
 				R.string.drawer_close  /* "close drawer" description for accessibility */
 				) {
+ 			public void onDrawerClosed(View view) {
+				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+ 			}
+
+ 			public void onDrawerOpened(View drawerView) {
+				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+ 			}
 		};
 
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -232,6 +239,16 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+		int[] menuItemIds = {R.id.action_refresh, R.id.action_contact_delete, R.id.action_contact_add};
+
+		for (int i=0; i<menuItemIds.length; i++) {
+			MenuItem menuItem = menu.findItem(menuItemIds[i]);
+			if (menuItem != null) {
+				menuItem.setVisible(!drawerOpen);
+			}
+		}
+
 		return super.onPrepareOptionsMenu(menu);
 	}
 
