@@ -5,13 +5,13 @@
     
     <item
         android:id="@+id/action_contact_delete"
-        android:showAsAction="withText|ifRoom"
+        android:showAsAction="always|withText"
         android:title="@string/action_contact_delete"
         android:icon="@drawable/ic_action_discard"/>
     
     <item
         android:id="@+id/action_contact_add"
-        android:showAsAction="withText|ifRoom"
+        android:showAsAction="always|withText"
         android:title="@string/action_contact_add"
         android:icon="@drawable/ic_action_add_person"/>
     
