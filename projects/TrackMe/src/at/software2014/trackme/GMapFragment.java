@@ -29,11 +29,12 @@ public class GMapFragment extends MapFragment {
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private static final String ARG_SECTION_NUMBER = "section_number";
+	private static final String ARG_SECTION_NUMBER = "section_number";
+	private static final String ARG_CONTACT_KEY = "contact_key";
     private GoogleMap mGoogleMap = null;
     private HashMap<String, Marker> mMarkers;
     private Marker mActiveMarker;
-    private String mMoveToContactKey = "";
+    private String mContactKey = "";
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -49,13 +50,13 @@ public class GMapFragment extends MapFragment {
         return fragment;
     }
     
-    public static GMapFragment newInstance(int sectionNumber, String moveToContactKey) {
+    public static GMapFragment newInstance(int sectionNumber, String contactKey) {
     	
         GMapFragment fragment = new GMapFragment();
         
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        args.putString("MOVE_TO_CONTACT_KEY", moveToContactKey);
+        args.putString(ARG_CONTACT_KEY, contactKey);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,12 +64,12 @@ public class GMapFragment extends MapFragment {
     public GMapFragment() {
     }
     
-    public void createMarkers(Location myLocation, Boolean initial) {
+    private void createMarkers(Boolean initial) {
     	if (initial == true) {
     		mGoogleMap.clear();
         	mMarkers = new HashMap<String, Marker>();
     	}
-    	
+    	Location myLocation = ((MainActivity) getActivity()).getMyLocation();
     	HashMap<String, ContactEntry> contacts = ((MainActivity)getActivity()).getContacts();
     	HashMap<String, List<HistoryEntry>> history = ((MainActivity)getActivity()).getHistory();
     	
@@ -78,7 +79,7 @@ public class GMapFragment extends MapFragment {
     		
     		String title = contactEntry.getFirstName() + " " + contactEntry.getSecondName();
     		
-    		LatLng position = historyEntry.getLatLng();
+    		LatLng position = new LatLng(historyEntry.getLocation().getLatitude(), historyEntry.getLocation().getLongitude());
     		
     		//String timestamp = historyEntry.getTimestamp().toLocaleString();
     		String date = DateFormat.getDateFormat(getActivity()).format(historyEntry.getTimestamp());
@@ -87,8 +88,7 @@ public class GMapFragment extends MapFragment {
     		
     		String distance = getResources().getString(R.string.information_unknown);
         	if (myLocation != null) {
-        		LatLng myPosition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-        		distance = historyEntry.getDistanceFormatted(myPosition);
+        		distance = historyEntry.getDistanceFormatted(myLocation);
         	}
         	
         	String snippet = getResources().getString(R.string.information_distance) + ": " + distance + "\n" + getResources().getString(R.string.information_last_update) + ": " + timestamp;
@@ -120,11 +120,11 @@ public class GMapFragment extends MapFragment {
     	mGoogleMap = getMap();
     	
     	Bundle bundle = this.getArguments();
-    	if (bundle.containsKey("MOVE_TO_CONTACT_KEY")) {
-    		mMoveToContactKey = bundle.getString("MOVE_TO_CONTACT_KEY");
+    	if (bundle.containsKey(ARG_CONTACT_KEY)) {
+    		mContactKey = bundle.getString(ARG_CONTACT_KEY);
     	}
     	
-    	createMarkers(null, true);
+    	createMarkers(true);
     	
         mGoogleMap.setInfoWindowAdapter(new GInfoWindowAdapter(getActivity()));
         mGoogleMap.setMyLocationEnabled(true);
@@ -133,7 +133,6 @@ public class GMapFragment extends MapFragment {
 			
 			@Override
 			public void onMapClick(LatLng arg0) {
-				// TODO Auto-generated method stub
 				mActiveMarker = null;
 			}
 		});
@@ -142,7 +141,6 @@ public class GMapFragment extends MapFragment {
 			
 			@Override
 			public boolean onMarkerClick(Marker marker) {
-				// TODO Auto-generated method stub
 				mActiveMarker = marker;
 				return false;
 			}
@@ -156,8 +154,8 @@ public class GMapFragment extends MapFragment {
         		if (mMarkers.size() > 0) {
         			LatLngBounds.Builder builder = new LatLngBounds.Builder();
             		
-            		if (mMoveToContactKey != "") {
-            			Marker marker = mMarkers.get(mMoveToContactKey);
+            		if (mContactKey != "") {
+            			Marker marker = mMarkers.get(mContactKey);
             			builder.include(marker.getPosition());
     					marker.showInfoWindow();
         				mActiveMarker = marker;
@@ -181,8 +179,8 @@ public class GMapFragment extends MapFragment {
 
     }
     
-    public void refreshLocation(Location location) {
-    	createMarkers(location, false);	
+    public void refreshLocation() {
+    	createMarkers(false);	
     }
 
 }

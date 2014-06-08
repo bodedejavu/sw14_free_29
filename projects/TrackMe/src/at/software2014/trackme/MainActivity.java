@@ -52,7 +52,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.maps.model.LatLng;
 
 /**
  * This code is based on the android navigation drawer example
@@ -95,6 +94,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 	LocationClient mLocationClient;
 	LocationRequest mLocationRequest;
+	Location mMyLocation = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +127,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 		if (savedInstanceState == null) {
 			if(isGooglePlayServicesConnected()){				
-				selectItem(0);
+				selectItem(0, "");
 			}
 		}
 
@@ -181,7 +181,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		super.onResume();
 		
 		if(ConnectionResult.SUCCESS == GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext())) {			
-			selectItem(mCurrentPosition);
+			selectItem(mCurrentPosition, "");
 		}
 	}
 
@@ -254,6 +254,13 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		}
 	}
 
+	public Location createLocation(double latitude, double longitude) {
+		Location location = new Location("dummy");
+		location.setLatitude(latitude);
+		location.setLongitude(longitude);
+		return location;
+	}
+	
 	public void loadData() {
 		mContacts = new HashMap<String, ContactEntry>();
 		mContacts.put("anna_weber", new ContactEntry("Anna", "Weber"));
@@ -262,16 +269,16 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 		mHistory = new HashMap<String, List<HistoryEntry>>();
 		List<HistoryEntry> historyList1 = new ArrayList<HistoryEntry>();
-		historyList1.add(new HistoryEntry(new Date(0), new LatLng(46.1, 15.4), 0, ""));
-		historyList1.add(new HistoryEntry(new Date((long)1401216003*1000), new LatLng(47.1, 15.4), 0, ""));
+		historyList1.add(new HistoryEntry(new Date(0), createLocation(46.1, 15.4), 0, ""));
+		historyList1.add(new HistoryEntry(new Date((long)1401216003*1000), createLocation(47.1, 15.4), 0, ""));
 		mHistory.put("anna_weber", historyList1);
 		List<HistoryEntry> historyList2 = new ArrayList<HistoryEntry>();
-		historyList2.add(new HistoryEntry(new Date(0), new LatLng(46.08, 15.35), 0, ""));
-		historyList2.add(new HistoryEntry(new Date((long)1401216000*1000), new LatLng(47.08, 15.35), 0, ""));
+		historyList2.add(new HistoryEntry(new Date(0), createLocation(46.08, 15.35), 0, ""));
+		historyList2.add(new HistoryEntry(new Date((long)1401216000*1000), createLocation(47.08, 15.35), 0, ""));
 		mHistory.put("benjamin_steinacher", historyList2);
 		List<HistoryEntry> historyList3 = new ArrayList<HistoryEntry>();
-		historyList3.add(new HistoryEntry(new Date(0), new LatLng(46.0, 15.5), 0, ""));
-		historyList3.add(new HistoryEntry(new Date((long)1401215993*1000), new LatLng(47.0, 15.5), 0, ""));
+		historyList3.add(new HistoryEntry(new Date(0), createLocation(46.0, 15.5), 0, ""));
+		historyList3.add(new HistoryEntry(new Date((long)1401215993*1000), createLocation(47.0, 15.5), 0, ""));
 		mHistory.put("rainer_lankmayr", historyList3);
 	}
 
@@ -298,11 +305,11 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			selectItem(position);
+			selectItem(position, "");
 		}
 	}
 
-	private void selectItem(int position) {
+	public void selectItem(int position, String argument) {
 
 		Fragment fragment = GMapFragment.newInstance(position);
 
@@ -310,7 +317,12 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 		switch(position) {
 		case 0:
-			fragment = GMapFragment.newInstance(position);
+			if (argument == "") {
+				fragment = GMapFragment.newInstance(position);
+			}
+			else {
+				fragment = GMapFragment.newInstance(position, argument);
+			}
 			break;
 		case 1:
 			fragment = FriendsListFragment.newInstance(position);
@@ -397,13 +409,26 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	}
 
 	@Override
-	public void onLocationChanged(Location arg0) {
-		// TODO Auto-generated method stub
+	public void onLocationChanged(Location location) {
+		Log.d("INFORMATION", "Location changed");
+		mMyLocation = location;
+		refreshLocation();
+	}
+	
+	public Location getMyLocation() {
+		return mMyLocation;
+	}
 
-		if (mCurrentPosition == 0) {
-			Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame);
-			((GMapFragment) fragment).refreshLocation(arg0);	
-		}
+	public void refreshLocation() {
+		Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame);
 
+		switch(mCurrentPosition) {
+		case 0:
+			((GMapFragment) fragment).refreshLocation();
+			break;
+		case 1:
+			((FriendsListFragment) fragment).refreshLocation();
+			break;
+		}		
 	}
 }

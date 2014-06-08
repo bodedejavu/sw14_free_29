@@ -4,12 +4,10 @@ import java.util.Date;
 
 import android.location.Location;
 
-import com.google.android.gms.maps.model.LatLng;
-
 public class HistoryEntry {
 
 	private Date timestamp = null;
-	private LatLng latLng = null;
+	private Location location = null;
 	private Integer statusFlag = 0;
 	private String statusText = "";
 	
@@ -21,12 +19,12 @@ public class HistoryEntry {
 		this.timestamp = timestamp;
 	}
 	
-	public LatLng getLatLng() {
-		return latLng;
+	public Location getLocation() {
+		return location;
 	}
-	
-	public void setLatLng(LatLng latLng) {
-		this.latLng = latLng;
+
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 	
 	public Integer getStatusFlag() {
@@ -45,35 +43,19 @@ public class HistoryEntry {
 		this.statusText = statusText;
 	}
 	
-	public HistoryEntry(Date timestamp, LatLng latLng, Integer statusFlag,
+	public HistoryEntry(Date timestamp, Location location, Integer statusFlag,
 			String statusText) {
 		super();
 		this.timestamp = timestamp;
-		this.latLng = latLng;
+		this.location = location;
 		this.statusFlag = statusFlag;
 		this.statusText = statusText;
 	}
-	
-	public float getDistance(LatLng latLngTo) {
-		float distance;
-		
-		Location locationA = new Location("a");
-		locationA.setLatitude(this.latLng.latitude);
-		locationA.setLongitude(this.latLng.longitude);
-		
-		Location locationB = new Location("b");
-		locationB.setLatitude(latLngTo.latitude);
-		locationB.setLongitude(latLngTo.longitude);
-		
-		distance = locationA.distanceTo(locationB);
-		
-		return distance;
-	}
-	
-	public String getDistanceFormatted(LatLng latLngTo) {
+
+	public String getDistanceFormatted(Location locationTo) {
 		String distanceFormatted;
 		
-		float distance = getDistance(latLngTo);
+		float distance = location.distanceTo(locationTo);
 		
 		if (distance < 1000.0) {
 			distanceFormatted = String.format("%.0f", distance) + " m";

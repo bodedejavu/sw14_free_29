@@ -4,18 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -46,6 +40,7 @@ public class FriendsListFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_friendslist, container,
 				false);
+		mListAdapter = new FriendsListAdapter(getActivity());
 		friendslist = new ArrayList<FriendsListItem>();
 		setListData();
 		mListView = (ListView) view.findViewById(R.id.friendslist_listView);
@@ -57,12 +52,7 @@ public class FriendsListFragment extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View mListView,
 					int position, long id) {
 				String key = friendslist.get(position).getKey();
-
-				// TODO: call activity to fix drawer menu and action bar
-				Fragment fragment = GMapFragment.newInstance(position, key);
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, fragment).commit();
+				((MainActivity) getActivity()).selectItem(0, key);
 			}
 		});
 		return view;
@@ -92,15 +82,11 @@ public class FriendsListFragment extends Fragment {
 	}
 
 	private void setListData() {
+		Location myLocation = ((MainActivity) getActivity()).getMyLocation();
 		HashMap<String, ContactEntry> contacts = ((MainActivity) getActivity())
 				.getContacts();
 		HashMap<String, List<HistoryEntry>> history = ((MainActivity) getActivity())
 				.getHistory();
-
-		LocationManager locationManager = (LocationManager) getActivity()
-				.getSystemService(Context.LOCATION_SERVICE);
-		Location myLocation = locationManager
-				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
 		friendslist.clear();
 
@@ -119,14 +105,17 @@ public class FriendsListFragment extends Fragment {
 			String distance = getResources().getString(
 					R.string.information_unknown);
 			if (myLocation != null) {
-				LatLng myPosition = new LatLng(myLocation.getLatitude(),
-						myLocation.getLongitude());
-				distance = historyEntry.getDistanceFormatted(myPosition);
+				distance = historyEntry.getDistanceFormatted(myLocation);
 			}
 			friendslist
 					.add(new FriendsListItem(key, name, distance, timestamp));
 		}
-		mListAdapter = new FriendsListAdapter(getActivity());
+		
 		mListAdapter.setData(friendslist);
+		//mListAdapter.notifyDataSetChanged();
 	}
+	
+    public void refreshLocation() {
+    	setListData();	
+    }
 }
