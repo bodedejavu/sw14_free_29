@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 
 /**
@@ -31,6 +32,8 @@ public class GMapFragment extends MapFragment {
      */
 	private static final String ARG_SECTION_NUMBER = "section_number";
 	private static final String ARG_CONTACT_KEY = "contact_key";
+	private static final float mDefaultZoomLevel = (float)15.0;
+
     private GoogleMap mGoogleMap = null;
     private HashMap<String, Marker> mMarkers;
     private Marker mActiveMarker;
@@ -104,8 +107,8 @@ public class GMapFragment extends MapFragment {
         		marker.setTitle(title);
         		marker.setPosition(position);
         		marker.setSnippet(snippet);
-        		
-        		if (mActiveMarker != null && marker.getTitle().equals(mActiveMarker.getTitle())) {
+
+        		if (mActiveMarker != null && marker.equals(mActiveMarker)) {
         			marker.hideInfoWindow();
         			marker.showInfoWindow();
         		}
@@ -128,7 +131,7 @@ public class GMapFragment extends MapFragment {
     	
         mGoogleMap.setInfoWindowAdapter(new GInfoWindowAdapter(getActivity()));
         mGoogleMap.setMyLocationEnabled(true);
-    	
+        
         mGoogleMap.setOnMapClickListener(new OnMapClickListener() {
 			
 			@Override
@@ -150,30 +153,49 @@ public class GMapFragment extends MapFragment {
         	
         	@Override
         	public void onCameraChange(CameraPosition arg0) {
-        		
-        		if (mMarkers.size() > 0) {
-        			LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            		
+        		Log.d("INFORMATION", "Camera changed");
+
+        		CameraUpdate cu = null;
+
+        		if (mMarkers.size() == 0) {
+        			Location myLocation = ((MainActivity) getActivity()).getMyLocation();
+        			if (myLocation != null) {
+        				cu = CameraUpdateFactory.newLatLngZoom(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), mDefaultZoomLevel);
+        			}
+        		}
+        		else {
             		if (mContactKey != "") {
             			Marker marker = mMarkers.get(mContactKey);
-            			builder.include(marker.getPosition());
     					marker.showInfoWindow();
-        				mActiveMarker = marker;
+    					mActiveMarker = marker;
+
+    					cu = CameraUpdateFactory.newLatLngZoom(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude), mDefaultZoomLevel);
             		}
             		else {
+            			LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+            			Location myLocation = ((MainActivity) getActivity()).getMyLocation();
+            			if (myLocation != null) {
+            				builder.include(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
+            			}
+
             			for (String key: mMarkers.keySet()) {
             				Marker marker = mMarkers.get(key);
             				builder.include(marker.getPosition());
                 		}
+
+                		LatLngBounds bounds = builder.build();
+
+                		cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+
             		}
-            		
-            		LatLngBounds bounds = builder.build();
-            		
-            		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-    				
-    				mGoogleMap.moveCamera(cu);
-    				mGoogleMap.setOnCameraChangeListener(null);
+
         		}
+
+    		if (cu != null) {
+    			mGoogleMap.moveCamera(cu);
+    			mGoogleMap.setOnCameraChangeListener(null);
+    		}
 			}
 		});
 

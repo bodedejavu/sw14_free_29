@@ -263,11 +263,12 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	
 	public void loadData() {
 		mContacts = new HashMap<String, ContactEntry>();
+		mHistory = new HashMap<String, List<HistoryEntry>>();
+
 		mContacts.put("anna_weber", new ContactEntry("Anna", "Weber"));
 		mContacts.put("benjamin_steinacher", new ContactEntry("Benjamin", "Steinacher"));
 		mContacts.put("rainer_lankmayr", new ContactEntry("Rainer", "Lankmayr"));
 
-		mHistory = new HashMap<String, List<HistoryEntry>>();
 		List<HistoryEntry> historyList1 = new ArrayList<HistoryEntry>();
 		historyList1.add(new HistoryEntry(new Date(0), createLocation(46.1, 15.4), 0, ""));
 		historyList1.add(new HistoryEntry(new Date((long)1401216003*1000), createLocation(47.1, 15.4), 0, ""));
@@ -311,7 +312,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 	public void selectItem(int position, String argument) {
 
-		Fragment fragment = GMapFragment.newInstance(position);
+		Fragment fragment = new Fragment();
 
 		mCurrentPosition = position;
 
