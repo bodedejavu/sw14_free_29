@@ -8,9 +8,12 @@ import java.util.List;
 import at.software2014.trackme.*;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
 import com.robotium.solo.Solo;
 
 import android.app.Fragment;
+import android.os.Handler;
+import android.os.Looper;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.ListView;
@@ -200,11 +203,128 @@ public class MainActivityTest extends
 				.toString());
 	}
 
-	public void testGoogleMap() {
+	public void testGoogleMapsCreated() {
 		Fragment fragment = mSolo.getCurrentActivity().getFragmentManager().findFragmentById(at.software2014.trackme.R.id.content_frame);
 		GMapFragment gMapFragment = (GMapFragment)fragment;
+
 		GoogleMap googleMap = gMapFragment.getMap();
 
 		assertNotNull(googleMap);
+	}
+
+	public void testGoogleMapsIsMyLocationEnabled() {
+		Fragment fragment = mSolo.getCurrentActivity().getFragmentManager().findFragmentById(at.software2014.trackme.R.id.content_frame);
+		GMapFragment gMapFragment = (GMapFragment)fragment;
+
+		Handler handler = new Handler(Looper.getMainLooper());
+
+		handler.post(new Runnable() {
+			private GMapFragment gMapFragment;
+
+			@Override
+			public void run() {
+				GoogleMap googleMap = gMapFragment.getMap();
+
+				assertEquals(true, googleMap.isMyLocationEnabled());
+			}
+
+			private Runnable init(GMapFragment gMapFragment) {
+				this.gMapFragment = gMapFragment;
+				return this;
+			}
+
+		}.init(gMapFragment));
+
+	}
+
+	public void testGoogleMapsMarkersCreateDelete() {
+		Fragment fragment = mSolo.getCurrentActivity().getFragmentManager().findFragmentById(at.software2014.trackme.R.id.content_frame);
+		GMapFragment gMapFragment = (GMapFragment)fragment;
+
+		Handler handler = new Handler(Looper.getMainLooper());
+
+		handler.post(new Runnable() {
+			private GMapFragment gMapFragment;
+
+			@Override
+			public void run() {
+				assertEquals(3, gMapFragment.getMarkersCount());
+				gMapFragment.clearMarkers();
+				assertEquals(0, gMapFragment.getMarkersCount());
+				gMapFragment.createMarkers(true);
+				assertEquals(3, gMapFragment.getMarkersCount());
+			}
+
+			private Runnable init(GMapFragment gMapFragment) {
+				this.gMapFragment = gMapFragment;
+				return this;
+			}
+
+		}.init(gMapFragment));
+
+	}
+
+	public void testGoogleMapsMarkersTitle() {
+		Fragment fragment = mSolo.getCurrentActivity().getFragmentManager().findFragmentById(at.software2014.trackme.R.id.content_frame);
+		GMapFragment gMapFragment = (GMapFragment)fragment;
+
+		Handler handler = new Handler(Looper.getMainLooper());
+
+		handler.post(new Runnable() {
+			private GMapFragment gMapFragment;
+
+			@Override
+			public void run() {
+				HashMap<String, Marker> markers = gMapFragment.getMarkers();
+				Marker marker;
+
+				marker = markers.get("rainer_lankmayr");
+				assertEquals("Rainer Lankmayr", marker.getTitle());
+				marker = markers.get("anna_weber");
+				assertEquals("Anna Weber", marker.getTitle());
+				marker = markers.get("benjamin_steinacher");
+				assertEquals("Benjamin Steinacher", marker.getTitle());
+			}
+
+			private Runnable init(GMapFragment gMapFragment) {
+				this.gMapFragment = gMapFragment;
+				return this;
+			}
+
+		}.init(gMapFragment));
+
+	}
+
+	public void testGoogleMapsMarkersShowInfoWindow() {
+		Fragment fragment = mSolo.getCurrentActivity().getFragmentManager().findFragmentById(at.software2014.trackme.R.id.content_frame);
+		GMapFragment gMapFragment = (GMapFragment)fragment;
+
+		Handler handler = new Handler(Looper.getMainLooper());
+
+		String[] keys = {"rainer_lankmayr", "anna_weber", "benjamin_steinacher"};
+
+		for (int i=0; i<keys.length; i++) {
+
+			handler.post(new Runnable() {
+				private GMapFragment gMapFragment;
+				private String keyName;
+
+				@Override
+				public void run() {
+					HashMap<String, Marker> markers = gMapFragment.getMarkers();
+					Marker marker = markers.get(keyName);
+					marker.showInfoWindow();
+				}
+
+				private Runnable init(GMapFragment gMapFragment, String keyName) {
+					this.gMapFragment = gMapFragment;
+					this.keyName = keyName;
+					return this;
+				}
+
+			}.init(gMapFragment, keys[i]));
+
+			mSolo.sleep(1000);
+		}
 	}
 }

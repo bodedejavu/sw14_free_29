@@ -66,11 +66,23 @@ public class GMapFragment extends MapFragment {
 
     public GMapFragment() {
     }
-    
-    private void createMarkers(Boolean initial) {
+
+    public HashMap<String, Marker> getMarkers() {
+		return mMarkers;
+	}
+
+    public int getMarkersCount() {
+		return mMarkers.size();
+	}
+
+    public void clearMarkers() {
+    	mMarkers.clear();
+    	mGoogleMap.clear();
+    }
+
+    public void createMarkers(Boolean initial) {
     	if (initial == true) {
-    		mGoogleMap.clear();
-        	mMarkers = new HashMap<String, Marker>();
+    		clearMarkers();
     	}
     	Location myLocation = ((MainActivity) getActivity()).getMyLocation();
     	HashMap<String, ContactEntry> contacts = ((MainActivity)getActivity()).getContacts();
@@ -120,6 +132,8 @@ public class GMapFragment extends MapFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
     	super.onActivityCreated(savedInstanceState);
     	
+    	mMarkers = new HashMap<String, Marker>();
+
     	mGoogleMap = getMap();
     	
     	Bundle bundle = this.getArguments();
