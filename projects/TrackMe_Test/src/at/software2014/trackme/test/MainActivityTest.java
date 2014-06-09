@@ -1,5 +1,10 @@
 package at.software2014.trackme.test;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
 import at.software2014.trackme.*;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +29,31 @@ public class MainActivityTest extends
 	protected void setUp() throws Exception {
 		super.setUp();
 		mSolo = new Solo(getInstrumentation(), getActivity());
+		
+		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
+		
+		HashMap<String, ContactEntry> mContacts = new HashMap<String, ContactEntry>();
+		HashMap<String, List<HistoryEntry>> mHistory = new HashMap<String, List<HistoryEntry>>();
+		
+		mContacts.put("anna_weber", new ContactEntry("Anna", "Weber"));
+		mContacts.put("benjamin_steinacher", new ContactEntry("Benjamin", "Steinacher"));
+		mContacts.put("rainer_lankmayr", new ContactEntry("Rainer", "Lankmayr"));
+
+		List<HistoryEntry> historyList1 = new ArrayList<HistoryEntry>();
+		historyList1.add(new HistoryEntry(new Date(0), mainActivity.createLocation(46.1, 15.4), 0, ""));
+		historyList1.add(new HistoryEntry(new Date((long)1401216003*1000), mainActivity.createLocation(47.1, 15.4), 0, ""));
+		mHistory.put("anna_weber", historyList1);
+		List<HistoryEntry> historyList2 = new ArrayList<HistoryEntry>();
+		historyList2.add(new HistoryEntry(new Date(0), mainActivity.createLocation(46.08, 15.35), 0, ""));
+		historyList2.add(new HistoryEntry(new Date((long)1401216000*1000), mainActivity.createLocation(47.08, 15.35), 0, ""));
+		mHistory.put("benjamin_steinacher", historyList2);
+		List<HistoryEntry> historyList3 = new ArrayList<HistoryEntry>();
+		historyList3.add(new HistoryEntry(new Date(0), mainActivity.createLocation(46.0, 15.5), 0, ""));
+		historyList3.add(new HistoryEntry(new Date((long)1401215993*1000), mainActivity.createLocation(47.0, 15.5), 0, ""));
+		mHistory.put("rainer_lankmayr", historyList3);
+		
+		mainActivity.setContacts(mContacts);
+		mainActivity.setHistory(mHistory);
 	}
 
 	@Override
@@ -31,7 +61,30 @@ public class MainActivityTest extends
 		// TODO Auto-generated method stub
 		super.tearDown();
 	}
+	
+	public void testData() {
+		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
+		
+		HashMap<String, ContactEntry> mContacts = new HashMap<String, ContactEntry>();
+		mContacts = mainActivity.getContacts();
+		ContactEntry contactEntry = mContacts.get("rainer_lankmayr");
+		
+		assertEquals(contactEntry.getFirstName(), "Rainer");
+		assertEquals(contactEntry.getSecondName(), "Lankmayr");
+	}
 
+	public void testData2() {
+		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
+		
+		HashMap<String, ContactEntry> mContacts = new HashMap<String, ContactEntry>();
+		mContacts = mainActivity.getContacts();
+		ContactEntry contactEntry = mContacts.get("anna_weber");
+		
+		assertEquals(contactEntry.getFirstName(), "Anna");
+		assertEquals(contactEntry.getSecondName(), "Weber");
+		
+	}
+	
 	public void testActionBar() {
 		mSolo.clickOnView(mSolo.getView("action_refresh"));
 	}

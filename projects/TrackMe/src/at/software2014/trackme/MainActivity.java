@@ -103,7 +103,10 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 		registerUserAtFirstLaunch();
 
-		loadData();
+		mContacts = new HashMap<String, ContactEntry>();
+		mHistory = new HashMap<String, List<HistoryEntry>>();
+		
+		loadDummyData();
 
 		mTitle = getTitle();
 		mMenuTitles = getResources().getStringArray(R.array.navigation_menu);
@@ -278,9 +281,9 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		return location;
 	}
 	
-	public void loadData() {
-		mContacts = new HashMap<String, ContactEntry>();
-		mHistory = new HashMap<String, List<HistoryEntry>>();
+	private void loadDummyData() {
+		mContacts.clear();
+		mHistory.clear();
 
 		mContacts.put("anna_weber", new ContactEntry("Anna", "Weber"));
 		mContacts.put("benjamin_steinacher", new ContactEntry("Benjamin", "Steinacher"));
@@ -304,8 +307,16 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		return mContacts;
 	}
 
+	public void setContacts(HashMap<String, ContactEntry> mContacts) {
+		this.mContacts = mContacts;
+	}
+
 	public HashMap<String, List<HistoryEntry>> getHistory() {
 		return mHistory;
+	}
+	
+	public void setHistory(HashMap<String, List<HistoryEntry>> mHistory) {
+		this.mHistory = mHistory;
 	}
 
 	public boolean deleteContact(String key) {
