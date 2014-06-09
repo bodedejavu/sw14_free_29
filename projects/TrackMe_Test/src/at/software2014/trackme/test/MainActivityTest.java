@@ -2,7 +2,10 @@ package at.software2014.trackme.test;
 
 import at.software2014.trackme.*;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.robotium.solo.Solo;
+
+import android.app.Fragment;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.ListView;
@@ -76,7 +79,7 @@ public class MainActivityTest extends
 		view = lv.getChildAt(0);
 		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.friend_distance);
-		assertEquals("Distance not found", "Unknown", name.getText().toString());
+		assertEquals("Distance not found", "8,53 km", name.getText().toString());
 		view = lv.getChildAt(0);
 		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.friend_timestamp);
@@ -142,5 +145,13 @@ public class MainActivityTest extends
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
 		assertEquals("Name not found", "Benjamin Steinacher", name.getText()
 				.toString());
+	}
+
+	public void testGoogleMap() {
+		Fragment fragment = mSolo.getCurrentActivity().getFragmentManager().findFragmentById(at.software2014.trackme.R.id.content_frame);
+		GMapFragment gMapFragment = (GMapFragment)fragment;
+		GoogleMap googleMap = gMapFragment.getMap();
+
+		assertNotNull(googleMap);
 	}
 }
