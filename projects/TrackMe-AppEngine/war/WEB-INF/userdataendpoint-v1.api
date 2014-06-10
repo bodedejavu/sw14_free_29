@@ -1,0 +1,288 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://myapp.appspot.com/_ah/api",
+  "name" : "userdataendpoint",
+  "version" : "v1",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "https://myapp.appspot.com/_ah/spi",
+    "deadline" : 65.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "ownerDomain" : "software2014.at",
+  "ownerName" : "software2014.at",
+  "packagePath" : "trackme",
+  "methods" : {
+    "userdataendpoint.updateUserData" : {
+      "path" : "userdata",
+      "httpMethod" : "PUT",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.updateUserData",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "userdataendpoint.getUserData" : {
+      "path" : "userdata/{id}",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.getUserData",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "userdataendpoint.listUserData" : {
+      "path" : "userdata",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.listUserData",
+      "request" : {
+        "parameters" : {
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "userdataendpoint.register" : {
+      "path" : "register/{email}/{name}",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.register",
+      "request" : {
+        "parameters" : {
+          "email" : {
+            "type" : "string",
+            "required" : true
+          },
+          "name" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "userdataendpoint.addAllowedUser" : {
+      "path" : "addAllowedUser/{ownEmail}/{userEmail}",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.addAllowedUser",
+      "request" : {
+        "parameters" : {
+          "ownEmail" : {
+            "type" : "string",
+            "required" : true
+          },
+          "userEmail" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "userdataendpoint.insertUserData" : {
+      "path" : "userdata",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.insertUserData",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "userdataendpoint.updateLocation" : {
+      "path" : "void/{email}/{latitude}/{longitude}",
+      "httpMethod" : "PUT",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.updateLocation",
+      "request" : {
+        "parameters" : {
+          "email" : {
+            "type" : "string",
+            "required" : true
+          },
+          "latitude" : {
+            "type" : "double",
+            "required" : true
+          },
+          "longitude" : {
+            "type" : "double",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "userdataendpoint.removeUserData" : {
+      "path" : "userdata/{id}",
+      "httpMethod" : "DELETE",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.removeUserData",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "UserData" : {
+        "id" : "UserData",
+        "type" : "object",
+        "properties" : {
+          "userEmail" : {
+            "type" : "string"
+          },
+          "userName" : {
+            "type" : "string"
+          },
+          "allowedUsersForQuerying" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "userLastLatitude" : {
+            "type" : "number"
+          },
+          "userLastLongitude" : {
+            "type" : "number"
+          }
+        }
+      },
+      "CollectionResponse_UserData" : {
+        "id" : "CollectionResponse_UserData",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "UserData"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "methods" : {
+      "at.software2014.trackme.UserDataEndpoint.updateUserData" : {
+        "request" : {
+          "$ref" : "UserData"
+        },
+        "response" : {
+          "$ref" : "UserData"
+        }
+      },
+      "at.software2014.trackme.UserDataEndpoint.getUserData" : {
+        "response" : {
+          "$ref" : "UserData"
+        }
+      },
+      "at.software2014.trackme.UserDataEndpoint.listUserData" : {
+        "response" : {
+          "$ref" : "CollectionResponse_UserData"
+        }
+      },
+      "at.software2014.trackme.UserDataEndpoint.register" : {
+      },
+      "at.software2014.trackme.UserDataEndpoint.addAllowedUser" : {
+      },
+      "at.software2014.trackme.UserDataEndpoint.insertUserData" : {
+        "request" : {
+          "$ref" : "UserData"
+        },
+        "response" : {
+          "$ref" : "UserData"
+        }
+      },
+      "at.software2014.trackme.UserDataEndpoint.updateLocation" : {
+      },
+      "at.software2014.trackme.UserDataEndpoint.removeUserData" : {
+      }
+    }
+  }
+}

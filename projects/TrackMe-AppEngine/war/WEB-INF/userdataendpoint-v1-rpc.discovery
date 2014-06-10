@@ -1,0 +1,273 @@
+{
+ "kind": "discovery#rpcDescription",
+ "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/-b3Ve92z3rEf30aq3_Hy5dXrk0Q\"",
+ "discoveryVersion": "v1",
+ "id": "userdataendpoint:v1",
+ "name": "userdataendpoint",
+ "version": "v1",
+ "description": "This is an API",
+ "ownerDomain": "software2014.at",
+ "ownerName": "software2014.at",
+ "packagePath": "trackme",
+ "icons": {
+  "x16": "http://www.google.com/images/icons/product/search-16.gif",
+  "x32": "http://www.google.com/images/icons/product/search-32.gif"
+ },
+ "protocol": "rpc",
+ "rootUrl": "https://myapp.appspot.com/_ah/api/",
+ "rpcUrl": "https://myapp.appspot.com/_ah/api/rpc",
+ "rpcPath": "/_ah/api/rpc",
+ "parameters": {
+  "alt": {
+   "type": "string",
+   "description": "Data format for the response.",
+   "default": "json",
+   "enum": [
+    "json"
+   ],
+   "enumDescriptions": [
+    "Responses with Content-Type of application/json"
+   ],
+   "location": "query"
+  },
+  "fields": {
+   "type": "string",
+   "description": "Selector specifying which fields to include in a partial response.",
+   "location": "query"
+  },
+  "key": {
+   "type": "string",
+   "description": "API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.",
+   "location": "query"
+  },
+  "oauth_token": {
+   "type": "string",
+   "description": "OAuth 2.0 token for the current user.",
+   "location": "query"
+  },
+  "prettyPrint": {
+   "type": "boolean",
+   "description": "Returns response with indentations and line breaks.",
+   "default": "true",
+   "location": "query"
+  },
+  "quotaUser": {
+   "type": "string",
+   "description": "Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. Overrides userIp if both are provided.",
+   "location": "query"
+  },
+  "userIp": {
+   "type": "string",
+   "description": "IP address of the site where the request originates. Use this if you want to enforce per-user limits.",
+   "location": "query"
+  }
+ },
+ "auth": {
+  "oauth2": {
+   "scopes": {
+    "https://www.googleapis.com/auth/userinfo.email": {
+     "description": "View your email address"
+    }
+   }
+  }
+ },
+ "schemas": {
+  "CollectionResponse_UserData": {
+   "id": "CollectionResponse_UserData",
+   "type": "object",
+   "properties": {
+    "items": {
+     "type": "array",
+     "items": {
+      "$ref": "UserData"
+     }
+    },
+    "nextPageToken": {
+     "type": "string"
+    }
+   }
+  },
+  "UserData": {
+   "id": "UserData",
+   "type": "object",
+   "properties": {
+    "allowedUsersForQuerying": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "userEmail": {
+     "type": "string"
+    },
+    "userLastLatitude": {
+     "type": "number",
+     "format": "double"
+    },
+    "userLastLongitude": {
+     "type": "number",
+     "format": "double"
+    },
+    "userName": {
+     "type": "string"
+    }
+   }
+  }
+ },
+ "methods": {
+  "userdataendpoint.addAllowedUser": {
+   "id": "userdataendpoint.addAllowedUser",
+   "parameters": {
+    "ownEmail": {
+     "type": "string",
+     "required": true
+    },
+    "userEmail": {
+     "type": "string",
+     "required": true
+    }
+   },
+   "parameterOrder": [
+    "ownEmail",
+    "userEmail"
+   ],
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "userdataendpoint.getUserData": {
+   "id": "userdataendpoint.getUserData",
+   "allowGet": true,
+   "parameters": {
+    "id": {
+     "type": "string",
+     "required": true
+    }
+   },
+   "parameterOrder": [
+    "id"
+   ],
+   "returns": {
+    "$ref": "UserData"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "userdataendpoint.insertUserData": {
+   "id": "userdataendpoint.insertUserData",
+   "parameters": {
+    "resource": {
+     "$ref": "UserData"
+    }
+   },
+   "parameterOrder": [
+    "resource"
+   ],
+   "returns": {
+    "$ref": "UserData"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "userdataendpoint.listUserData": {
+   "id": "userdataendpoint.listUserData",
+   "allowGet": true,
+   "parameters": {
+    "cursor": {
+     "type": "string"
+    },
+    "limit": {
+     "type": "integer",
+     "format": "int32"
+    }
+   },
+   "returns": {
+    "$ref": "CollectionResponse_UserData"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "userdataendpoint.register": {
+   "id": "userdataendpoint.register",
+   "parameters": {
+    "email": {
+     "type": "string",
+     "required": true
+    },
+    "name": {
+     "type": "string",
+     "required": true
+    }
+   },
+   "parameterOrder": [
+    "email",
+    "name"
+   ],
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "userdataendpoint.removeUserData": {
+   "id": "userdataendpoint.removeUserData",
+   "parameters": {
+    "id": {
+     "type": "string",
+     "required": true
+    }
+   },
+   "parameterOrder": [
+    "id"
+   ],
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "userdataendpoint.updateLocation": {
+   "id": "userdataendpoint.updateLocation",
+   "parameters": {
+    "email": {
+     "type": "string",
+     "required": true
+    },
+    "latitude": {
+     "type": "number",
+     "required": true,
+     "format": "double"
+    },
+    "longitude": {
+     "type": "number",
+     "required": true,
+     "format": "double"
+    }
+   },
+   "parameterOrder": [
+    "email",
+    "latitude",
+    "longitude"
+   ],
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "userdataendpoint.updateUserData": {
+   "id": "userdataendpoint.updateUserData",
+   "parameters": {
+    "resource": {
+     "$ref": "UserData"
+    }
+   },
+   "parameterOrder": [
+    "resource"
+   ],
+   "returns": {
+    "$ref": "UserData"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  }
+ }
+}
