@@ -300,4 +300,12 @@ public class MainActivityTest extends
 			mSolo.sleep(1000);
 		}
 	}
+
+	public void testGoogleMapsZoomButtons() {
+		mSolo.clickOnView(mSolo.getView("action_zoom_to_me"));
+		mSolo.sleep(2000);
+		mSolo.clickOnView(mSolo.getView("action_zoom_to_friends"));
+		mSolo.sleep(2000);
+	}
+
 }
