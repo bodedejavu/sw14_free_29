@@ -1,7 +1,7 @@
 package at.software2014.trackme;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -115,17 +115,16 @@ public class ContactsFragment extends Fragment {
 	}
 
 	private void setListData() {
-		HashMap<String, ContactEntry> contacts = ((MainActivity) getActivity())
-				.getContacts();
+		List<ContactEntry> contacts = ((MainActivity)getActivity()).getContacts();
 		ArrayList<ContactsItem> contactsList = new ArrayList<ContactsItem>();
-
-		for (String key : contacts.keySet()) {
-			ContactEntry contactEntry = contacts.get(key);
-			String name = contactEntry.getFirstName() + " "
-					+ contactEntry.getSecondName();
-			contactsList.add(new ContactsItem(key, name));
-		}
-
+		
+    	for (int i=0; i < contacts.size(); i++) {
+    		ContactEntry contactEntry = contacts.get(i);    		
+    		String eMail = contactEntry.geteMail();
+    		String name = contactEntry.getName();
+    		contactsList.add(new ContactsItem(eMail, name));
+    	}
+    	
 		mListAdapter.setData(contactsList);
 	}
 

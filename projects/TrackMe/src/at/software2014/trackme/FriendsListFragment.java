@@ -1,14 +1,12 @@
 package at.software2014.trackme;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,34 +80,21 @@ public class FriendsListFragment extends Fragment {
 	}
 
 	private void setListData() {
-		Location myLocation = ((MainActivity) getActivity()).getMyLocation();
-		HashMap<String, ContactEntry> contacts = ((MainActivity) getActivity())
-				.getContacts();
-		HashMap<String, List<HistoryEntry>> history = ((MainActivity) getActivity())
-				.getHistory();
-
 		friendslist.clear();
-
-		for (String key : contacts.keySet()) {
-			ContactEntry contactEntry = contacts.get(key);
-			HistoryEntry historyEntry = history.get(key).get(
-					history.get(key).size() - 1);
-
-			String name = contactEntry.getFirstName() + " "
-					+ contactEntry.getSecondName();
-			String date = DateFormat.getDateFormat(getActivity()).format(
-					historyEntry.getTimestamp());
-			String time = DateFormat.getTimeFormat(getActivity()).format(
-					historyEntry.getTimestamp());
-			String timestamp = date + ", " + time;
-			String distance = getResources().getString(
-					R.string.information_unknown);
-			if (myLocation != null) {
-				distance = historyEntry.getDistanceFormatted(myLocation);
-			}
+		Location myLocation = ((MainActivity) getActivity()).getMyLocation();
+		List<ContactEntry> contacts = ((MainActivity)getActivity()).getContacts();
+				
+    	for (int i=0; i<contacts.size(); i++) {
+    		ContactEntry contactEntry = contacts.get(i);
+    		
+    		String eMail = contactEntry.geteMail();
+    		String name = contactEntry.getName();
+    		String timestamp = contactEntry.getTimestampFormatted(getActivity());
+    		String distance = contactEntry.getDistanceFormatted(myLocation, getResources().getString(R.string.information_unknown));
+    		
 			friendslist
-					.add(new FriendsListItem(key, name, distance, timestamp));
-		}
+			.add(new FriendsListItem(eMail, name, distance, timestamp));
+    	}
 		
 		mListAdapter.setData(friendslist);
 		//mListAdapter.notifyDataSetChanged();
