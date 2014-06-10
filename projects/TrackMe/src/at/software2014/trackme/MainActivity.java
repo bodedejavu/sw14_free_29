@@ -41,8 +41,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -89,8 +87,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	private String[] mMenuTitles;
 	private int mCurrentPosition = 0;
 
-	private HashMap<String, ContactEntry> mContacts;
-	private HashMap<String, List<HistoryEntry>> mHistory;
+	private List<ContactEntry> mContacts;
 
 	LocationClient mLocationClient;
 	LocationRequest mLocationRequest;
@@ -103,9 +100,8 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 		registerUserAtFirstLaunch();
 
-		mContacts = new HashMap<String, ContactEntry>();
-		mHistory = new HashMap<String, List<HistoryEntry>>();
-		
+		mContacts = new ArrayList<ContactEntry>();
+
 		loadDummyData();
 
 		mTitle = getTitle();
@@ -165,25 +161,16 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		
 		return emailAddress;
 	}
-	
-	private String capitalizeString(String string) {
-		String stringCapitalized = Character.toUpperCase(string.charAt(0)) + string.substring(1);
-		return stringCapitalized;
-	}
-	
-	private List<String> extractNamesFromEmailAddress(String emailAddress) {
-		List<String> names = new ArrayList<String>();
-		
-		String[] parts = emailAddress.split("@");
+
+	private String extractNameFromeMail(String eMail) {
+		String name = "";
+
+		String[] parts = eMail.split("@");
 		if (parts.length > 0) {
-			String[] parts2 = parts[0].split("\\.");
-			
-			for (int i=0; i<parts2.length; i++) {
-				names.add(capitalizeString(parts2[i]));
-			}
+			name = parts[0];
 		}
 		
-		return names;
+		return name;
 	}
 
 	@Override
@@ -203,24 +190,14 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 			editor.putBoolean(FIRST_LAUNCH, false);
 
 			// get user info and save it to shared prefs
-			String emailAddress = getEmailAddress();
-			List<String> names = extractNamesFromEmailAddress(emailAddress);
-			String firstName = "";
-			String secondName = "";
-			if (names.size() > 0) {
-				firstName = names.get(0);
-			}
-			if (names.size() > 1) {
-				secondName = names.get(1);
-			}
-			
-			Log.d("INFORMATION", emailAddress);
-			Log.d("INFORMATION", firstName);
-			Log.d("INFORMATION", secondName);
-			
-			editor.putString("email", emailAddress);
-			editor.putString("first_name", firstName);
-			editor.putString("second_name", secondName);
+			String eMail = getEmailAddress();
+			String name  = extractNameFromeMail(eMail);
+
+			Log.d("INFORMATION", eMail);
+			Log.d("INFORMATION", name);
+
+			editor.putString("email", eMail);
+			editor.putString("first_name", name);
 
 			editor.commit();
 		}
@@ -274,57 +251,39 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		}
 	}
 
-	public Location createLocation(double latitude, double longitude) {
-		Location location = new Location("dummy");
-		location.setLatitude(latitude);
-		location.setLongitude(longitude);
-		return location;
-	}
-	
 	private void loadDummyData() {
 		mContacts.clear();
-		mHistory.clear();
-
-		mContacts.put("anna_weber", new ContactEntry("Anna", "Weber"));
-		mContacts.put("benjamin_steinacher", new ContactEntry("Benjamin", "Steinacher"));
-		mContacts.put("rainer_lankmayr", new ContactEntry("Rainer", "Lankmayr"));
-
-		List<HistoryEntry> historyList1 = new ArrayList<HistoryEntry>();
-		historyList1.add(new HistoryEntry(new Date(0), createLocation(46.1, 15.4), 0, ""));
-		historyList1.add(new HistoryEntry(new Date((long)1401216003*1000), createLocation(47.1, 15.4), 0, ""));
-		mHistory.put("anna_weber", historyList1);
-		List<HistoryEntry> historyList2 = new ArrayList<HistoryEntry>();
-		historyList2.add(new HistoryEntry(new Date(0), createLocation(46.08, 15.35), 0, ""));
-		historyList2.add(new HistoryEntry(new Date((long)1401216000*1000), createLocation(47.08, 15.35), 0, ""));
-		mHistory.put("benjamin_steinacher", historyList2);
-		List<HistoryEntry> historyList3 = new ArrayList<HistoryEntry>();
-		historyList3.add(new HistoryEntry(new Date(0), createLocation(46.0, 15.5), 0, ""));
-		historyList3.add(new HistoryEntry(new Date((long)1401215993*1000), createLocation(47.0, 15.5), 0, ""));
-		mHistory.put("rainer_lankmayr", historyList3);
+		
+		mContacts.add(new ContactEntry("Anna Weber", "anna.weber@gmail.com", (long)1401216003*1000, 47.1, 15.4));
+		mContacts.add(new ContactEntry("Rainer Lankmayr", "rainer.lankmayr@gmail.com", (long)1401215993*1000, 47.0, 15.5));
+		mContacts.add(new ContactEntry("Benjamin Steinacher", "benjamin.steinacher@gmail.com", (long)1401216000*1000, 47.08, 15.35));
 	}
 
-	public HashMap<String, ContactEntry> getContacts() {
+	public ContactEntry getContactByEMail(String eMail) {
+		ContactEntry contactEntry = null;
+		
+		for (int i=0; i<mContacts.size(); i++) {
+			if (mContacts.get(i).geteMail() == eMail) {
+				contactEntry = mContacts.get(i);
+				break;
+			}
+		}
+		
+		return contactEntry;
+	}
+	
+	public List<ContactEntry> getContacts() {
 		return mContacts;
 	}
 
-	public void setContacts(HashMap<String, ContactEntry> mContacts) {
+	public void setContacts(List<ContactEntry> mContacts) {
 		this.mContacts = mContacts;
 	}
 
-	public HashMap<String, List<HistoryEntry>> getHistory() {
-		return mHistory;
-	}
-	
-	public void setHistory(HashMap<String, List<HistoryEntry>> mHistory) {
-		this.mHistory = mHistory;
-	}
-
-	public boolean deleteContact(String key) {
-		if(mHistory.containsKey(key)) {
-			mHistory.remove(key);
-		}
-		if(mContacts.containsKey(key)) {
-			mContacts.remove(key);
+	public boolean deleteContact(String eMail) {
+		ContactEntry contactEntry = getContactByEMail(eMail);
+		if(contactEntry != null) {
+			mContacts.remove(eMail);
 			return true;
 		}
 		return false;

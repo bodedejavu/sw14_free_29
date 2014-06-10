@@ -1,7 +1,6 @@
 package at.software2014.trackme.test;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,31 +31,16 @@ public class MainActivityTest extends
 	protected void setUp() throws Exception {
 		super.setUp();
 		mSolo = new Solo(getInstrumentation(), getActivity());
-		
-		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
-		
-		HashMap<String, ContactEntry> mContacts = new HashMap<String, ContactEntry>();
-		HashMap<String, List<HistoryEntry>> mHistory = new HashMap<String, List<HistoryEntry>>();
-		
-		mContacts.put("anna_weber", new ContactEntry("Anna", "Weber"));
-		mContacts.put("benjamin_steinacher", new ContactEntry("Benjamin", "Steinacher"));
-		mContacts.put("rainer_lankmayr", new ContactEntry("Rainer", "Lankmayr"));
 
-		List<HistoryEntry> historyList1 = new ArrayList<HistoryEntry>();
-		historyList1.add(new HistoryEntry(new Date(0), mainActivity.createLocation(46.1, 15.4), 0, ""));
-		historyList1.add(new HistoryEntry(new Date((long)1401216003*1000), mainActivity.createLocation(47.1, 15.4), 0, ""));
-		mHistory.put("anna_weber", historyList1);
-		List<HistoryEntry> historyList2 = new ArrayList<HistoryEntry>();
-		historyList2.add(new HistoryEntry(new Date(0), mainActivity.createLocation(46.08, 15.35), 0, ""));
-		historyList2.add(new HistoryEntry(new Date((long)1401216000*1000), mainActivity.createLocation(47.08, 15.35), 0, ""));
-		mHistory.put("benjamin_steinacher", historyList2);
-		List<HistoryEntry> historyList3 = new ArrayList<HistoryEntry>();
-		historyList3.add(new HistoryEntry(new Date(0), mainActivity.createLocation(46.0, 15.5), 0, ""));
-		historyList3.add(new HistoryEntry(new Date((long)1401215993*1000), mainActivity.createLocation(47.0, 15.5), 0, ""));
-		mHistory.put("rainer_lankmayr", historyList3);
-		
+		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
+
+		List<ContactEntry> mContacts = new ArrayList<ContactEntry>();
+
+		mContacts.add(new ContactEntry("Anna Weber", "anna.weber@gmail.com", (long)1401216003*1000, 47.1, 15.4));
+		mContacts.add(new ContactEntry("Rainer Lankmayr", "rainer.lankmayr@gmail.com", (long)1401215993*1000, 47.0, 15.5));
+		mContacts.add(new ContactEntry("Benjamin Steinacher", "benjamin.steinacher@gmail.com", (long)1401216000*1000, 47.08, 15.35));
+
 		mainActivity.setContacts(mContacts);
-		mainActivity.setHistory(mHistory);
 	}
 
 	@Override
@@ -68,24 +52,17 @@ public class MainActivityTest extends
 	public void testData() {
 		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
 		
-		HashMap<String, ContactEntry> mContacts = new HashMap<String, ContactEntry>();
-		mContacts = mainActivity.getContacts();
-		ContactEntry contactEntry = mContacts.get("rainer_lankmayr");
+		ContactEntry contactEntry = mainActivity.getContactByEMail("rainer.lankmayr@gmail.com");
 		
-		assertEquals(contactEntry.getFirstName(), "Rainer");
-		assertEquals(contactEntry.getSecondName(), "Lankmayr");
+		assertEquals(contactEntry.getName(), "Rainer Lankmayr");
 	}
 
 	public void testData2() {
 		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
 		
-		HashMap<String, ContactEntry> mContacts = new HashMap<String, ContactEntry>();
-		mContacts = mainActivity.getContacts();
-		ContactEntry contactEntry = mContacts.get("anna_weber");
+		ContactEntry contactEntry = mainActivity.getContactByEMail("anna.weber@gmail.com");
 		
-		assertEquals(contactEntry.getFirstName(), "Anna");
-		assertEquals(contactEntry.getSecondName(), "Weber");
-		
+		assertEquals(contactEntry.getName(), "Anna Weber");
 	}
 	
 	public void testActionBar() {
@@ -274,11 +251,11 @@ public class MainActivityTest extends
 				HashMap<String, Marker> markers = gMapFragment.getMarkers();
 				Marker marker;
 
-				marker = markers.get("rainer_lankmayr");
+				marker = markers.get("rainer.lankmayr@gmail.com");
 				assertEquals("Rainer Lankmayr", marker.getTitle());
-				marker = markers.get("anna_weber");
+				marker = markers.get("anna.weber@gmail.com");
 				assertEquals("Anna Weber", marker.getTitle());
-				marker = markers.get("benjamin_steinacher");
+				marker = markers.get("benjamin.steinacher@gmail.com");
 				assertEquals("Benjamin Steinacher", marker.getTitle());
 			}
 
@@ -297,7 +274,7 @@ public class MainActivityTest extends
 
 		Handler handler = new Handler(Looper.getMainLooper());
 
-		String[] keys = {"rainer_lankmayr", "anna_weber", "benjamin_steinacher"};
+		String[] keys = {"rainer.lankmayr@gmail.com", "anna.weber@gmail.com", "benjamin.steinacher@gmail.com"};
 
 		for (int i=0; i<keys.length; i++) {
 
