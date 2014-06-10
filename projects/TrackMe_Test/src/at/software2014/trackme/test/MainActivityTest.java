@@ -134,10 +134,6 @@ public class MainActivityTest extends
 				.toString());
 		view = lv.getChildAt(0);
 		name = (TextView) view
-				.findViewById(at.software2014.trackme.R.id.friend_distance);
-		assertEquals("Distance not found", "8,53 km", name.getText().toString());
-		view = lv.getChildAt(0);
-		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.friend_timestamp);
 		assertEquals("Timestamp not found", "27.05.2014, 20:39", name.getText()
 				.toString());

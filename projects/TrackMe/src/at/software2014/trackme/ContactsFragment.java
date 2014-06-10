@@ -3,9 +3,15 @@ package at.software2014.trackme;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +26,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class ContactsFragment extends Fragment {
 
 	private static final String ARG_SECTION_NUMBER = "section_number";
+	private static final int CONTACT_PICKER_RESULT = 1001;
 	private ListView mListView;
 	private ContactsAdapter mListAdapter;
 	private ContactsItem mSelectedItem;
@@ -121,10 +128,74 @@ public class ContactsFragment extends Fragment {
 
 	private void addContact() {
 		// TODO: implement addContact
+//		launchContactPicker();
 		Toast.makeText(getActivity(), R.string.action_contact_add_successful,
 				Toast.LENGTH_LONG).show();
 	}
 
+	private void launchContactPicker() {
+		Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+				ContactsContract.Contacts.CONTENT_URI);
+		startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+            case CONTACT_PICKER_RESULT:
+                // handle contact results
+//            	Bundle extras = data.getExtras();
+//            	Set keys = extras.keySet();
+//            	Iterator iterate = keys.iterator();
+//            	while (iterate.hasNext()) {
+//            	    String key = iterate.next();
+////            	    Log.v(DEBUG_TAG, key + "[" + extras.get(key) + "]");
+//            	}
+            	Uri result = data.getData();
+//            	Log.v(DEBUG_TAG, "Got a result: "
+//            	    + result.toString());
+            	// get the contact id from the URI
+            	String id = result.getLastPathSegment();
+            	
+            	Cursor cursor = getActivity().getContentResolver().query(
+            	        Email.CONTENT_URI, null,
+            	        Email.CONTACT_ID + "=?",
+            	        new String[]{id}, null);
+            	
+            	cursor.moveToFirst();
+            	String columns[] = cursor.getColumnNames();
+            	for (String column : columns) {
+            	    int index = cursor.getColumnIndex(column);
+//            	    Log.v(DEBUG_TAG, "Column: " + column + " == ["
+//            	            + cursor.getString(index) + "]");
+            	}
+            	
+            	String email = "";
+            	
+            	if (cursor.moveToFirst()) {
+            	    int emailIdx = cursor.getColumnIndex(Email.DATA);
+            	    email = cursor.getString(emailIdx);
+//            	    Log.v(DEBUG_TAG, "Got email: " + email);
+            	}
+            	
+            	if (email.length() == 0) {
+            	    Toast.makeText(getActivity(), "No email found for contact.", Toast.LENGTH_LONG).show();
+            	}
+            	
+            	Toast.makeText(getActivity(),
+						id,
+						Toast.LENGTH_LONG).show();
+            	
+                break;
+            	
+            }
+        } else {
+            // gracefully handle failure
+//            Log.w(DEBUG_TAG, "Warning: activity result not ok");
+        }
+    }
+	
 	private void deleteContact() {
 
 		if (mSelectedItem != null) {

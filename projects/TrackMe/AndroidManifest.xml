@@ -24,7 +24,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-
+    
+    <!--  contact permissions -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    
     <!-- OpenGL ES version 2 -->
     <uses-feature
         android:glEsVersion="0x0002000"
