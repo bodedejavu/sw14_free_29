@@ -1,13 +1,13 @@
 {
   "files": [
     {
-      "downloadUrl": "/downloads/messageEndpoint/v1/20140610062424/java/1.16.0-rc/software2014.at-messageEndpoint-v1-20140610062424-java-1.16.0-rc-sources.jar", 
-      "path": "software2014.at-messageEndpoint-v1-20140610062424-java-1.16.0-rc-sources.jar", 
+      "downloadUrl": "/downloads/messageEndpoint/v1/20140610063916/java/1.16.0-rc/software2014.at-messageEndpoint-v1-20140610063916-java-1.16.0-rc-sources.jar", 
+      "path": "software2014.at-messageEndpoint-v1-20140610063916-java-1.16.0-rc-sources.jar", 
       "type": "source", 
-      "timestamp": "2014-06-10 06:24"
+      "timestamp": "2014-06-10 06:39"
     }, 
     {
-      "path": "software2014.at-messageEndpoint-v1-20140610062424-java-1.16.0-rc.jar.properties", 
+      "path": "software2014.at-messageEndpoint-v1-20140610063916-java-1.16.0-rc.jar.properties", 
       "type": "android.properties"
     }
   ], 
@@ -702,5 +702,5 @@
   "packagePath": "trackme", 
   "language_version": "1.16.0-rc", 
   "id": "messageEndpoint:v1", 
-  "revision": 20140610062424
+  "revision": 20140610063916
 }

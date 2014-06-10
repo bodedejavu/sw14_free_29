@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/-b3Ve92z3rEf30aq3_Hy5dXrk0Q\"",
+ "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/59Ssr-oM2H-z4FOuzQtNNnfecEQ\"",
  "discoveryVersion": "v1",
  "id": "userdataendpoint:v1",
  "name": "userdataendpoint",
@@ -14,8 +14,8 @@
   "x32": "http://www.google.com/images/icons/product/search-32.gif"
  },
  "protocol": "rpc",
- "rootUrl": "https://myapp.appspot.com/_ah/api/",
- "rpcUrl": "https://myapp.appspot.com/_ah/api/rpc",
+ "rootUrl": "https://chrome-lambda-586.appspot.com/_ah/api/",
+ "rpcUrl": "https://chrome-lambda-586.appspot.com/_ah/api/rpc",
  "rpcPath": "/_ah/api/rpc",
  "parameters": {
   "alt": {
