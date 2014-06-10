@@ -71,6 +71,10 @@ public class ContactEntry {
 	}
 	
 	public String getDistanceFormatted(Location locationTo, String textUnknown) {
+		if(locationTo == null){
+			return textUnknown;
+		}
+		
 		String distanceFormatted;
 		
 		Location location = new Location("dummy");
@@ -87,6 +91,5 @@ public class ContactEntry {
 		}
 		
 		return distanceFormatted;
-	}
-	
+	}	
 }
