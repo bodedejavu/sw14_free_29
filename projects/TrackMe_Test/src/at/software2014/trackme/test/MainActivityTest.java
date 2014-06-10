@@ -107,12 +107,12 @@ public class MainActivityTest extends
 		view = lv.getChildAt(0);
 		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.friend_name);
-		assertEquals("Name not found", "Rainer Lankmayr", name.getText()
+		assertEquals("Name not found", "Anna Weber", name.getText()
 				.toString());
 		view = lv.getChildAt(0);
 		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.friend_timestamp);
-		assertEquals("Timestamp not found", "27.05.2014, 20:39", name.getText()
+		assertEquals("Timestamp not found", "27.05.2014, 20:40", name.getText()
 				.toString());
 	}
 
@@ -128,17 +128,17 @@ public class MainActivityTest extends
 		view = lv.getChildAt(0);
 		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
-		assertEquals("Name not found", "Rainer Lankmayr", name.getText()
+		assertEquals("Name not found", "Anna Weber", name.getText()
 				.toString());
 		view = lv.getChildAt(1);
 		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
-		assertEquals("Name not found", "Benjamin Steinacher", name.getText()
+		assertEquals("Name not found", "Rainer Lankmayr", name.getText()
 				.toString());
 		view = lv.getChildAt(2);
 		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
-		assertEquals("Name not found", "Anna Weber", name.getText().toString());
+		assertEquals("Name not found", "Benjamin Steinacher", name.getText().toString());
 	}
 
 	public void testContacts_ActionAddContactButton() {
@@ -172,7 +172,7 @@ public class MainActivityTest extends
 		View view = lv.getChildAt(0);
 		TextView name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
-		assertEquals("Name not found", "Benjamin Steinacher", name.getText()
+		assertEquals("Name not found", "Anna Weber", name.getText()
 				.toString());
 	}
 
