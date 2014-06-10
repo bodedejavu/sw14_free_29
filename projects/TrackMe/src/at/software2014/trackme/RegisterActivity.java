@@ -2,11 +2,9 @@ package at.software2014.trackme;
 
 import java.io.IOException;
 
-import at.joanneum.gcmtest.messageEndpoint.MessageEndpoint;
-import at.joanneum.gcmtest.messageEndpoint.model.CollectionResponseMessageData;
-import at.joanneum.gcmtest.messageEndpoint.model.MessageData;
-import at.software2014.trackme.R;
-
+import at.software2014.trackme.messageEndpoint.MessageEndpoint;
+import at.software2014.trackme.messageEndpoint.model.CollectionResponseMessageData;
+import at.software2014.trackme.messageEndpoint.model.MessageData;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -21,7 +19,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.TextView;
@@ -68,14 +65,8 @@ public class RegisterActivity extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_register);
-    
-    
 
     Button regButton = (Button) findViewById(R.id.regButton);
-    
-   
-    
-    
 
     registerListener = new OnTouchListener() {
       @Override
@@ -143,36 +134,6 @@ public class RegisterActivity extends Activity {
         });
 
     messageEndpoint = CloudEndpointUtils.updateBuilder(endpointBuilder).build();
-    
-    
-    Button testSendButton = (Button)findViewById(R.id.testSendButton); 
-    testSendButton.setOnClickListener(new OnClickListener() {
-		
-		@Override
-		public void onClick(View v) {
-				
-				new AsyncTask<Void, Void, Void>()
-				{
-
-					@Override
-					protected Void doInBackground(Void... params) {
-						try {
-							messageEndpoint.sendMessage("hello second device").execute();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						return null;
-					}
-					
-					
-				}.execute((Void)null); 
-
-			
-		}
-	});
-    
-    
   }
 
   @Override

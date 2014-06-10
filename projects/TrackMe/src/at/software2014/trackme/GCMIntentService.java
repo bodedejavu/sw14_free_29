@@ -14,8 +14,8 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.jackson.JacksonFactory;
 
-import at.joanneum.gcmtest.deviceinfoendpoint.Deviceinfoendpoint;
-import at.joanneum.gcmtest.deviceinfoendpoint.model.DeviceInfo;
+import at.software2014.trackme.deviceinfoendpoint.Deviceinfoendpoint;
+import at.software2014.trackme.deviceinfoendpoint.model.DeviceInfo;
 
 /**
  * This class is started up as a service of the Android application. It listens
