@@ -10,6 +10,7 @@ import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -19,6 +20,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 
 /**
@@ -83,6 +87,7 @@ public class GMapFragment extends MapFragment {
     	if (initial == true) {
     		clearMarkers();
     	}
+    	
     	Location myLocation = ((MainActivity) getActivity()).getMyLocation();
     	List<ContactEntry> contacts = ((MainActivity)getActivity()).getContacts();
     	
@@ -100,7 +105,7 @@ public class GMapFragment extends MapFragment {
         	Marker marker;
         	
         	if (initial == true) {
-        		marker = mGoogleMap.addMarker(new MarkerOptions().position(position).title(title).snippet(snippet));
+        		marker = mGoogleMap.addMarker(new MarkerOptions().position(position).title(title).snippet(snippet).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         		mMarkers.put(eMail, marker);
         	}
         	else {
@@ -117,9 +122,87 @@ public class GMapFragment extends MapFragment {
     	}
     }
     
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.g_map, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// handle item selection
+		switch (item.getItemId()) {
+		case R.id.action_zoom_to_friends:
+			zoomToFriends(true);
+			return true;
+		case R.id.action_zoom_to_me:
+			zoomToMe(true);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	public void zoomToMe(boolean animate) {
+		CameraUpdate cu = null;
+		
+		Location myLocation = ((MainActivity) getActivity()).getMyLocation();
+		if (myLocation != null) {
+			cu = CameraUpdateFactory.newLatLngZoom(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), mDefaultZoomLevel);
+		}
+		
+		changeCameraPosition(cu, animate);
+	}
+	
+	public void zoomToFriend(boolean animate) {
+		CameraUpdate cu = null;
+		
+		Marker marker = mMarkers.get(mContactKey);
+		marker.showInfoWindow();
+		mActiveMarker = marker;
+
+		cu = CameraUpdateFactory.newLatLngZoom(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude), mDefaultZoomLevel);
+		
+		changeCameraPosition(cu, animate);
+	}
+	
+	public void zoomToFriends(boolean animate) {
+		CameraUpdate cu = null;
+		
+		LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+		Location myLocation = ((MainActivity) getActivity()).getMyLocation();
+		if (myLocation != null) {
+			builder.include(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
+		}
+
+		for (String key: mMarkers.keySet()) {
+			Marker marker = mMarkers.get(key);
+			builder.include(marker.getPosition());
+		}
+
+		LatLngBounds bounds = builder.build();
+
+		cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+		
+		changeCameraPosition(cu, animate);
+	}
+	
+	private void changeCameraPosition(CameraUpdate cu, boolean animate) {
+		if (cu != null) {
+			if (animate == false) {
+				mGoogleMap.moveCamera(cu);	
+			}
+			else {
+				mGoogleMap.animateCamera(cu);
+			}
+		}		
+	}
+	
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
     	super.onActivityCreated(savedInstanceState);
+    	
+    	setHasOptionsMenu(true);
     	
     	mMarkers = new HashMap<String, Marker>();
 
@@ -134,76 +217,47 @@ public class GMapFragment extends MapFragment {
     	
         mGoogleMap.setInfoWindowAdapter(new GInfoWindowAdapter(getActivity()));
         mGoogleMap.setMyLocationEnabled(true);
-        
+        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+
         mGoogleMap.setOnMapClickListener(new OnMapClickListener() {
-			
+
 			@Override
 			public void onMapClick(LatLng arg0) {
 				mActiveMarker = null;
 			}
 		});
-        
+
         mGoogleMap.setOnMarkerClickListener(new OnMarkerClickListener() {
-			
+
 			@Override
 			public boolean onMarkerClick(Marker marker) {
 				mActiveMarker = marker;
 				return false;
 			}
 		});
-        
+
         mGoogleMap.setOnCameraChangeListener(new OnCameraChangeListener() {
-        	
+
         	@Override
         	public void onCameraChange(CameraPosition arg0) {
         		Log.d("INFORMATION", "Camera changed");
 
-        		CameraUpdate cu = null;
-
         		if (mMarkers.size() == 0) {
-        			Location myLocation = ((MainActivity) getActivity()).getMyLocation();
-        			if (myLocation != null) {
-        				cu = CameraUpdateFactory.newLatLngZoom(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), mDefaultZoomLevel);
-        			}
+        			zoomToMe(false);
         		}
-        		else {
-            		if (mContactKey != "") {
-            			Marker marker = mMarkers.get(mContactKey);
-    					marker.showInfoWindow();
-    					mActiveMarker = marker;
+        		else if (mContactKey != "") {
+            		zoomToFriend(false);
+            	}
+            	else {
+           			zoomToFriends(false);
+           		}
 
-    					cu = CameraUpdateFactory.newLatLngZoom(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude), mDefaultZoomLevel);
-            		}
-            		else {
-            			LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-            			Location myLocation = ((MainActivity) getActivity()).getMyLocation();
-            			if (myLocation != null) {
-            				builder.include(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
-            			}
-
-            			for (String key: mMarkers.keySet()) {
-            				Marker marker = mMarkers.get(key);
-            				builder.include(marker.getPosition());
-                		}
-
-                		LatLngBounds bounds = builder.build();
-
-                		cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-
-            		}
-
-        		}
-
-    		if (cu != null) {
-    			mGoogleMap.moveCamera(cu);
-    			mGoogleMap.setOnCameraChangeListener(null);
-    		}
+        		mGoogleMap.setOnCameraChangeListener(null);
 			}
 		});
 
     }
-    
+
     public void refreshLocation() {
     	createMarkers(false);	
     }

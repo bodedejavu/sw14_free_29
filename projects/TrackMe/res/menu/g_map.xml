@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="at.software2014.trackme.StartActivity" >
+    
+    <item
+        android:id="@+id/action_zoom_to_friends"
+        android:showAsAction="always|withText"
+        android:title="@string/action_zoom_to_friends"
+        android:icon="@drawable/ic_action_group"/>
+    
+    <item
+        android:id="@+id/action_zoom_to_me"
+        android:showAsAction="always|withText"
+        android:title="@string/action_zoom_to_me"
+        android:icon="@drawable/ic_action_location_found"/>
+    
+</menu>
