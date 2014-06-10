@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/59Ssr-oM2H-z4FOuzQtNNnfecEQ\"",
+ "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/l3x4QVR7o8TPm2V4IV9eORm-PFs\"",
  "discoveryVersion": "v1",
  "id": "userdataendpoint:v1",
  "name": "userdataendpoint",
@@ -99,6 +99,10 @@
       "type": "string"
      }
     },
+    "timestamp": {
+     "type": "string",
+     "format": "int64"
+    },
     "userEmail": {
      "type": "string"
     },
@@ -112,6 +116,18 @@
     },
     "userName": {
      "type": "string"
+    }
+   }
+  },
+  "UserDataCollection": {
+   "id": "UserDataCollection",
+   "type": "object",
+   "properties": {
+    "items": {
+     "type": "array",
+     "items": {
+      "$ref": "UserData"
+     }
     }
    }
   }
@@ -157,6 +173,28 @@
    ],
    "response": {
     "$ref": "UserData"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "getUserDataList": {
+   "id": "userdataendpoint.getUserDataList",
+   "path": "userdatacollection/{emailList}",
+   "httpMethod": "GET",
+   "parameters": {
+    "emailList": {
+     "type": "string",
+     "required": true,
+     "repeated": true,
+     "location": "path"
+    }
+   },
+   "parameterOrder": [
+    "emailList"
+   ],
+   "response": {
+    "$ref": "UserDataCollection"
    },
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"
@@ -243,7 +281,7 @@
   },
   "updateLocation": {
    "id": "userdataendpoint.updateLocation",
-   "path": "void/{email}/{latitude}/{longitude}",
+   "path": "void/{email}/{latitude}/{longitude}/{timestamp}",
    "httpMethod": "PUT",
    "parameters": {
     "email": {
@@ -262,12 +300,19 @@
      "required": true,
      "format": "double",
      "location": "path"
+    },
+    "timestamp": {
+     "type": "string",
+     "required": true,
+     "format": "int64",
+     "location": "path"
     }
    },
    "parameterOrder": [
     "email",
     "latitude",
-    "longitude"
+    "longitude",
+    "timestamp"
    ],
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"

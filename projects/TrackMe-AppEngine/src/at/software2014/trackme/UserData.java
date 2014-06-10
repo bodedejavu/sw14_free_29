@@ -17,6 +17,7 @@ public class UserData {
 	
 	private double userLastLatitude; 
 	private double userLastLongitude; 
+	private long timestamp;
 	
 
 	public double getUserLastLatitude() {
@@ -57,6 +58,14 @@ public class UserData {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 	
 //	public void setLastLocation(UserLocation location)

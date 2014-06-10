@@ -19,7 +19,7 @@
 package at.software2014.trackme.userdataendpoint.model;
 
 /**
- * Model definition for CollectionResponseUserData.
+ * Model definition for UserDataCollection.
  *
  * <p> This is the Java data model class that specifies how to parse/serialize into the JSON that is
  * transmitted over HTTP when working with the userdataendpoint. For a detailed explanation see:
@@ -29,7 +29,7 @@ package at.software2014.trackme.userdataendpoint.model;
  * @author Google, Inc.
  */
 @SuppressWarnings("javadoc")
-public final class CollectionResponseUserData extends com.google.api.client.json.GenericJson {
+public final class UserDataCollection extends com.google.api.client.json.GenericJson {
 
   /**
    * The value may be {@code null}.
@@ -44,12 +44,6 @@ public final class CollectionResponseUserData extends com.google.api.client.json
   }
 
   /**
-   * The value may be {@code null}.
-   */
-  @com.google.api.client.util.Key
-  private java.lang.String nextPageToken;
-
-  /**
    * @return value or {@code null} for none
    */
   public java.util.List<UserData> getItems() {
@@ -59,34 +53,19 @@ public final class CollectionResponseUserData extends com.google.api.client.json
   /**
    * @param items items or {@code null} for none
    */
-  public CollectionResponseUserData setItems(java.util.List<UserData> items) {
+  public UserDataCollection setItems(java.util.List<UserData> items) {
     this.items = items;
     return this;
   }
 
-  /**
-   * @return value or {@code null} for none
-   */
-  public java.lang.String getNextPageToken() {
-    return nextPageToken;
-  }
-
-  /**
-   * @param nextPageToken nextPageToken or {@code null} for none
-   */
-  public CollectionResponseUserData setNextPageToken(java.lang.String nextPageToken) {
-    this.nextPageToken = nextPageToken;
-    return this;
+  @Override
+  public UserDataCollection set(String fieldName, Object value) {
+    return (UserDataCollection) super.set(fieldName, value);
   }
 
   @Override
-  public CollectionResponseUserData set(String fieldName, Object value) {
-    return (CollectionResponseUserData) super.set(fieldName, value);
-  }
-
-  @Override
-  public CollectionResponseUserData clone() {
-    return (CollectionResponseUserData) super.clone();
+  public UserDataCollection clone() {
+    return (UserDataCollection) super.clone();
   }
 
 }

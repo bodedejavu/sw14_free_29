@@ -156,7 +156,7 @@
       }
     },
     "userdataendpoint.updateLocation" : {
-      "path" : "void/{email}/{latitude}/{longitude}",
+      "path" : "void/{email}/{latitude}/{longitude}/{timestamp}",
       "httpMethod" : "PUT",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
@@ -176,12 +176,38 @@
           "longitude" : {
             "type" : "double",
             "required" : true
+          },
+          "timestamp" : {
+            "type" : "int64",
+            "required" : true
           }
         },
         "body" : "empty"
       },
       "response" : {
         "body" : "empty"
+      }
+    },
+    "userdataendpoint.getUserDataList" : {
+      "path" : "userdatacollection/{emailList}",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.getUserDataList",
+      "request" : {
+        "parameters" : {
+          "emailList" : {
+            "repeated" : true,
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
       }
     },
     "userdataendpoint.removeUserData" : {
@@ -229,6 +255,10 @@
           },
           "userLastLongitude" : {
             "type" : "number"
+          },
+          "timestamp" : {
+            "type" : "string",
+            "format" : "int64"
           }
         }
       },
@@ -244,6 +274,18 @@
           },
           "nextPageToken" : {
             "type" : "string"
+          }
+        }
+      },
+      "UserDataCollection" : {
+        "id" : "UserDataCollection",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "UserData"
+            }
           }
         }
       }
@@ -280,6 +322,11 @@
         }
       },
       "at.software2014.trackme.UserDataEndpoint.updateLocation" : {
+      },
+      "at.software2014.trackme.UserDataEndpoint.getUserDataList" : {
+        "response" : {
+          "$ref" : "UserDataCollection"
+        }
       },
       "at.software2014.trackme.UserDataEndpoint.removeUserData" : {
       }

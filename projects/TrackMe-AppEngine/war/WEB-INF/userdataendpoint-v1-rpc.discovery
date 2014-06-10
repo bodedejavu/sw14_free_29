@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/59Ssr-oM2H-z4FOuzQtNNnfecEQ\"",
+ "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/l3x4QVR7o8TPm2V4IV9eORm-PFs\"",
  "discoveryVersion": "v1",
  "id": "userdataendpoint:v1",
  "name": "userdataendpoint",
@@ -97,6 +97,10 @@
       "type": "string"
      }
     },
+    "timestamp": {
+     "type": "string",
+     "format": "int64"
+    },
     "userEmail": {
      "type": "string"
     },
@@ -110,6 +114,18 @@
     },
     "userName": {
      "type": "string"
+    }
+   }
+  },
+  "UserDataCollection": {
+   "id": "UserDataCollection",
+   "type": "object",
+   "properties": {
+    "items": {
+     "type": "array",
+     "items": {
+      "$ref": "UserData"
+     }
     }
    }
   }
@@ -149,6 +165,26 @@
    ],
    "returns": {
     "$ref": "UserData"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "userdataendpoint.getUserDataList": {
+   "id": "userdataendpoint.getUserDataList",
+   "allowGet": true,
+   "parameters": {
+    "emailList": {
+     "type": "string",
+     "required": true,
+     "repeated": true
+    }
+   },
+   "parameterOrder": [
+    "emailList"
+   ],
+   "returns": {
+    "$ref": "UserDataCollection"
    },
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"
@@ -241,12 +277,18 @@
      "type": "number",
      "required": true,
      "format": "double"
+    },
+    "timestamp": {
+     "type": "string",
+     "required": true,
+     "format": "int64"
     }
    },
    "parameterOrder": [
     "email",
     "latitude",
-    "longitude"
+    "longitude",
+    "timestamp"
    ],
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"

@@ -164,8 +164,7 @@ public class UserDataEndpoint {
 	
 	@ApiMethod(name = "register")
 	public void register(@Named("email") String email, @Named("name") String name) {
-		
-		
+			
 		UserData ud = getUserData(email); 
 		if(ud == null)
 		{
@@ -182,7 +181,7 @@ public class UserDataEndpoint {
 	}
 	
 	@ApiMethod(name = "updateLocation")
-	public void updateLocation(@Named("email")String email, @Named("latitude") double latitude, @Named("longitude") double longitude)
+	public void updateLocation(@Named("email")String email, @Named("latitude") double latitude, @Named("longitude") double longitude, @Named("timestamp") long timestamp)
 	{
 		EntityManager mgr = getEntityManager();
 		UserData ud = mgr.find(UserData.class, email);
@@ -194,6 +193,7 @@ public class UserDataEndpoint {
 		{
 			ud.setUserLastLatitude(latitude);
 			ud.setUserLastLongitude(longitude);
+			ud.setTimestamp(timestamp);
 			mgr.merge(ud); 
 			System.out.println("User " + email + " got his/her location updated."); 
 		}
@@ -218,13 +218,25 @@ public class UserDataEndpoint {
 		
 		mgr.merge(ownUd);
 		mgr.close();
-		
-		
-		
-		
-		
 	}
 	
+	
+	@ApiMethod(name = "getUserDataList")
+	public List<UserData> getUserDataList(@Named("emailList") List<String> emailList) {
+		
+		EntityManager mgr = getEntityManager();
+		List<UserData> userDataList = new ArrayList<UserData>();
+		
+		for(String email : emailList) {
+			
+			UserData ud = mgr.find(UserData.class, email);
+			userDataList.add(ud);
+		}
+		
+		mgr.close();
+		return userDataList;
+		
+	}
 	
 
 	private static EntityManager getEntityManager() {
