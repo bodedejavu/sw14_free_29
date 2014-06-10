@@ -18,7 +18,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.location.Location;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 
 
@@ -85,37 +84,27 @@ public class GMapFragment extends MapFragment {
     		clearMarkers();
     	}
     	Location myLocation = ((MainActivity) getActivity()).getMyLocation();
-    	HashMap<String, ContactEntry> contacts = ((MainActivity)getActivity()).getContacts();
-    	HashMap<String, List<HistoryEntry>> history = ((MainActivity)getActivity()).getHistory();
+    	List<ContactEntry> contacts = ((MainActivity)getActivity()).getContacts();
     	
-    	for (String key: contacts.keySet()) {
-    		ContactEntry contactEntry = contacts.get(key);
-    		HistoryEntry historyEntry = history.get(key).get(history.get(key).size() - 1);
+    	for (int i=0; i<contacts.size(); i++) {
+    		ContactEntry contactEntry = contacts.get(i);
     		
-    		String title = contactEntry.getFirstName() + " " + contactEntry.getSecondName();
+    		String eMail = contactEntry.geteMail();
+    		String title = contactEntry.getName();
+    		LatLng position = new LatLng(contactEntry.getLatitude(), contactEntry.getLongitude());
+    		String timestamp = contactEntry.getTimestampFormatted(getActivity());
+    		String distance = contactEntry.getDistanceFormatted(myLocation, getResources().getString(R.string.information_unknown));
     		
-    		LatLng position = new LatLng(historyEntry.getLocation().getLatitude(), historyEntry.getLocation().getLongitude());
-    		
-    		//String timestamp = historyEntry.getTimestamp().toLocaleString();
-    		String date = DateFormat.getDateFormat(getActivity()).format(historyEntry.getTimestamp());
-    		String time = DateFormat.getTimeFormat(getActivity()).format(historyEntry.getTimestamp());
-    		String timestamp = date + ", " + time;
-    		
-    		String distance = getResources().getString(R.string.information_unknown);
-        	if (myLocation != null) {
-        		distance = historyEntry.getDistanceFormatted(myLocation);
-        	}
-        	
         	String snippet = getResources().getString(R.string.information_distance) + ": " + distance + "\n" + getResources().getString(R.string.information_last_update) + ": " + timestamp;
         	
         	Marker marker;
         	
         	if (initial == true) {
         		marker = mGoogleMap.addMarker(new MarkerOptions().position(position).title(title).snippet(snippet));
-        		mMarkers.put(key, marker);
+        		mMarkers.put(eMail, marker);
         	}
         	else {
-        		marker = mMarkers.get(key);
+        		marker = mMarkers.get(eMail);
         		marker.setTitle(title);
         		marker.setPosition(position);
         		marker.setSnippet(snippet);

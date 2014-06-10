@@ -70,7 +70,7 @@ public class ContactEntry {
 		return timestampFormatted;
 	}
 	
-	public String getDistanceFormmated(Location locationTo, String textUnknown) {
+	public String getDistanceFormatted(Location locationTo, String textUnknown) {
 		String distanceFormatted;
 		
 		Location location = new Location("dummy");
