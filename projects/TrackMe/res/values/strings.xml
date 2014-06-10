@@ -17,6 +17,15 @@
     <string name="play_services_available">Google Play Service is available</string>
     
     <string name="action_refresh">Refresh</string>
+    <string name="action_contact_invite">Invite</string>
+    <string name="action_contact_invite_no_email">No email-address found</string>
+    <string name="action_contact_invite_cp_fail">Extracting e-mail information failed</string>
+    <string name="action_contact_invite_suject">TrackMe Invitation</string>
+    <string name="action_contact_invite_text">
+        Hello,\n
+        i am inviting you to download and test the APP TrackMe.\n
+        link
+        </string>
     <string name="action_contact_add">Add</string>
     <string name="action_contact_add_successful">Contact added</string>
     <string name="action_contact_delete">Delete</string>

@@ -100,6 +100,9 @@ public class ContactsFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// handle item selection
 		switch (item.getItemId()) {
+		case R.id.action_contact_invite:
+			inviteContact();
+			return true;
 		case R.id.action_contact_add:
 			addContact();
 			return true;
@@ -126,76 +129,65 @@ public class ContactsFragment extends Fragment {
 		mListAdapter.setData(contactsList);
 	}
 
-	private void addContact() {
-		// TODO: implement addContact
-//		launchContactPicker();
-		Toast.makeText(getActivity(), R.string.action_contact_add_successful,
-				Toast.LENGTH_LONG).show();
-	}
-
-	private void launchContactPicker() {
+	private void inviteContact() {
 		Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
 				ContactsContract.Contacts.CONTENT_URI);
 		startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
 	}
-	
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-            case CONTACT_PICKER_RESULT:
-                // handle contact results
-//            	Bundle extras = data.getExtras();
-//            	Set keys = extras.keySet();
-//            	Iterator iterate = keys.iterator();
-//            	while (iterate.hasNext()) {
-//            	    String key = iterate.next();
-////            	    Log.v(DEBUG_TAG, key + "[" + extras.get(key) + "]");
-//            	}
-            	Uri result = data.getData();
-//            	Log.v(DEBUG_TAG, "Got a result: "
-//            	    + result.toString());
-            	// get the contact id from the URI
-            	String id = result.getLastPathSegment();
-            	
-            	Cursor cursor = getActivity().getContentResolver().query(
-            	        Email.CONTENT_URI, null,
-            	        Email.CONTACT_ID + "=?",
-            	        new String[]{id}, null);
-            	
-            	cursor.moveToFirst();
-            	String columns[] = cursor.getColumnNames();
-            	for (String column : columns) {
-            	    int index = cursor.getColumnIndex(column);
-//            	    Log.v(DEBUG_TAG, "Column: " + column + " == ["
-//            	            + cursor.getString(index) + "]");
-            	}
-            	
-            	String email = "";
-            	
-            	if (cursor.moveToFirst()) {
-            	    int emailIdx = cursor.getColumnIndex(Email.DATA);
-            	    email = cursor.getString(emailIdx);
-//            	    Log.v(DEBUG_TAG, "Got email: " + email);
-            	}
-            	
-            	if (email.length() == 0) {
-            	    Toast.makeText(getActivity(), "No email found for contact.", Toast.LENGTH_LONG).show();
-            	}
-            	
-            	Toast.makeText(getActivity(),
-						id,
-						Toast.LENGTH_LONG).show();
-            	
-                break;
-            	
-            }
-        } else {
-            // gracefully handle failure
-//            Log.w(DEBUG_TAG, "Warning: activity result not ok");
-        }
-    }
-	
+		if (resultCode == Activity.RESULT_OK) {
+			switch (requestCode) {
+			case CONTACT_PICKER_RESULT:
+				String email = "";
+				Uri result = data.getData();
+				String id = result.getLastPathSegment();
+
+				Cursor cursor = getActivity().getContentResolver().query(
+						Email.CONTENT_URI, null, Email.CONTACT_ID + "=?",
+						new String[] { id }, null);
+				// cursor.moveToFirst();
+
+				if (cursor.moveToFirst()) {
+					int emailIdx = cursor.getColumnIndex(Email.DATA);
+					email = cursor.getString(emailIdx);
+				}
+
+				if (email.length() == 0) {
+					Toast.makeText(getActivity(),
+							R.string.action_contact_invite_no_email,
+							Toast.LENGTH_LONG).show();
+				} else {
+					openInvitationMail(email);
+				}
+				break;
+			}
+		} else {
+			Toast.makeText(getActivity(),
+					R.string.action_contact_invite_cp_fail, Toast.LENGTH_LONG)
+					.show();
+		}
+	}
+
+	private void openInvitationMail(String mailAddress) {
+		String aEmailList[] = { mailAddress };
+		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+		emailIntent.setType("plain/text");
+		emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, aEmailList);
+		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+				"TrackMe Invitation");
+		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,
+				"Hello,\n i am inviting you to download and test the APP TrackMe.\n link");
+		startActivity(emailIntent);
+	}
+
+	private void addContact() {
+		// TODO: implement addContact
+		Toast.makeText(getActivity(), R.string.action_contact_add_successful,
+				Toast.LENGTH_LONG).show();
+	}
+
 	private void deleteContact() {
 
 		if (mSelectedItem != null) {
