@@ -20,6 +20,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -91,6 +92,9 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	LocationClient mLocationClient;
 	LocationRequest mLocationRequest;
 	Location mMyLocation = null;
+	PendingIntent mLocationUpdatesPendingIntent;
+	
+	private String mEMail = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +146,13 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		mLocationRequest.setFastestInterval(1000);
 
 		mLocationClient = new LocationClient(this, this, this);
+		
+		SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
+		mEMail = prefs.getString("email", "");
+		
+		Intent intent = new Intent(this, LocationUpdatesIntentService.class);
+		intent.putExtra("eMail", mEMail);
+		mLocationUpdatesPendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 	}
 
@@ -173,12 +184,23 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	}
 
 	@Override
+	protected void onPause() {
+		mLocationRequest.setInterval(600000);
+		mLocationRequest.setFastestInterval(300000);
+		
+		super.onPause();
+	}
+	
+	@Override
 	protected void onResume() {
 		super.onResume();
 		
 		if(ConnectionResult.SUCCESS == GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext())) {			
 			selectItem(mCurrentPosition, "");
 		}
+		
+		mLocationRequest.setInterval(5000);
+		mLocationRequest.setFastestInterval(1000);
 	}
 
 	private void registerUserAtFirstLaunch() {
@@ -318,8 +340,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 			fragment = ContactsFragment.newInstance(position);
 			break;
 		case 3:
-			closeConnection();
-			System.exit(0);
+			exitActivity();
 		}
 
 		FragmentManager fragmentManager = getFragmentManager();
@@ -367,20 +388,21 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 	@Override
 	protected void onStop() {
-		closeConnection();
 		super.onStop();
 	}
 
-	public void closeConnection() {
+	public void exitActivity() {
 		if (mLocationClient.isConnected()) {
-			mLocationClient.removeLocationUpdates(this);
+			mLocationClient.removeLocationUpdates(mLocationUpdatesPendingIntent);
 		}
-		mLocationClient.disconnect();		
+		mLocationClient.disconnect();
+		
+		System.exit(0);
 	}
 
 	@Override
 	public void onConnected(Bundle dataBundle) {
-		mLocationClient.requestLocationUpdates(mLocationRequest, this);
+		mLocationClient.requestLocationUpdates(mLocationRequest, mLocationUpdatesPendingIntent);
 	}
 
 	@Override
