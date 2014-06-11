@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 /**
@@ -131,6 +132,10 @@ public class GMapFragment extends MapFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// handle item selection
 		switch (item.getItemId()) {
+		case R.id.action_map_refresh:
+			//TODO refresh data
+			Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_LONG).show();
+			return true;
 		case R.id.action_zoom_to_friends:
 			zoomToFriends(true);
 			return true;

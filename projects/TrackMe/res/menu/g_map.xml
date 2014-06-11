@@ -4,14 +4,20 @@
     tools:context="at.software2014.trackme.StartActivity" >
     
     <item
+        android:id="@+id/action_map_refresh"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/action_refresh"
+        android:icon="@drawable/ic_action_refresh"/>
+        
+    <item
         android:id="@+id/action_zoom_to_friends"
-        android:showAsAction="always|withText"
+        android:showAsAction="ifRoom|withText"
         android:title="@string/action_zoom_to_friends"
         android:icon="@drawable/ic_action_group"/>
     
     <item
         android:id="@+id/action_zoom_to_me"
-        android:showAsAction="always|withText"
+        android:showAsAction="ifRoom|withText"
         android:title="@string/action_zoom_to_me"
         android:icon="@drawable/ic_action_location_found"/>
     

@@ -8,9 +8,13 @@ import android.app.FragmentManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -38,9 +42,10 @@ public class FriendsListFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_friendslist, container,
 				false);
+		setHasOptionsMenu(true);
+		
 		mListAdapter = new FriendsListAdapter(getActivity());
 		friendslist = new ArrayList<FriendsListItem>();
-		setListData();
 		mListView = (ListView) view.findViewById(R.id.friendslist_listView);
 		mListView.setAdapter(mListAdapter);
 
@@ -59,13 +64,9 @@ public class FriendsListFragment extends Fragment {
 	@Override
 	public void onViewCreated(View v, Bundle savedInstanceState) {
 		super.onViewCreated(v, savedInstanceState);
-
-		FragmentManager fragmentManager = getFragmentManager();
-		Fragment fragment = fragmentManager.findFragmentById(R.id.friendslist);
-
-		if (fragment != null) {
-			// TODO: load values?
-		}
+		
+		setListData();		
+		
 	}
 
 	@Override
@@ -76,6 +77,24 @@ public class FriendsListFragment extends Fragment {
 		Fragment fragment = fragmentManager.findFragmentById(R.id.friendslist);
 		if (fragment != null) {
 			fragmentManager.beginTransaction().remove(fragment).commit();
+		}
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.friends, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// handle item selection
+		switch (item.getItemId()) {
+		case R.id.action_friends_refresh:
+			//TODO refresh data
+			Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_LONG).show();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 

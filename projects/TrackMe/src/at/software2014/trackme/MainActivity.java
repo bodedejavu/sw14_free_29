@@ -38,7 +38,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -220,8 +219,10 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-		int[] menuItemIds = {R.id.action_refresh, R.id.action_contact_delete, R.id.action_contact_add,
-				R.id.action_contact_invite, R.id.action_zoom_to_friends, R.id.action_zoom_to_me};
+		int[] menuItemIds = {R.id.action_map_refresh, 
+				R.id.action_friends_refresh, R.id.action_contact_delete, 
+				R.id.action_contact_add, R.id.action_contact_invite, 
+				R.id.action_zoom_to_friends, R.id.action_zoom_to_me};
 
 		for (int i=0; i<menuItemIds.length; i++) {
 			MenuItem menuItem = menu.findItem(menuItemIds[i]);
@@ -241,9 +242,6 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		}
 
 		switch(item.getItemId()) {		
-		case R.id.action_refresh:
-			Toast.makeText(this, "Refresh", Toast.LENGTH_LONG).show();
-			return true;
 		case R.id.action_settings:
 			startActivity(new Intent(MainActivity.this, RegisterActivity.class));
 			return true;

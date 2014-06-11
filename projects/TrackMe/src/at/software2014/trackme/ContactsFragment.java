@@ -50,8 +50,6 @@ public class ContactsFragment extends Fragment {
 		setHasOptionsMenu(true);
 
 		mListAdapter = new ContactsAdapter(getActivity());
-		setListData();
-		// mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		mListView = (ListView) view.findViewById(R.id.contacts_listView);
 		mListView.setAdapter(mListAdapter);
 		mListView.setSelector(R.drawable.selector_background);
@@ -68,13 +66,8 @@ public class ContactsFragment extends Fragment {
 	@Override
 	public void onViewCreated(View v, Bundle savedInstanceState) {
 		super.onViewCreated(v, savedInstanceState);
-
-		FragmentManager fragmentManager = getFragmentManager();
-		Fragment fragment = fragmentManager.findFragmentById(R.id.contacts);
-
-		if (fragment != null) {
-			// TODO: load values?
-		}
+		
+		setListData();
 	}
 
 	@Override
@@ -90,9 +83,6 @@ public class ContactsFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		if (menu != null) {
-			menu.findItem(R.id.action_refresh).setVisible(false);
-		}
 		inflater.inflate(R.menu.contacts, menu);
 	}
 
