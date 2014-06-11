@@ -140,7 +140,7 @@ public class ServerComm {
 	}
 
 
-	public void deleteAllowedUser(final String ownEmail, final String userEmail, final AsyncCallback<Void> onDeleteAllowedUserCompleteCallback) {
+	public void unregisterOwnUser(final String ownEmail, final String userEmail, final AsyncCallback<Void> onDeleteAllowedUserCompleteCallback) {
 
 		new AsyncTask<Void,Void,Void>() {
 			Exception mException; 
@@ -148,7 +148,7 @@ public class ServerComm {
 			@Override
 			protected Void doInBackground(Void... params) {
 				try {
-					deleteAllowedUserSync(ownEmail, userEmail);
+					unregisterOwnUserSync(ownEmail, userEmail);
 				} catch (IOException e) {
 					mException = e; 
 				} 
@@ -169,7 +169,7 @@ public class ServerComm {
 	}
 
 
-	private void deleteAllowedUserSync(String ownEmail, String userEmail) throws IOException {
+	private void unregisterOwnUserSync(String ownEmail, String userEmail) throws IOException {
 
 		UserData ud = mUserEndpoint.getUserData(ownEmail).execute();
 		List<String> users = ud.getAllowedUsersForQuerying();
