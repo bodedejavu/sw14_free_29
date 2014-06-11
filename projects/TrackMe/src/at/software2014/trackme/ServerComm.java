@@ -6,8 +6,8 @@ import java.util.List;
 import android.location.Location;
 import android.os.AsyncTask;
 import at.software2014.trackme.userdataendpoint.Userdataendpoint;
-import at.software2014.trackme.userdataendpoint.Userdataendpoint.GetUserData;
 import at.software2014.trackme.userdataendpoint.model.UserData;
+import at.software2014.trackme.userdataendpoint.model.UserDataCollection;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.http.HttpRequest;
@@ -66,12 +66,12 @@ public class ServerComm {
 		}.execute((Void)null); 
 	}
 
-	
+
 	private void registerOwnUserSync(String email, String name) throws IOException {	
 		mUserEndpoint.register(email, name).execute();		
 	}
 
-	
+
 	public void updateOwnLocation(final String ownEmail, final Location location, final AsyncCallback<Void> onLocationUpdateCompleteCallback) {
 
 		new AsyncTask<Void,Void,Void>() {
@@ -99,13 +99,13 @@ public class ServerComm {
 
 		}.execute((Void)null);
 	}
-	
+
 
 	private void updateOwnLocationSync(String ownEmail, Location location) throws IOException {
 		mUserEndpoint.updateLocation(ownEmail, location.getLatitude(), location.getLongitude(), location.getTime());
 	}
 
-	
+
 	public void addAllowedUser(final String ownEmail, final String userEmail, final AsyncCallback<Void> onAddAllowedUserCompleteCallback) {
 
 		new AsyncTask<Void,Void,Void>() {
@@ -133,13 +133,13 @@ public class ServerComm {
 
 		}.execute((Void)null);
 	}
-	
-	
+
+
 	private void addAllowedUserSync(String ownEmail, String userEmail) throws IOException {
 		mUserEndpoint.addAllowedUser(ownEmail, userEmail);
 	}
-	
-	
+
+
 	public void deleteAllowedUser(final String ownEmail, final String userEmail, final AsyncCallback<Void> onDeleteAllowedUserCompleteCallback) {
 
 		new AsyncTask<Void,Void,Void>() {
@@ -167,27 +167,27 @@ public class ServerComm {
 
 		}.execute((Void)null);
 	}
-	
-	
+
+
 	private void deleteAllowedUserSync(String ownEmail, String userEmail) throws IOException {
-		
+
 		UserData ud = mUserEndpoint.getUserData(ownEmail).execute();
 		List<String> users = ud.getAllowedUsersForQuerying();
-		
+
 		if(users.contains(userEmail)) {			
 			mUserEndpoint.removeUserData(userEmail);
 		}
 	}
 
-	public void getAllowedUsers(final String ownEmail, final AsyncCallback<Void> onGetAllowedUsersCompleteCallback) {
+	public void getAllowedUsers(final String ownEmail, final AsyncCallback<List<UserData>> onGetAllowedUsersCompleteCallback) {
 
-		new AsyncTask<Void,Void,Void>() {
+		new AsyncTask<Void,Void,List<UserData>>() {
 			Exception mException; 
 
 			@Override
-			protected Void doInBackground(Void... params) {
+			protected List<UserData> doInBackground(Void... params) {
 				try {
-					getAllowedUsersSync(ownEmail);
+					return getAllowedUsersSync(ownEmail);
 				} catch (IOException e) {
 					mException = e; 
 				} 
@@ -195,7 +195,7 @@ public class ServerComm {
 			}
 
 			@Override
-			protected void onPostExecute(Void result) {
+			protected void onPostExecute(List<UserData> result) {
 				if(mException == null) {
 					onGetAllowedUsersCompleteCallback.onSuccess(result); 
 				}
@@ -206,34 +206,32 @@ public class ServerComm {
 
 		}.execute((Void)null);
 	}
-	
-	
+
+
 	private List<UserData> getAllowedUsersSync(String ownEmail) throws IOException {
 
 		UserData ud = mUserEndpoint.getUserData(ownEmail).execute();
 		List<String> allowedUsers = ud.getAllowedUsersForQuerying();
 
-		// TODO: fix problem with list
-		// List<UserData> users = mUserEndpoint.getUserDataList(allowedUsers).execute();
-		//return users;
-		return null;
+		UserDataCollection users = mUserEndpoint.getUserDataList(allowedUsers).execute();
+		return users.getItems();
 	}
 
-	
+
 	// TODO: implement query
 	private void getAllRegisteredUsersSync() {
-		
+
 	}
-	
-	
+
+
 	// TODO: needed?
 	private void updateAllowedUsersLocation(List<String> userEmails) {
 
 	}
-	
-	
+
+
 	// TODO: needed?
 	private void updateUserLocation(String userEmail) {
-		
+
 	}
 }
