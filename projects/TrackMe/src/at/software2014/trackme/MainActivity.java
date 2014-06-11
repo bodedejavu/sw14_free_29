@@ -243,7 +243,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 		switch(item.getItemId()) {		
 		case R.id.action_settings:
-			startActivity(new Intent(MainActivity.this, RegisterActivity.class));
+			startActivity(new Intent(MainActivity.this, SimpleCommActivity.class));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

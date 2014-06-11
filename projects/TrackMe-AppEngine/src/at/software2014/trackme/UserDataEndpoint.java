@@ -238,6 +238,14 @@ public class UserDataEndpoint {
 		
 	}
 	
+	@ApiMethod(name = "getRegisteredUsers")
+	public List<UserData> getRegisteredUsers() {
+		EntityManager mgr = getEntityManager();
+		Query query = mgr.createQuery("select from UserData as UserData");
+		List<UserData> users = (List<UserData>) query.getResultList();
+		return users;
+	}
+	
 
 	private static EntityManager getEntityManager() {
 		return EMF.get().createEntityManager();

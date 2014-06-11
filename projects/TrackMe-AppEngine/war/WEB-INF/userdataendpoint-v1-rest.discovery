@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/l3x4QVR7o8TPm2V4IV9eORm-PFs\"",
+ "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/SSFEXwv2q6zvhlNRmEHtq1TI4OI\"",
  "discoveryVersion": "v1",
  "id": "userdataendpoint:v1",
  "name": "userdataendpoint",
@@ -153,6 +153,17 @@
     "ownEmail",
     "userEmail"
    ],
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "getRegisteredUsers": {
+   "id": "userdataendpoint.getRegisteredUsers",
+   "path": "userdatacollection",
+   "httpMethod": "GET",
+   "response": {
+    "$ref": "UserDataCollection"
+   },
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"
    ]

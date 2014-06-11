@@ -217,10 +217,40 @@ public class ServerComm {
 		return users.getItems();
 	}
 
+	
+	public void getRegisteredUsers(final AsyncCallback<List<UserData>> onGetRegisteredUsersCompleteCallback) {
+		
+		new AsyncTask<Void,Void,List<UserData>>() {
+			Exception mException; 
 
-	// TODO: implement query
-	private void getAllRegisteredUsersSync() {
+			@Override
+			protected List<UserData> doInBackground(Void... params) {
+				try {
+					return getAllRegisteredUsersSync();
+				} catch (IOException e) {
+					mException = e; 
+				} 
+				return null;
+			}
 
+			@Override
+			protected void onPostExecute(List<UserData> result) {
+				if(mException == null) {
+					onGetRegisteredUsersCompleteCallback.onSuccess(result); 
+				}
+				else {
+					onGetRegisteredUsersCompleteCallback.onFailure(mException); 
+				}
+			}
+
+		}.execute((Void)null);
+	}
+	
+	
+	private List<UserData> getAllRegisteredUsersSync() throws IOException {
+		
+		List<UserData> registeredUsers = mUserEndpoint.getRegisteredUsers().execute().getItems();
+		return registeredUsers; 
 	}
 
 
