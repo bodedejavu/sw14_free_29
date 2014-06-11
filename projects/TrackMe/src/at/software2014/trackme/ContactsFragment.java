@@ -172,7 +172,10 @@ public class ContactsFragment extends Fragment {
 	}
 
 	private void addContact() {
-		// TODO: implement addContact
+		//TODO implement add
+		Intent intent = new Intent(getActivity(), AddContactActivity.class);
+	    startActivity(intent);
+	    
 		Toast.makeText(getActivity(), R.string.action_contact_add_successful,
 				Toast.LENGTH_LONG).show();
 	}

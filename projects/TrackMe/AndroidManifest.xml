@@ -53,8 +53,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-   
+        </activity>        
+        <activity
+		    android:name="at.software2014.trackme.AddContactActivity">
+		</activity>
 
 
         <!-- Google Play Services -->

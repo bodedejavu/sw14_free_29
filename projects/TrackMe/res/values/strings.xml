@@ -13,6 +13,7 @@
     <string name="action_settings">Test GCM</string>
     <string name="friends">Friends</string>
     <string name="your_contacts">Your Contacts</string>
+    <string name="contacts_add">Registered Users</string>
     <string name="image_description">Image</string>
     <string name="play_services_available">Google Play Service is available</string>
     
