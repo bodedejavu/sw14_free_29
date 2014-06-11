@@ -66,7 +66,7 @@ public class MainActivityTest extends
 	}
 	
 	public void testActionBar() {
-		mSolo.clickOnView(mSolo.getView("action_refresh"));
+		mSolo.clickOnView(mSolo.getView("action_map_refresh"));
 	}
 
 	public void testNavigationDrawer() {
@@ -76,23 +76,13 @@ public class MainActivityTest extends
 	public void testNavigationDrawer_Friends() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(2);
-		mSolo.clickOnText("Friends");
-		// alternative testing, fails occasionally
-		// final String expected = "Friends";
-		// final String actual = mSolo.getView(TextView.class,
-		// 0).getText().toString();
-		// assertEquals(expected, actual);
+		assertTrue(mSolo.waitForText("Friends"));
 	}
 
 	public void testNavigationDrawer_Contacts() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(3);
-		mSolo.clickOnText("Your Contacts");
-		// alternative testing, fails occasionally
-		// final String expected = "Your Contacts";
-		// final String actual = mSolo.getView(TextView.class,
-		// 4).getText().toString();
-		// assertEquals(expected, actual);
+		assertTrue(mSolo.waitForText("Your Contacts"));
 	}
 
 	public void testFriends_ListView() {
@@ -114,6 +104,13 @@ public class MainActivityTest extends
 				.findViewById(at.software2014.trackme.R.id.friend_timestamp);
 		assertEquals("Timestamp not found", "27.05.2014, 20:40", name.getText()
 				.toString());
+	}
+	
+	public void testFriends_Refresh() {
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.clickInList(2);
+		mSolo.clickOnView(mSolo.getView("action_friends_refresh"));
+		assertTrue(this.mSolo.searchText("Refresh"));
 	}
 
 	public void testContacts_ListView() {
@@ -138,7 +135,8 @@ public class MainActivityTest extends
 		view = lv.getChildAt(2);
 		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
-		assertEquals("Name not found", "Benjamin Steinacher", name.getText().toString());
+		assertEquals("Name not found", "Benjamin Steinacher", 
+				name.getText().toString());
 	}
 
 	public void testContacts_ActionAddContactButton() {
