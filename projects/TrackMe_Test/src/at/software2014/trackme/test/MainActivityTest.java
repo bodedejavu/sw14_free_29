@@ -166,6 +166,35 @@ public class MainActivityTest extends
 		assertNotNull(mSolo.getView("contacts_add_listView"));
 		mSolo.clickOnActionBarHomeButton();
 	}
+	
+	public void testContacts_AddContactActivityConfirmationDialog() {
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.clickInList(3);
+		mSolo.clickOnView(mSolo.getView("action_contact_add"));
+		mSolo.clickInList(0);
+		assertTrue(mSolo.waitForText("Confirmation"));
+		assertTrue(mSolo.waitForText("By clicking 'Confirm' you agree"));
+		assertTrue(mSolo.searchButton("Confirm"));
+		assertTrue(mSolo.searchButton("Cancel"));
+	}
+	
+	public void testContacts_AddContactActivitySuccess() {
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.clickInList(3);
+		mSolo.clickOnView(mSolo.getView("action_contact_add"));
+		mSolo.clickInList(0);
+		mSolo.clickOnButton("Confirm");
+		assertTrue(mSolo.waitForText("Adding new contact"));
+	}
+	
+	public void testContacts_AddContactActivityCancel() {
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.clickInList(3);
+		mSolo.clickOnView(mSolo.getView("action_contact_add"));
+		mSolo.clickInList(0);
+		mSolo.clickOnButton("Cancel");
+		assertNotNull(mSolo.getView("contacts_add_title"));
+	}
 
 	public void testContacts_DeleteContactNoSelection() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
