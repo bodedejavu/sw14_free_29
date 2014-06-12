@@ -432,6 +432,9 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 	@Override
 	public void onConnected(Bundle dataBundle) {
+		mMyLocation = mLocationClient.getLastLocation();
+		refreshCurrentFragment();
+
 		mLocationClient.requestLocationUpdates(mLocationRequest, mLocationUpdatesPendingIntent);
 	}
 
@@ -451,18 +454,14 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	public void onLocationChanged(Location location) {
 		Log.d("INFORMATION", "Location changed");
 		mMyLocation = location;
-		refreshLocation();
+		refreshCurrentFragment();
 	}
 	
 	public Location getMyLocation() {
-		if (mMyLocation == null && mLocationClient.isConnected()) {
-			return mLocationClient.getLastLocation();
-		}
-		
 		return mMyLocation;
 	}
 
-	public void refreshLocation() {
+	public void refreshCurrentFragment() {
 		Fragment fragment = getFragmentManager().findFragmentById(R.id.content_frame);
 
 		switch(mCurrentPosition) {
