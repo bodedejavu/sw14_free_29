@@ -247,7 +247,7 @@ public class MainActivityTest extends
 			public void run() {
 				GoogleMap googleMap = gMapFragment.getMap();
 
-				assertEquals(true, googleMap.isMyLocationEnabled());
+				assertEquals(false, googleMap.isMyLocationEnabled());
 			}
 
 			private Runnable init(GMapFragment gMapFragment) {

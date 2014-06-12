@@ -40,7 +40,9 @@ public class GMapFragment extends MapFragment {
 
     private GoogleMap mGoogleMap = null;
     private HashMap<String, Marker> mMarkers;
+    private Marker mMyMarker;
     private Marker mActiveMarker;
+    boolean mMyMarkerVisible = false;
     private String mContactKey = "";
 
     /**
@@ -80,10 +82,19 @@ public class GMapFragment extends MapFragment {
 	}
 
     public void clearMarkers() {
-    	mMarkers.clear();
     	mGoogleMap.clear();
+    	mMarkers.clear();
+    	mMyMarker = null;
+    	mActiveMarker = null;
     }
 
+    private void refreshInfoWindow(Marker marker) {
+		if (mActiveMarker != null && marker.equals(mActiveMarker)) {
+			marker.hideInfoWindow();
+			marker.showInfoWindow();
+		}
+    }
+    
     public void createMarkers(Boolean initial) {
     	if (initial == true) {
     		clearMarkers();
@@ -91,6 +102,23 @@ public class GMapFragment extends MapFragment {
     	
     	Location myLocation = ((MainActivity) getActivity()).getMyLocation();
     	List<ContactEntry> contacts = ((MainActivity)getActivity()).getContacts();
+    	
+    	mMyMarkerVisible = false;
+		LatLng myPosition = new LatLng(0.0, 0.0);
+		if (myLocation != null) {
+			mMyMarkerVisible = true;
+			myPosition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+		}
+    	
+    	if (initial == true) {
+    		String myTitle = getResources().getString(R.string.information_me);
+        	mMyMarker = mGoogleMap.addMarker(new MarkerOptions().position(myPosition).title(myTitle).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+    	}
+    	else {
+    		mMyMarker.setPosition(myPosition);
+    		refreshInfoWindow(mMyMarker);
+    	}
+    	mMyMarker.setVisible(mMyMarkerVisible);
     	
     	for (int i=0; i<contacts.size(); i++) {
     		ContactEntry contactEntry = contacts.get(i);
@@ -115,10 +143,7 @@ public class GMapFragment extends MapFragment {
         		marker.setPosition(position);
         		marker.setSnippet(snippet);
 
-        		if (mActiveMarker != null && marker.equals(mActiveMarker)) {
-        			marker.hideInfoWindow();
-        			marker.showInfoWindow();
-        		}
+        		refreshInfoWindow(marker);
         	}
     	}
     }
@@ -150,9 +175,8 @@ public class GMapFragment extends MapFragment {
 	public void zoomToMe(boolean animate) {
 		CameraUpdate cu = null;
 		
-		Location myLocation = ((MainActivity) getActivity()).getMyLocation();
-		if (myLocation != null) {
-			cu = CameraUpdateFactory.newLatLngZoom(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), mDefaultZoomLevel);
+		if (mMyMarkerVisible == true) {
+			cu = CameraUpdateFactory.newLatLngZoom(new LatLng(mMyMarker.getPosition().latitude, mMyMarker.getPosition().longitude), mDefaultZoomLevel);
 		}
 		
 		changeCameraPosition(cu, animate);
@@ -174,10 +198,9 @@ public class GMapFragment extends MapFragment {
 		CameraUpdate cu = null;
 		
 		LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-		Location myLocation = ((MainActivity) getActivity()).getMyLocation();
-		if (myLocation != null) {
-			builder.include(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
+		
+		if (mMyMarkerVisible == true) {
+			builder.include(mMyMarker.getPosition());
 		}
 
 		for (String key: mMarkers.keySet()) {
@@ -221,8 +244,6 @@ public class GMapFragment extends MapFragment {
     	createMarkers(true);
     	
         mGoogleMap.setInfoWindowAdapter(new GInfoWindowAdapter(getActivity()));
-        mGoogleMap.setMyLocationEnabled(true);
-        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
 
         mGoogleMap.setOnMapClickListener(new OnMapClickListener() {
 

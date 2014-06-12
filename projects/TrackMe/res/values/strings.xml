@@ -36,6 +36,7 @@
     <string name="information_unknown">Unknown</string>
     <string name="information_distance">Distance</string>
     <string name="information_last_update">Last Update</string>
+    <string name="information_me">Me</string>
     
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
