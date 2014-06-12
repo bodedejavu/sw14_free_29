@@ -38,7 +38,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +82,8 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	private static final String FIRST_LAUNCH = "first_launch";
 	private static final String TRACK_ME_PREFERENCES = "TrackMePreferences";
 	private DrawerLayout mDrawerLayout;
+	private LinearLayout mDrawerLinear;
+	private TextView mDrawerText;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
 
@@ -103,6 +107,9 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 		registerUserAtFirstLaunch();
 
+		SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
+		mEMail = prefs.getString("email", "");
+		
 		mContacts = new ArrayList<ContactEntry>();
 
 		loadDummyData();
@@ -110,9 +117,13 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		mTitle = getTitle();
 		mMenuTitles = getResources().getStringArray(R.array.navigation_menu);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		mDrawerLinear = (LinearLayout) findViewById(R.id.drawer_linear_layout);
+		mDrawerText = (TextView) findViewById(R.id.left_drawer_text);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
+		mDrawerText.setText(mEMail);
+		
 		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mMenuTitles));
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -139,16 +150,13 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 				selectItem(0, "");
 			}
 		}
-
+		
 		mLocationRequest = LocationRequest.create();
 		mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 		mLocationRequest.setInterval(5000);
 		mLocationRequest.setFastestInterval(1000);
 
 		mLocationClient = new LocationClient(this, this, this);
-		
-		SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
-		mEMail = prefs.getString("email", "");
 		
 		Intent intent = new Intent(this, LocationUpdatesIntentService.class);
 		intent.putExtra("eMail", mEMail);
@@ -205,7 +213,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 	private void registerUserAtFirstLaunch() {
 
-		if(isFirstAppStart() || true) {
+		if(isFirstAppStart()) {
 			SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
 			Editor editor = prefs.edit();
 			editor.putBoolean(FIRST_LAUNCH, false);
@@ -240,7 +248,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerLinear);
 		int[] menuItemIds = {R.id.action_map_refresh, 
 				R.id.action_friends_refresh, R.id.action_contact_delete, 
 				R.id.action_contact_add, R.id.action_contact_invite, 
@@ -349,7 +357,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		// update selected item and title, then close the drawer
 		mDrawerList.setItemChecked(position, true);
 		setTitle(mMenuTitles[position]);
-		mDrawerLayout.closeDrawer(mDrawerList);
+		mDrawerLayout.closeDrawer(mDrawerLinear);
 	}
 
 	@Override
