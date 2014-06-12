@@ -18,6 +18,8 @@ public class LocationUpdatesIntentService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		
+		Log.d("SERVICE", "LocationUpdateIntentService is beeing called");
+		
 		if (intent.hasExtra(LocationClient.KEY_LOCATION_CHANGED)) {
 			
             Bundle bundle = intent.getExtras();

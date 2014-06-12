@@ -114,6 +114,11 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 		loadDummyData();
 
+		mLocationRequest = LocationRequest.create();
+		mLocationClient = new LocationClient(this, this, this);
+		
+		setLocationPriority(true, false);
+		
 		mTitle = getTitle();
 		mMenuTitles = getResources().getStringArray(R.array.navigation_menu);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -151,13 +156,6 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 			}
 		}
 		
-		mLocationRequest = LocationRequest.create();
-		mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-		mLocationRequest.setInterval(5000);
-		mLocationRequest.setFastestInterval(1000);
-
-		mLocationClient = new LocationClient(this, this, this);
-		
 		Intent intent = new Intent(this, LocationUpdatesIntentService.class);
 		intent.putExtra("eMail", mEMail);
 		mLocationUpdatesPendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -191,10 +189,35 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		return name;
 	}
 
+	private void setLocationPriority(boolean high, boolean refresh) {
+		int priority;
+		int interval;
+		int fastestInterval;
+		
+		if (high == true) {
+			priority = LocationRequest.PRIORITY_HIGH_ACCURACY;
+			interval = 5000;
+			fastestInterval = 1000;
+		}
+		else {
+			priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY;
+			interval = 600000;
+			fastestInterval = 300000;
+		}
+		
+		mLocationRequest.setPriority(priority);
+		mLocationRequest.setInterval(interval);
+		mLocationRequest.setFastestInterval(fastestInterval);
+		
+		if (refresh == true && mLocationClient.isConnected()) {
+			mLocationClient.removeLocationUpdates(mLocationUpdatesPendingIntent);
+			mLocationClient.requestLocationUpdates(mLocationRequest, mLocationUpdatesPendingIntent);
+		}
+	}
+	
 	@Override
 	protected void onPause() {
-		mLocationRequest.setInterval(600000);
-		mLocationRequest.setFastestInterval(300000);
+		setLocationPriority(false, true);
 		
 		super.onPause();
 	}
@@ -207,8 +230,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 			selectItem(mCurrentPosition, "");
 		}
 		
-		mLocationRequest.setInterval(5000);
-		mLocationRequest.setFastestInterval(1000);
+		setLocationPriority(true, true);
 	}
 
 	private void registerUserAtFirstLaunch() {
@@ -433,6 +455,10 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	}
 	
 	public Location getMyLocation() {
+		if (mMyLocation == null && mLocationClient.isConnected()) {
+			return mLocationClient.getLastLocation();
+		}
+		
 		return mMyLocation;
 	}
 
