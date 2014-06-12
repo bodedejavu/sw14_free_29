@@ -36,9 +36,5 @@
         android:paddingRight="@dimen/activity_horizontal_margin" >
     </ListView>
     
-    
-    
-    
-    
 </LinearLayout>    
     

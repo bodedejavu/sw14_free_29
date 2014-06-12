@@ -2,9 +2,6 @@
 <resources>
 
     <string name="app_name">TrackMe</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="drawer_open">Open navigation drawer</string>
@@ -22,13 +19,13 @@
     <string name="action_contact_invite_no_email">No email-address found</string>
     <string name="action_contact_invite_cp_fail">Extracting e-mail information failed</string>
     <string name="action_contact_invite_suject">TrackMe Invitation</string>
-    <string name="action_contact_invite_text">
-        Hello,\n
-        i am inviting you to download and test the APP TrackMe.\n
-        link
-        </string>
+    <string name="action_contact_invite_text">Hello,\n\ni am inviting you to download and test the APP TrackMe.\n\n-link-</string>
     <string name="action_contact_add">Add</string>
+    <string name="action_contact_add_dialog_title">Confirmation</string>
+    <string name="action_contact_add_dialog_text">By clicking \'Confirm\' you agree to add this person to your contacts and to share your location.</string>
+    <string name="action_contact_add_in_progress">Adding new contact</string>
     <string name="action_contact_add_successful">Contact added</string>
+    <string name="action_contact_add_failed">Adding new contact failed</string>
     <string name="action_contact_delete">Delete</string>
     <string name="action_contact_delete_successful">Contact deleted</string>
     <string name="action_contact_delete_failed">Delition failed</string>
@@ -39,6 +36,10 @@
     <string name="information_unknown">Unknown</string>
     <string name="information_distance">Distance</string>
     <string name="information_last_update">Last Update</string>
+    
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="canceled">Canceled</string>
     
     <string-array name="navigation_menu">
         <item>Map</item>
