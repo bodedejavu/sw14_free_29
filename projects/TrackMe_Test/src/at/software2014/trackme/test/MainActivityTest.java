@@ -46,6 +46,7 @@ public class MainActivityTest extends
 	@Override
 	protected void tearDown() throws Exception {
 		// TODO Auto-generated method stub
+		mSolo.finishOpenedActivities();
 		super.tearDown();
 	}
 	
@@ -106,11 +107,19 @@ public class MainActivityTest extends
 				.toString());
 	}
 	
-	public void testFriends_Refresh() {
+	public void testFriends_Layout() {
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.clickInList(2);
+		assertNotNull(mSolo.getView("action_friends_refresh"));
+		assertNotNull(mSolo.getView("friendslist_title"));
+		assertNotNull(mSolo.getView("friendslist_listView"));
+	}
+	
+	public void testFriends_ActionRefresh() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(2);
 		mSolo.clickOnView(mSolo.getView("action_friends_refresh"));
-		assertTrue(this.mSolo.searchText("Refresh"));
+		assertTrue(this.mSolo.waitForText("Refresh"));
 	}
 
 	public void testContacts_ListView() {
@@ -138,27 +147,34 @@ public class MainActivityTest extends
 		assertEquals("Name not found", "Benjamin Steinacher", 
 				name.getText().toString());
 	}
-
-	public void testContacts_ActionAddContactButton() {
+	
+	public void testContacts_Layout() {
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.clickInList(3);
+	    assertNotNull(mSolo.getView("action_contact_invite"));
+	    assertNotNull(mSolo.getView("action_contact_add"));
+	    assertNotNull(mSolo.getView("action_contact_delete"));
+	    assertNotNull(mSolo.getView("contacts_title"));
+	    assertNotNull(mSolo.getView("contacts_listView"));
+	}
+	
+	public void testContacts_AddContactActivity() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(3);
 		mSolo.clickOnView(mSolo.getView("action_contact_add"));
+		assertNotNull(mSolo.getView("contacts_add_title"));
+		assertNotNull(mSolo.getView("contacts_add_listView"));
+		mSolo.clickOnActionBarHomeButton();
 	}
 
-	public void testContacts_ActionDeleteContactButton() {
+	public void testContacts_DeleteContactNoSelection() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(3);
 		mSolo.clickOnView(mSolo.getView("action_contact_delete"));
+		assertTrue(this.mSolo.waitForText("No Contact selected"));
 	}
 
-	public void testContacts_ActionDeleteContactNoSelection() {
-		mSolo.setNavigationDrawer(Solo.OPENED);
-		mSolo.clickInList(3);
-		mSolo.clickOnView(mSolo.getView("action_contact_delete"));
-		assertTrue(this.mSolo.searchText("No Contact selected"));
-	}
-
-	public void testContacts_ActionDeleteContactSuccess() {
+	public void testContacts_DeleteContactSuccess() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(3);
 		mSolo.clickInList(0);
@@ -174,6 +190,12 @@ public class MainActivityTest extends
 				.toString());
 	}
 
+	public void testGoogleMaps_Layout() {
+		 assertNotNull(mSolo.getView("action_map_refresh"));
+		 assertNotNull(mSolo.getView("action_zoom_to_friends"));
+		 assertNotNull(mSolo.getView("action_zoom_to_me"));
+	}
+	
 	public void testGoogleMapsCreated() {
 		Fragment fragment = mSolo.getCurrentActivity().getFragmentManager().findFragmentById(at.software2014.trackme.R.id.content_frame);
 		GMapFragment gMapFragment = (GMapFragment)fragment;
