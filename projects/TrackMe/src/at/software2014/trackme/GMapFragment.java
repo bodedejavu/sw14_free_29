@@ -36,6 +36,7 @@ public class GMapFragment extends MapFragment {
      */
 	private static final String ARG_SECTION_NUMBER = "section_number";
 	private static final String ARG_CONTACT_KEY = "contact_key";
+	private static final String ARG_NAME = "name";
 	private static final float mDefaultZoomLevel = (float)15.0;
 
     private GoogleMap mGoogleMap = null;
@@ -44,27 +45,31 @@ public class GMapFragment extends MapFragment {
     private Marker mActiveMarker;
     boolean mMyMarkerVisible = false;
     private String mContactKey = "";
+    
+    private String mName = ""; 
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static GMapFragment newInstance(int sectionNumber) {
+    public static GMapFragment newInstance(int sectionNumber, String name) {
     	
         GMapFragment fragment = new GMapFragment();
         
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putString(ARG_NAME, name);
         fragment.setArguments(args);
         return fragment;
     }
     
-    public static GMapFragment newInstance(int sectionNumber, String contactKey) {
+    public static GMapFragment newInstance(int sectionNumber, String name, String contactKey) {
     	
         GMapFragment fragment = new GMapFragment();
         
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putString(ARG_NAME, name);
         args.putString(ARG_CONTACT_KEY, contactKey);
         fragment.setArguments(args);
         return fragment;
@@ -95,13 +100,31 @@ public class GMapFragment extends MapFragment {
 		}
     }
     
-    public void createMarkers(Boolean initial) {
-    	if (initial == true) {
-    		clearMarkers();
+    private boolean checkMarkersNeedRecreation(List<ContactEntry> contacts) {
+    	
+    	if (contacts.size() != mMarkers.size() || contacts.size() == 0) {
+    		return true;
     	}
     	
+    	for (int i=0; i<contacts.size(); i++) {
+    		ContactEntry contactEntry = contacts.get(i);
+    		
+    		if (mMarkers.containsKey(contactEntry.geteMail()) == false) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+    
+    public void createMarkers() {
     	Location myLocation = ((MainActivity) getActivity()).getMyLocation();
-    	List<ContactEntry> contacts = ((MainActivity)getActivity()).getContacts();
+    	List<ContactEntry> contacts = ((MainActivity) getActivity()).getContacts();
+    	
+    	boolean recreate = checkMarkersNeedRecreation(contacts);
+    	if (recreate == true) {
+    		clearMarkers();
+    	}
     	
     	mMyMarkerVisible = false;
 		LatLng myPosition = new LatLng(0.0, 0.0);
@@ -110,9 +133,9 @@ public class GMapFragment extends MapFragment {
 			myPosition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 		}
     	
-    	if (initial == true) {
+    	if (recreate == true) {
     		String myTitle = getResources().getString(R.string.information_me);
-        	mMyMarker = mGoogleMap.addMarker(new MarkerOptions().position(myPosition).title(myTitle).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+        	mMyMarker = mGoogleMap.addMarker(new MarkerOptions().position(myPosition).title(myTitle).snippet("(" + mName + ")").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
     	}
     	else {
     		mMyMarker.setPosition(myPosition);
@@ -133,7 +156,7 @@ public class GMapFragment extends MapFragment {
         	
         	Marker marker;
         	
-        	if (initial == true) {
+        	if (recreate == true) {
         		marker = mGoogleMap.addMarker(new MarkerOptions().position(position).title(title).snippet(snippet).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         		mMarkers.put(eMail, marker);
         	}
@@ -158,11 +181,16 @@ public class GMapFragment extends MapFragment {
 		// handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_map_refresh:
-			//TODO refresh data
-			Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), "Refreshing...", Toast.LENGTH_LONG).show();
+			((MainActivity) getActivity()).loadData();
 			return true;
 		case R.id.action_zoom_to_friends:
-			zoomToFriends(true);
+			if (mMarkers.size() == 0) {
+				zoomToMe(true);
+			}
+			else {
+				zoomToFriends(true);
+			}
 			return true;
 		case R.id.action_zoom_to_me:
 			zoomToMe(true);
@@ -173,56 +201,58 @@ public class GMapFragment extends MapFragment {
 	}
 
 	public void zoomToMe(boolean animate) {
-		CameraUpdate cu = null;
-		
 		if (mMyMarkerVisible == true) {
+			CameraUpdate cu = null;
+			
 			cu = CameraUpdateFactory.newLatLngZoom(new LatLng(mMyMarker.getPosition().latitude, mMyMarker.getPosition().longitude), mDefaultZoomLevel);
+			
+			changeCameraPosition(cu, animate);
 		}
-		
-		changeCameraPosition(cu, animate);
 	}
 	
 	public void zoomToFriend(boolean animate) {
-		CameraUpdate cu = null;
-		
-		Marker marker = mMarkers.get(mContactKey);
-		marker.showInfoWindow();
-		mActiveMarker = marker;
+		if (mMarkers.containsKey(mContactKey) == true) {
+			CameraUpdate cu = null;
+			
+			Marker marker = mMarkers.get(mContactKey);
+			marker.showInfoWindow();
+			mActiveMarker = marker;
 
-		cu = CameraUpdateFactory.newLatLngZoom(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude), mDefaultZoomLevel);
-		
-		changeCameraPosition(cu, animate);
+			cu = CameraUpdateFactory.newLatLngZoom(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude), mDefaultZoomLevel);
+			
+			changeCameraPosition(cu, animate);
+		}
 	}
 	
 	public void zoomToFriends(boolean animate) {
-		CameraUpdate cu = null;
-		
-		LatLngBounds.Builder builder = new LatLngBounds.Builder();
-		
-		if (mMyMarkerVisible == true) {
-			builder.include(mMyMarker.getPosition());
+		if (mMyMarkerVisible == true || mMarkers.size() > 0) {
+			CameraUpdate cu = null;
+			
+			LatLngBounds.Builder builder = new LatLngBounds.Builder();
+			
+			if (mMyMarkerVisible == true) {
+				builder.include(mMyMarker.getPosition());
+			}
+
+			for (String key: mMarkers.keySet()) {
+				Marker marker = mMarkers.get(key);
+				builder.include(marker.getPosition());
+			}
+
+			LatLngBounds bounds = builder.build();
+
+			cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+			
+			changeCameraPosition(cu, animate);
 		}
-
-		for (String key: mMarkers.keySet()) {
-			Marker marker = mMarkers.get(key);
-			builder.include(marker.getPosition());
-		}
-
-		LatLngBounds bounds = builder.build();
-
-		cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-		
-		changeCameraPosition(cu, animate);
 	}
 	
 	private void changeCameraPosition(CameraUpdate cu, boolean animate) {
-		if (cu != null) {
-			if (animate == false) {
-				mGoogleMap.moveCamera(cu);	
-			}
-			else {
-				mGoogleMap.animateCamera(cu);
-			}
+		if (animate == false) {
+			mGoogleMap.moveCamera(cu);	
+		}
+		else {
+			mGoogleMap.animateCamera(cu);
 		}		
 	}
 	
@@ -237,11 +267,14 @@ public class GMapFragment extends MapFragment {
     	mGoogleMap = getMap();
     	
     	Bundle bundle = this.getArguments();
+    	if (bundle.containsKey(ARG_NAME)) {
+    		mName = bundle.getString(ARG_NAME);
+    	}
     	if (bundle.containsKey(ARG_CONTACT_KEY)) {
     		mContactKey = bundle.getString(ARG_CONTACT_KEY);
     	}
     	
-    	createMarkers(true);
+    	createMarkers();
     	
         mGoogleMap.setInfoWindowAdapter(new GInfoWindowAdapter(getActivity()));
 
@@ -285,7 +318,7 @@ public class GMapFragment extends MapFragment {
     }
 
     public void refreshLocation() {
-    	createMarkers(true);	
+    	createMarkers();	
     }
 
 }

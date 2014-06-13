@@ -273,7 +273,7 @@ public class MainActivityTest extends
 				assertEquals(3, gMapFragment.getMarkersCount());
 				gMapFragment.clearMarkers();
 				assertEquals(0, gMapFragment.getMarkersCount());
-				gMapFragment.createMarkers(true);
+				gMapFragment.createMarkers();
 				assertEquals(3, gMapFragment.getMarkersCount());
 			}
 

@@ -89,8 +89,8 @@ public class FriendsListFragment extends Fragment {
 		// handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_friends_refresh:
-			// TODO refresh data
-			Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), "Refreshing...", Toast.LENGTH_LONG).show();
+			((MainActivity) getActivity()).loadData();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

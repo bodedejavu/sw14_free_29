@@ -104,6 +104,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	private ServerComm mServerInterface;
 
 	private String mEMail = "";
+	private String mName = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +117,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 		SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
 		mEMail = prefs.getString("email", "");
+		mName = prefs.getString("first_name", "");
 		
 		mContacts = new ArrayList<ContactEntry>();
 
@@ -313,7 +315,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		}
 	}
 
-	private void loadData() {
+	public void loadData() {
 		mServerInterface.getRegisteredUsers(new AsyncCallback<List<UserData>>() {
 		//mServerInterface.getAllowedUsers(mEMail, new AsyncCallback<List<UserData>>() {
 
@@ -330,15 +332,16 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 					}	
 				}
 
-				Toast.makeText(MainActivity.this, "Loading friend list was successful", Toast.LENGTH_SHORT).show();
+				Toast.makeText(MainActivity.this, "Updating friends list successfully.", Toast.LENGTH_SHORT).show();
 
 				refreshCurrentFragment();
 			}
 
 			@Override
 			public void onFailure(Exception failure) {
-				Toast.makeText(MainActivity.this, "Loading friend list failed " + failure.getMessage(), Toast.LENGTH_SHORT).show(); 
-
+				Toast.makeText(MainActivity.this, "Updating friends list failed!", Toast.LENGTH_SHORT).show(); 
+				Log.d("Allowed User", "Updating friends list failed! " + failure.getMessage());
+				
 			}
 		}); 
 	}
@@ -398,10 +401,10 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		switch(position) {
 		case 0:
 			if (argument == "") {
-				fragment = GMapFragment.newInstance(position);
+				fragment = GMapFragment.newInstance(position, mName);
 			}
 			else {
-				fragment = GMapFragment.newInstance(position, argument);
+				fragment = GMapFragment.newInstance(position, mName, argument);
 			}
 			break;
 		case 1:
