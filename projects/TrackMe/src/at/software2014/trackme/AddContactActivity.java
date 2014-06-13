@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class AddContactActivity extends BaseActivity {
@@ -77,12 +78,21 @@ public class AddContactActivity extends BaseActivity {
 		contacts.add(new ContactEntry("Benjamin Steinacher",
 				"benjamin.steinacher@gmail.com", (long) 1401216000 * 1000,
 				47.08, 15.35));
+		
+		TextView empty = (TextView) this.findViewById(
+				R.id.contacts_add_empty);
 
-		for (int i = 0; i < contacts.size(); i++) {
-			ContactEntry contactEntry = contacts.get(i);
-			String eMail = contactEntry.geteMail();
-			String name = contactEntry.getName();
-			contactsList.add(new ContactsItem(eMail, name));
+		if (contacts.isEmpty()) {			
+			empty.setVisibility(View.VISIBLE);
+		} else {
+			empty.setVisibility(View.INVISIBLE);
+
+			for (int i = 0; i < contacts.size(); i++) {
+				ContactEntry contactEntry = contacts.get(i);
+				String eMail = contactEntry.geteMail();
+				String name = contactEntry.getName();
+				contactsList.add(new ContactsItem(eMail, name));
+			}
 		}
 
 		mListAdapter.setData(contactsList);

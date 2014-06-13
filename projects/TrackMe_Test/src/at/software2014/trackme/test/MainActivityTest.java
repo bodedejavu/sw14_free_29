@@ -215,7 +215,7 @@ public class MainActivityTest extends
 		View view = lv.getChildAt(0);
 		TextView name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
-		assertEquals("Name not found", "Anna Weber", name.getText()
+		assertEquals("Name not found", "Rainer Lankmayr", name.getText()
 				.toString());
 	}
 

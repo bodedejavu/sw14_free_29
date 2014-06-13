@@ -338,7 +338,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	public boolean deleteContact(String eMail) {
 		ContactEntry contactEntry = getContactByEMail(eMail);
 		if(contactEntry != null) {
-			mContacts.remove(eMail);
+			mContacts.remove(contactEntry);
 			return true;
 		}
 		return false;

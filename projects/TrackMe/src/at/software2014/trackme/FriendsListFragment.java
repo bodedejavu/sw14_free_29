@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -43,7 +44,7 @@ public class FriendsListFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_friendslist, container,
 				false);
 		setHasOptionsMenu(true);
-		
+
 		mListAdapter = new FriendsListAdapter(getActivity());
 		friendslist = new ArrayList<FriendsListItem>();
 		mListView = (ListView) view.findViewById(R.id.friendslist_listView);
@@ -64,9 +65,7 @@ public class FriendsListFragment extends Fragment {
 	@Override
 	public void onViewCreated(View v, Bundle savedInstanceState) {
 		super.onViewCreated(v, savedInstanceState);
-		
-		setListData();		
-		
+		setListData();
 	}
 
 	@Override
@@ -79,7 +78,7 @@ public class FriendsListFragment extends Fragment {
 			fragmentManager.beginTransaction().remove(fragment).commit();
 		}
 	}
-	
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.friends, menu);
@@ -90,7 +89,7 @@ public class FriendsListFragment extends Fragment {
 		// handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_friends_refresh:
-			//TODO refresh data
+			// TODO refresh data
 			Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_LONG).show();
 			return true;
 		default:
@@ -101,25 +100,37 @@ public class FriendsListFragment extends Fragment {
 	private void setListData() {
 		friendslist.clear();
 		Location myLocation = ((MainActivity) getActivity()).getMyLocation();
-		List<ContactEntry> contacts = ((MainActivity)getActivity()).getContacts();
-				
-    	for (int i=0; i<contacts.size(); i++) {
-    		ContactEntry contactEntry = contacts.get(i);
-    		
-    		String eMail = contactEntry.geteMail();
-    		String name = contactEntry.getName();
-    		String timestamp = contactEntry.getTimestampFormatted(getActivity());
-    		String distance = contactEntry.getDistanceFormatted(myLocation, getResources().getString(R.string.information_unknown));
-    		
-			friendslist
-			.add(new FriendsListItem(eMail, name, distance, timestamp));
-    	}
+		List<ContactEntry> contacts = ((MainActivity) getActivity())
+				.getContacts();
+		
+		TextView empty = (TextView) this.getView().findViewById(
+				R.id.friendslist_empty);
+
+		if (contacts.isEmpty()) {			
+			empty.setVisibility(View.VISIBLE);
+		} else {
+			empty.setVisibility(View.INVISIBLE);
+			
+			for (int i = 0; i < contacts.size(); i++) {
+				ContactEntry contactEntry = contacts.get(i);
+	
+				String eMail = contactEntry.geteMail();
+				String name = contactEntry.getName();
+				String timestamp = contactEntry
+						.getTimestampFormatted(getActivity());
+				String distance = contactEntry.getDistanceFormatted(myLocation,
+						getResources().getString(R.string.information_unknown));
+	
+				friendslist.add(new FriendsListItem(eMail, name, distance,
+						timestamp));
+			}
+		}
 		
 		mListAdapter.setData(friendslist);
-		//mListAdapter.notifyDataSetChanged();
+		// mListAdapter.notifyDataSetChanged();
 	}
-	
-    public void refreshLocation() {
-    	setListData();	
-    }
+
+	public void refreshLocation() {
+		setListData();
+	}
 }

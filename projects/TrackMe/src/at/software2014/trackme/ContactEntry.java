@@ -3,6 +3,7 @@ package at.software2014.trackme;
 import android.content.Context;
 import android.location.Location;
 import android.text.format.DateFormat;
+import at.software2014.trackme.userdataendpoint.model.UserData;
 
 public class ContactEntry {
 
@@ -20,6 +21,15 @@ public class ContactEntry {
 		this.timestamp = timestamp;
 		this.latitude = latitude;
 		this.longitude = longitude;
+	}
+
+	public ContactEntry(UserData userdata) {
+		super();
+		this.name = userdata.getUserName();
+		this.eMail = userdata.getUserEmail();
+		this.timestamp = userdata.getTimestamp();
+		this.latitude = userdata.getUserLastLatitude();
+		this.longitude = userdata.getUserLastLongitude();
 	}
 
 	public String getName() {

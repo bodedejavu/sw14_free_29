@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -109,12 +110,21 @@ public class ContactsFragment extends Fragment {
 		List<ContactEntry> contacts = ((MainActivity) getActivity())
 				.getContacts();
 		ArrayList<ContactsItem> contactsList = new ArrayList<ContactsItem>();
+		
+		TextView empty = (TextView) this.getView().findViewById(
+				R.id.contacts_empty);
 
-		for (int i = 0; i < contacts.size(); i++) {
-			ContactEntry contactEntry = contacts.get(i);
-			String eMail = contactEntry.geteMail();
-			String name = contactEntry.getName();
-			contactsList.add(new ContactsItem(eMail, name));
+		if (contacts.isEmpty()) {			
+			empty.setVisibility(View.VISIBLE);
+		} else {
+			empty.setVisibility(View.INVISIBLE);
+
+			for (int i = 0; i < contacts.size(); i++) {
+				ContactEntry contactEntry = contacts.get(i);
+				String eMail = contactEntry.geteMail();
+				String name = contactEntry.getName();
+				contactsList.add(new ContactsItem(eMail, name));
+			}
 		}
 
 		mListAdapter.setData(contactsList);
@@ -124,6 +134,49 @@ public class ContactsFragment extends Fragment {
 		Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
 				ContactsContract.Contacts.CONTENT_URI);
 		startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER);
+	}
+	
+	private void openInvitationMail(String mailAddress) {
+		String aEmailList[] = { mailAddress };
+		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+		emailIntent.setType("plain/text");
+		emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, aEmailList);
+		emailIntent
+				.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources()
+						.getString(R.string.action_contact_invite_suject));
+		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources()
+				.getString(R.string.action_contact_invite_text));
+		startActivity(emailIntent);
+	}
+
+	private void addContact() {
+		Intent intent = new Intent(getActivity(), AddContactActivity.class);
+		startActivityForResult(intent, REQUEST_CODE_ADD);
+	}
+
+	private void deleteContact() {
+
+		if (mSelectedItem != null) {
+			String key = mSelectedItem.getKey();
+			if (((MainActivity) getActivity()).deleteContact(key)) {
+				setListData();
+				mListAdapter.notifyDataSetChanged();
+				mSelectedItem = null;
+				mListView.clearChoices();
+
+				Toast.makeText(getActivity(),
+						R.string.action_contact_delete_successful,
+						Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(getActivity(),
+						R.string.action_contact_delete_failed,
+						Toast.LENGTH_LONG).show();
+			}
+		} else {
+			Toast.makeText(getActivity(),
+					R.string.action_contact_delete_no_selection,
+					Toast.LENGTH_LONG).show();
+		}
 	}
 
 	@Override
@@ -175,47 +228,6 @@ public class ContactsFragment extends Fragment {
 						.show();
 			}
 			break;
-		}
-	}
-
-	private void openInvitationMail(String mailAddress) {
-		String aEmailList[] = { mailAddress };
-		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-		emailIntent.setType("plain/text");
-		emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, aEmailList);
-		emailIntent
-				.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources()
-						.getString(R.string.action_contact_invite_suject));
-		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources()
-				.getString(R.string.action_contact_invite_text));
-		startActivity(emailIntent);
-	}
-
-	private void addContact() {
-		Intent intent = new Intent(getActivity(), AddContactActivity.class);
-		startActivityForResult(intent, REQUEST_CODE_ADD);
-	}
-
-	private void deleteContact() {
-
-		if (mSelectedItem != null) {
-			String key = mSelectedItem.getKey();
-			if (((MainActivity) getActivity()).deleteContact(key)) {
-				setListData();
-				mListAdapter.notifyDataSetChanged();
-
-				Toast.makeText(getActivity(),
-						R.string.action_contact_delete_successful,
-						Toast.LENGTH_LONG).show();
-			} else {
-				Toast.makeText(getActivity(),
-						R.string.action_contact_delete_failed,
-						Toast.LENGTH_LONG).show();
-			}
-		} else {
-			Toast.makeText(getActivity(),
-					R.string.action_contact_delete_no_selection,
-					Toast.LENGTH_LONG).show();
 		}
 	}
 }
