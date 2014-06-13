@@ -285,7 +285,7 @@ public class GMapFragment extends MapFragment {
     }
 
     public void refreshLocation() {
-    	createMarkers(false);	
+    	createMarkers(true);	
     }
 
 }

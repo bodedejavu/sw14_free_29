@@ -11,8 +11,12 @@ import at.software2014.trackme.ServerComm.AsyncCallback;
 
 public class LocationUpdatesIntentService extends IntentService {
 	
+	private ServerComm mServerInterface;
+	
 	public LocationUpdatesIntentService() {
 		super("LocationUpdatesService");
+		
+		mServerInterface = new ServerComm();
 	}
 	
 	@Override
@@ -28,9 +32,7 @@ public class LocationUpdatesIntentService extends IntentService {
             if (eMail != "") {
                 Location currentLocation = (Location) bundle.get(LocationClient.KEY_LOCATION_CHANGED);
             	
-                ServerComm servercomm = new ServerComm();
-                
-                servercomm.updateOwnLocation(eMail, currentLocation, new AsyncCallback<Void>() {
+                mServerInterface.updateOwnLocation(eMail, currentLocation, new AsyncCallback<Void>() {
     				
     				@Override
     				public void onSuccess(Void response) {

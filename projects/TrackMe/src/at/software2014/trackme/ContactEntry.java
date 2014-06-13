@@ -27,9 +27,9 @@ public class ContactEntry {
 		super();
 		this.name = userdata.getUserName();
 		this.eMail = userdata.getUserEmail();
-		this.timestamp = userdata.getTimestamp();
-		this.latitude = userdata.getUserLastLatitude();
-		this.longitude = userdata.getUserLastLongitude();
+		this.timestamp = (long)userdata.getTimestamp();
+		this.latitude = (double)userdata.getUserLastLatitude();
+		this.longitude = (double)userdata.getUserLastLongitude();
 	}
 
 	public String getName() {

@@ -41,7 +41,9 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import at.software2014.trackme.ServerComm.AsyncCallback;
+import at.software2014.trackme.userdataendpoint.model.UserData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,13 +100,17 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	LocationRequest mLocationRequest;
 	Location mMyLocation = null;
 	PendingIntent mLocationUpdatesPendingIntent;
-	
+
+	private ServerComm mServerInterface;
+
 	private String mEMail = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		mServerInterface = new ServerComm();
 
 		registerUserAtFirstLaunch();
 
@@ -113,13 +119,14 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		
 		mContacts = new ArrayList<ContactEntry>();
 
-		loadDummyData();
-
 		mLocationRequest = LocationRequest.create();
 		mLocationClient = new LocationClient(this, this, this);
 		
 		setLocationPriority(true, false);
-		
+
+		//loadDummyData();
+		loadData();
+
 		mTitle = getTitle();
 		mMenuTitles = getResources().getStringArray(R.array.navigation_menu);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -253,8 +260,8 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 			editor.commit();
 
-			new ServerComm().registerOwnUser(eMail, name); 
-		
+			mServerInterface.registerOwnUser(eMail, name);
+
 		}
 
 	}
@@ -304,6 +311,36 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	private void loadData() {
+		mServerInterface.getRegisteredUsers(new AsyncCallback<List<UserData>>() {
+		//mServerInterface.getAllowedUsers(mEMail, new AsyncCallback<List<UserData>>() {
+
+			@Override
+			public void onSuccess(List<UserData> response) {
+
+				if (response != null) {
+					mContacts.clear();
+
+					for(UserData data : response) {
+						Log.d("Allowed User", data.getUserName() + " " + data.getUserEmail() + " " + data.getUserLastLatitude() + " " + data.getUserLastLongitude());
+
+						mContacts.add(new ContactEntry(data));
+					}	
+				}
+
+				Toast.makeText(MainActivity.this, "Loading friend list was successful", Toast.LENGTH_SHORT).show();
+
+				refreshCurrentFragment();
+			}
+
+			@Override
+			public void onFailure(Exception failure) {
+				Toast.makeText(MainActivity.this, "Loading friend list failed " + failure.getMessage(), Toast.LENGTH_SHORT).show(); 
+
+			}
+		}); 
 	}
 
 	private void loadDummyData() {
