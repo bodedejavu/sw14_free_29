@@ -38,8 +38,13 @@ public class ServerComm {
 		void onFailure(Exception failure); 
 	}
 
+	
+	public void registerOwnUser(final String email, final String name) {
+		registerOwnUser(email, name,null);
+	}
 
 	public void registerOwnUser(final String email, final String name, final AsyncCallback<Void> onRegisterCompleteCallback) {
+		
 		new AsyncTask<Void,Void,Void>() {
 			Exception mException; 
 
@@ -56,10 +61,18 @@ public class ServerComm {
 			@Override
 			protected void onPostExecute(Void result) {
 				if(mException == null) {
+					if(onRegisterCompleteCallback != null)	{
 					onRegisterCompleteCallback.onSuccess(result); 
+					}
 				}
 				else {
+					if(onRegisterCompleteCallback != null)	{
 					onRegisterCompleteCallback.onFailure(mException); 
+					}
+					else
+					{
+						mException.printStackTrace(); 
+					}
 				}
 			}
 
@@ -102,7 +115,7 @@ public class ServerComm {
 
 
 	private void updateOwnLocationSync(String ownEmail, Location location) throws IOException {
-		mUserEndpoint.updateLocation(ownEmail, location.getLatitude(), location.getLongitude(), location.getTime());
+		mUserEndpoint.updateLocation(ownEmail, location.getLatitude(), location.getLongitude(), location.getTime()).execute();
 	}
 
 
@@ -136,7 +149,7 @@ public class ServerComm {
 
 
 	private void addAllowedUserSync(String ownEmail, String userEmail) throws IOException {
-		mUserEndpoint.addAllowedUser(ownEmail, userEmail);
+		mUserEndpoint.addAllowedUser(ownEmail, userEmail).execute();
 	}
 
 
@@ -175,10 +188,11 @@ public class ServerComm {
 		List<String> users = ud.getAllowedUsersForQuerying();
 
 		if(users.contains(userEmail)) {			
-			mUserEndpoint.removeUserData(userEmail);
+			mUserEndpoint.removeUserData(userEmail).execute();
 		}
 	}
 
+	
 	public void getAllowedUsers(final String ownEmail, final AsyncCallback<List<UserData>> onGetAllowedUsersCompleteCallback) {
 
 		new AsyncTask<Void,Void,List<UserData>>() {
@@ -209,11 +223,7 @@ public class ServerComm {
 
 
 	private List<UserData> getAllowedUsersSync(String ownEmail) throws IOException {
-
-		UserData ud = mUserEndpoint.getUserData(ownEmail).execute();
-		List<String> allowedUsers = ud.getAllowedUsersForQuerying();
-
-		UserDataCollection users = mUserEndpoint.getUserDataList(allowedUsers).execute();
+		UserDataCollection users = mUserEndpoint.getAllowedUsers(ownEmail).execute();
 		return users.getItems();
 	}
 
@@ -253,15 +263,5 @@ public class ServerComm {
 		return registeredUsers; 
 	}
 
-
-	// TODO: needed?
-	private void updateAllowedUsersLocation(List<String> userEmails) {
-
-	}
-
-
-	// TODO: needed?
-	private void updateUserLocation(String userEmail) {
-
-	}
+	
 }

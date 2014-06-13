@@ -129,6 +129,27 @@
         "body" : "empty"
       }
     },
+    "userdataendpoint.getAllowedUsers" : {
+      "path" : "userdatacollection/{ownEmail}",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.getAllowedUsers",
+      "request" : {
+        "parameters" : {
+          "ownEmail" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "userdataendpoint.addAllowedUser" : {
       "path" : "addAllowedUser/{ownEmail}/{userEmail}",
       "httpMethod" : "POST",
@@ -201,28 +222,6 @@
       },
       "response" : {
         "body" : "empty"
-      }
-    },
-    "userdataendpoint.getUserDataList" : {
-      "path" : "userdatacollection/{emailList}",
-      "httpMethod" : "GET",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ ],
-      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.getUserDataList",
-      "request" : {
-        "parameters" : {
-          "emailList" : {
-            "repeated" : true,
-            "type" : "string",
-            "required" : true
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
       }
     },
     "userdataendpoint.removeUserData" : {
@@ -331,6 +330,11 @@
       },
       "at.software2014.trackme.UserDataEndpoint.register" : {
       },
+      "at.software2014.trackme.UserDataEndpoint.getAllowedUsers" : {
+        "response" : {
+          "$ref" : "UserDataCollection"
+        }
+      },
       "at.software2014.trackme.UserDataEndpoint.addAllowedUser" : {
       },
       "at.software2014.trackme.UserDataEndpoint.insertUserData" : {
@@ -342,11 +346,6 @@
         }
       },
       "at.software2014.trackme.UserDataEndpoint.updateLocation" : {
-      },
-      "at.software2014.trackme.UserDataEndpoint.getUserDataList" : {
-        "response" : {
-          "$ref" : "UserDataCollection"
-        }
       },
       "at.software2014.trackme.UserDataEndpoint.removeUserData" : {
       }

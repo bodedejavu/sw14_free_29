@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/SSFEXwv2q6zvhlNRmEHtq1TI4OI\"",
+ "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/di7kDblghxJGT1NxdjMZlagnuu8\"",
  "discoveryVersion": "v1",
  "id": "userdataendpoint:v1",
  "name": "userdataendpoint",
@@ -157,6 +157,27 @@
     "https://www.googleapis.com/auth/userinfo.email"
    ]
   },
+  "getAllowedUsers": {
+   "id": "userdataendpoint.getAllowedUsers",
+   "path": "userdatacollection/{ownEmail}",
+   "httpMethod": "GET",
+   "parameters": {
+    "ownEmail": {
+     "type": "string",
+     "required": true,
+     "location": "path"
+    }
+   },
+   "parameterOrder": [
+    "ownEmail"
+   ],
+   "response": {
+    "$ref": "UserDataCollection"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
   "getRegisteredUsers": {
    "id": "userdataendpoint.getRegisteredUsers",
    "path": "userdatacollection",
@@ -184,28 +205,6 @@
    ],
    "response": {
     "$ref": "UserData"
-   },
-   "scopes": [
-    "https://www.googleapis.com/auth/userinfo.email"
-   ]
-  },
-  "getUserDataList": {
-   "id": "userdataendpoint.getUserDataList",
-   "path": "userdatacollection/{emailList}",
-   "httpMethod": "GET",
-   "parameters": {
-    "emailList": {
-     "type": "string",
-     "required": true,
-     "repeated": true,
-     "location": "path"
-    }
-   },
-   "parameterOrder": [
-    "emailList"
-   ],
-   "response": {
-    "$ref": "UserDataCollection"
    },
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"

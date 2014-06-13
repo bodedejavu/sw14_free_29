@@ -41,6 +41,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import at.software2014.trackme.ServerComm.AsyncCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -251,6 +252,9 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 			editor.putString("first_name", name);
 
 			editor.commit();
+
+			new ServerComm().registerOwnUser(eMail, name); 
+		
 		}
 
 	}

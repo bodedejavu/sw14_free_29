@@ -221,21 +221,20 @@ public class UserDataEndpoint {
 	}
 	
 	
-	@ApiMethod(name = "getUserDataList")
-	public List<UserData> getUserDataList(@Named("emailList") List<String> emailList) {
+	@ApiMethod(name = "getAllowedUsers")
+	public List<UserData> getAllowedUsers(@Named("ownEmail") String ownEmail) {
 		
 		EntityManager mgr = getEntityManager();
-		List<UserData> userDataList = new ArrayList<UserData>();
-		
-		for(String email : emailList) {
-			
-			UserData ud = mgr.find(UserData.class, email);
-			userDataList.add(ud);
+		UserData ownUd = mgr.find(UserData.class, ownEmail);
+
+		List<UserData> allowedUsers = new ArrayList<UserData>();
+		for(String allowedUserIds : ownUd.getAllowedUsersForQuerying())
+		{
+			allowedUsers.add(mgr.find(UserData.class,allowedUserIds)); 
 		}
 		
 		mgr.close();
-		return userDataList;
-		
+		return allowedUsers;	
 	}
 	
 	@ApiMethod(name = "getRegisteredUsers")
