@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+//import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -136,9 +136,6 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		
 		setLocationPriority(true, false);
 
-		loadAllowedUsers();
-		loadRegisteredUsers();
-
 		mTitle = getTitle();
 		mMenuTitles = getResources().getStringArray(R.array.navigation_menu);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -170,11 +167,11 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-		if (savedInstanceState == null) {
-			if(isGooglePlayServicesConnected()){				
-				selectItem(0, "");
-			}
-		}
+		//if (savedInstanceState == null) {
+		//	if(isGooglePlayServicesConnected()){				
+		//		selectItem(0, "");
+		//	}
+		//}
 		
 		if (mDisableLocation == false) {
 			Intent intent = new Intent(this, LocationUpdatesIntentService.class);
@@ -278,13 +275,14 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	protected void onResume() {
 		super.onResume();
 		
-		if(ConnectionResult.SUCCESS == GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext())) {			
+		//if(ConnectionResult.SUCCESS == GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext())) {			
 			selectItem(mCurrentPosition, "");
-		}
+		//}
 		
 		setLocationPriority(true, true);
 
 		loadAllowedUsers();
+		loadRegisteredUsers();
 	}
 
 	private void registerUserAtFirstLaunch() {
@@ -390,10 +388,11 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 							Log.d("Allowed User", data.getUserName() + " " + data.getUserEmail() + " " + data.getUserLastLatitude() + " " + data.getUserLastLongitude());
 
 							mContacts.add(new ContactEntry(data));
-						}	
+						}
+
+						refreshCurrentFragment();
 					}
 					Toast.makeText(MainActivity.this, "Updating friends list successfully.", Toast.LENGTH_SHORT).show();
-					refreshCurrentFragment();
 				}
 
 				@Override
