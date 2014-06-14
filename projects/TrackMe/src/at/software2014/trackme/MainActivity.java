@@ -84,6 +84,7 @@ import com.google.android.gms.location.LocationRequest;
 public class MainActivity extends BaseActivity implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 	private static final String FIRST_LAUNCH = "first_launch";
 	private static final String TRACK_ME_PREFERENCES = "TrackMePreferences";
+	private static final String DISABLE_SERVERCOMM = "disable_servercomm";
 	private DrawerLayout mDrawerLayout;
 	private LinearLayout mDrawerLinear;
 	private TextView mDrawerText;
@@ -106,6 +107,8 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	private String mEMail = "";
 	private String mName = "";
 
+	private boolean mDisableServercomm = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -118,6 +121,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
 		mEMail = prefs.getString("email", "");
 		mName = prefs.getString("first_name", "");
+		mDisableServercomm = prefs.getBoolean(DISABLE_SERVERCOMM, false);
 		
 		mContacts = new ArrayList<ContactEntry>();
 
@@ -264,21 +268,23 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 			editor.commit();
 
-			mServerInterface.registerOwnUser(eMail, name, new AsyncCallback<Void>() {
-				
-				@Override
-				public void onSuccess(Void response) {
-					Toast.makeText(MainActivity.this, "Registration successful.", Toast.LENGTH_SHORT).show(); 
+			if (mDisableServercomm == false) {
+				mServerInterface.registerOwnUser(eMail, name, new AsyncCallback<Void>() {
 					
-				}
-				
-				@Override
-				public void onFailure(Exception failure) {
-					Toast.makeText(MainActivity.this, "Registration failed!", Toast.LENGTH_SHORT).show(); 
-					Log.d("Registration", "Registration failed! " + failure.getMessage());
+					@Override
+					public void onSuccess(Void response) {
+						Toast.makeText(MainActivity.this, "Registration successful.", Toast.LENGTH_SHORT).show(); 
+						
+					}
 					
-				}
-			}); 
+					@Override
+					public void onFailure(Exception failure) {
+						Toast.makeText(MainActivity.this, "Registration failed!", Toast.LENGTH_SHORT).show(); 
+						Log.d("Registration", "Registration failed! " + failure.getMessage());
+						
+					}
+				});
+			}
 
 		}
 
@@ -332,34 +338,36 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	}
 
 	public void loadData() {
-		mServerInterface.getRegisteredUsers(new AsyncCallback<List<UserData>>() {
-		//mServerInterface.getAllowedUsers(mEMail, new AsyncCallback<List<UserData>>() {
+		if (mDisableServercomm == false) {
+			mServerInterface.getRegisteredUsers(new AsyncCallback<List<UserData>>() {
+			//mServerInterface.getAllowedUsers(mEMail, new AsyncCallback<List<UserData>>() {
 
-			@Override
-			public void onSuccess(List<UserData> response) {
+					@Override
+					public void onSuccess(List<UserData> response) {
 
-				if (response != null) {
-					mContacts.clear();
+						if (response != null) {
+							mContacts.clear();
 
-					for(UserData data : response) {
-						Log.d("Allowed User", data.getUserName() + " " + data.getUserEmail() + " " + data.getUserLastLatitude() + " " + data.getUserLastLongitude());
+							for(UserData data : response) {
+								Log.d("Allowed User", data.getUserName() + " " + data.getUserEmail() + " " + data.getUserLastLatitude() + " " + data.getUserLastLongitude());
 
-						mContacts.add(new ContactEntry(data));
-					}	
-				}
+								mContacts.add(new ContactEntry(data));
+							}	
+						}
 
-				Toast.makeText(MainActivity.this, "Updating friends list successfully.", Toast.LENGTH_SHORT).show();
+						Toast.makeText(MainActivity.this, "Updating friends list successfully.", Toast.LENGTH_SHORT).show();
 
-				refreshCurrentFragment();
-			}
+						refreshCurrentFragment();
+					}
 
-			@Override
-			public void onFailure(Exception failure) {
-				Toast.makeText(MainActivity.this, "Updating friends list failed!", Toast.LENGTH_SHORT).show(); 
-				Log.d("Allowed User", "Updating friends list failed! " + failure.getMessage());
-				
-			}
-		}); 
+					@Override
+					public void onFailure(Exception failure) {
+						Toast.makeText(MainActivity.this, "Updating friends list failed!", Toast.LENGTH_SHORT).show(); 
+						Log.d("Allowed User", "Updating friends list failed! " + failure.getMessage());
+						
+					}
+				});
+		}
 	}
 
 	private void loadDummyData() {
