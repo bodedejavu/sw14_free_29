@@ -281,6 +281,8 @@ public class MainActivityTest extends
 
 			@Override
 			public void run() {
+				mMainActivity.refreshCurrentFragment();
+
 				assertEquals(3, gMapFragment.getMarkersCount());
 				gMapFragment.clearMarkers();
 				assertEquals(0, gMapFragment.getMarkersCount());
@@ -308,6 +310,8 @@ public class MainActivityTest extends
 
 			@Override
 			public void run() {
+				mMainActivity.refreshCurrentFragment();
+
 				HashMap<String, Marker> markers = gMapFragment.getMarkers();
 				Marker marker;
 
@@ -344,6 +348,8 @@ public class MainActivityTest extends
 
 				@Override
 				public void run() {
+					mMainActivity.refreshCurrentFragment();
+
 					HashMap<String, Marker> markers = gMapFragment.getMarkers();
 					Marker marker = markers.get(keyName);
 					marker.showInfoWindow();
