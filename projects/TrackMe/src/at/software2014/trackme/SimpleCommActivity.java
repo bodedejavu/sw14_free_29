@@ -44,6 +44,7 @@ public class SimpleCommActivity extends Activity {
 		Button getRegisteredUsers = (Button) findViewById(R.id.btn3);
 		Button addAllowedUser = (Button) findViewById(R.id.btn4);
 		Button getAllowedUsers = (Button) findViewById(R.id.btn5);
+		Button deleteAllowedUser = (Button) findViewById(R.id.btn6);
 
 
 		register.setOnClickListener(new OnClickListener() {
@@ -212,8 +213,33 @@ public class SimpleCommActivity extends Activity {
 			}
 		});
 		
+		
+		deleteAllowedUser.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+
+				mServerInterface.removeAllowedUser("trude@trackertown.com", "jakob@trackertown.com", new AsyncCallback<Void>() {
+
+					@Override
+					public void onSuccess(Void response) {
+						Toast.makeText(SimpleCommActivity.this, "Successful", Toast.LENGTH_SHORT).show(); 
+						
+					}
+
+					@Override
+					public void onFailure(Exception failure) {
+						Toast.makeText(SimpleCommActivity.this, "Failed " + failure.getMessage(), Toast.LENGTH_SHORT).show(); 
+						
+					}
+				});
+				
+			}
+		});	
+		
 	}
 
+	
 
 
 }

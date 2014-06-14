@@ -9,48 +9,63 @@
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Register" />
+        android:text="Register User 1"
+        android:textSize="16sp" />
     
     <Button
         android:id="@+id/btn12"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Register 2" />
+        android:text="Register User 2"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/btn2"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Send Location" />
+        android:text="Send Location User 1"
+        android:textSize="16sp" />
     
     <Button
         android:id="@+id/btn22"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Send Location 2" />
+        android:text="Send Location User 2"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/btn3"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Get all Users" />
+        android:text="Get all Users"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/btn4"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Add allowed User" />
+        android:text="Add allowed User 2 to User 1"
+        android:textSize="16sp" />
     
     <Button
         android:id="@+id/btn5"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Get allowed Users" />
+        android:text="Get allowed Users for User 1"
+        android:textSize="16sp" />
+    
+        <Button
+        android:id="@+id/btn6"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Delete User 2 from User 1"
+        android:textSize="16sp" />
 
 </LinearLayout>
