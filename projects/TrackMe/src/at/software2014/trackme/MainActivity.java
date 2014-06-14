@@ -84,7 +84,8 @@ import com.google.android.gms.location.LocationRequest;
 public class MainActivity extends BaseActivity implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 	private static final String FIRST_LAUNCH = "first_launch";
 	private static final String TRACK_ME_PREFERENCES = "TrackMePreferences";
-	private static final String DISABLE_SERVERCOMM = "disable_servercomm";
+	private static final String DISABLE_SERVER_COMM = "disable_server_comm";
+	private static final String DISABLE_LOCATION_SERVICES = "disable_location_services";
 	private DrawerLayout mDrawerLayout;
 	private LinearLayout mDrawerLinear;
 	private TextView mDrawerText;
@@ -107,7 +108,8 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	private String mEMail = "";
 	private String mName = "";
 
-	private boolean mDisableServercomm = false;
+	private boolean mDisableServerComm = false;
+	private boolean mDisableLocation = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,8 +123,10 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
 		mEMail = prefs.getString("email", "");
 		mName = prefs.getString("first_name", "");
-		mDisableServercomm = prefs.getBoolean(DISABLE_SERVERCOMM, false);
 		
+		mDisableServerComm = getDisableServerComm();
+		mDisableLocation = getDisableLocationServices();
+
 		mContacts = new ArrayList<ContactEntry>();
 
 		mLocationRequest = LocationRequest.create();
@@ -130,7 +134,6 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		
 		setLocationPriority(true, false);
 
-		//loadDummyData();
 		loadData();
 
 		mTitle = getTitle();
@@ -170,10 +173,40 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 			}
 		}
 		
-		Intent intent = new Intent(this, LocationUpdatesIntentService.class);
-		intent.putExtra("eMail", mEMail);
-		mLocationUpdatesPendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		if (mDisableLocation == false) {
+			Intent intent = new Intent(this, LocationUpdatesIntentService.class);
+			intent.putExtra("eMail", mEMail);
+			mLocationUpdatesPendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		}
 
+	}
+
+	public boolean getDisableLocationServices() {
+		SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
+		mDisableLocation = prefs.getBoolean(DISABLE_LOCATION_SERVICES, false);
+		return mDisableLocation;
+	}
+	
+	public boolean getDisableServerComm() {
+		SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
+		mDisableServerComm = prefs.getBoolean(DISABLE_SERVER_COMM, false);
+		return mDisableServerComm;
+	}
+	
+	public void setDisableLocationServices(boolean doDisable) {
+		SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
+		Editor editor = prefs.edit();
+		editor.putBoolean(DISABLE_LOCATION_SERVICES, doDisable);
+
+		editor.commit();
+	}
+
+	public void setDisableServerComm(boolean doDisable) {
+		SharedPreferences prefs = getSharedPreferences(TRACK_ME_PREFERENCES, MODE_PRIVATE);
+		Editor editor = prefs.edit();
+		editor.putBoolean(DISABLE_SERVER_COMM, doDisable);
+
+		editor.commit();
 	}
 
 	private String getEmailAddress() {
@@ -204,28 +237,30 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	}
 
 	private void setLocationPriority(boolean high, boolean refresh) {
-		int priority;
-		int interval;
-		int fastestInterval;
-		
-		if (high == true) {
-			priority = LocationRequest.PRIORITY_HIGH_ACCURACY;
-			interval = 5000;
-			fastestInterval = 1000;
-		}
-		else {
-			priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY;
-			interval = 600000;
-			fastestInterval = 300000;
-		}
-		
-		mLocationRequest.setPriority(priority);
-		mLocationRequest.setInterval(interval);
-		mLocationRequest.setFastestInterval(fastestInterval);
-		
-		if (refresh == true && mLocationClient.isConnected()) {
-			mLocationClient.removeLocationUpdates(mLocationUpdatesPendingIntent);
-			mLocationClient.requestLocationUpdates(mLocationRequest, mLocationUpdatesPendingIntent);
+		if (mDisableLocation == false) {
+			int priority;
+			int interval;
+			int fastestInterval;
+			
+			if (high == true) {
+				priority = LocationRequest.PRIORITY_HIGH_ACCURACY;
+				interval = 5000;
+				fastestInterval = 1000;
+			}
+			else {
+				priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY;
+				interval = 600000;
+				fastestInterval = 300000;
+			}
+			
+			mLocationRequest.setPriority(priority);
+			mLocationRequest.setInterval(interval);
+			mLocationRequest.setFastestInterval(fastestInterval);
+			
+			if (refresh == true && mLocationClient.isConnected()) {
+				mLocationClient.removeLocationUpdates(mLocationUpdatesPendingIntent);
+				mLocationClient.requestLocationUpdates(mLocationRequest, mLocationUpdatesPendingIntent);
+			}
 		}
 	}
 	
@@ -268,7 +303,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 			editor.commit();
 
-			if (mDisableServercomm == false) {
+			if (mDisableServerComm == false) {
 				mServerInterface.registerOwnUser(eMail, name, new AsyncCallback<Void>() {
 					
 					@Override
@@ -338,7 +373,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	}
 
 	public void loadData() {
-		if (mDisableServercomm == false) {
+		if (mDisableServerComm == false) {
 			mServerInterface.getRegisteredUsers(new AsyncCallback<List<UserData>>() {
 			//mServerInterface.getAllowedUsers(mEMail, new AsyncCallback<List<UserData>>() {
 
@@ -368,14 +403,6 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 					}
 				});
 		}
-	}
-
-	private void loadDummyData() {
-		mContacts.clear();
-		
-		mContacts.add(new ContactEntry("Anna Weber", "anna.weber@gmail.com", (long)1401216003*1000, 47.1, 15.4));
-		mContacts.add(new ContactEntry("Rainer Lankmayr", "rainer.lankmayr@gmail.com", (long)1401215993*1000, 47.0, 15.5));
-		mContacts.add(new ContactEntry("Benjamin Steinacher", "benjamin.steinacher@gmail.com", (long)1401216000*1000, 47.08, 15.35));
 	}
 
 	public ContactEntry getContactByEMail(String eMail) {
@@ -481,7 +508,9 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	@Override
 	protected void onStart() {
 		super.onStart();
-		mLocationClient.connect();
+		if (mDisableLocation == false) {
+			mLocationClient.connect();
+		}
 	}
 
 	@Override
@@ -490,20 +519,24 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	}
 
 	public void exitActivity() {
-		if (mLocationClient.isConnected()) {
-			mLocationClient.removeLocationUpdates(mLocationUpdatesPendingIntent);
+		if (mDisableLocation == false) {
+			if (mLocationClient.isConnected()) {
+				mLocationClient.removeLocationUpdates(mLocationUpdatesPendingIntent);
+			}
+			mLocationClient.disconnect();
 		}
-		mLocationClient.disconnect();
 		
 		System.exit(0);
 	}
 
 	@Override
 	public void onConnected(Bundle dataBundle) {
-		mMyLocation = mLocationClient.getLastLocation();
-		refreshCurrentFragment();
+		if (mDisableLocation == false) {
+			mMyLocation = mLocationClient.getLastLocation();
+			refreshCurrentFragment();
 
-		mLocationClient.requestLocationUpdates(mLocationRequest, mLocationUpdatesPendingIntent);
+			mLocationClient.requestLocationUpdates(mLocationRequest, mLocationUpdatesPendingIntent);
+		}
 	}
 
 	@Override
