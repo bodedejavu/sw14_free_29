@@ -13,6 +13,10 @@ public class ContactEntry {
 	private double latitude = 0.0;
 	private double longitude = 0.0;
 	
+	public ContactEntry() {
+		super();
+	}
+
 	public ContactEntry(String name, String eMail, long timestamp,
 			double latitude, double longitude) {
 		super();

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import at.software2014.trackme.*;
+import at.software2014.trackme.userdataendpoint.model.UserData;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
@@ -474,6 +475,50 @@ public class MainActivityTest extends
 
 		}.init(gMapFragment));
 
+	}
+
+	public void testCustomDataTypes01() {
+		UserData userData = new UserData();
+		userData.setUserName("Max Mustermann");
+		userData.setUserEmail("max.mustermann@gmail.com");
+		userData.setTimestamp((long)1401216003*1000);
+		userData.setUserLastLatitude(10.0);
+		userData.setUserLastLongitude(20.0);
+
+		ContactEntry contactEntry = new ContactEntry(userData);
+
+		assertEquals("Max Mustermann", contactEntry.getName());
+		assertEquals("max.mustermann@gmail.com", contactEntry.geteMail());
+		assertEquals((long)1401216003*1000, contactEntry.getTimestamp());
+		assertEquals(10.0, contactEntry.getLatitude());
+		assertEquals(20.0, contactEntry.getLongitude());
+	}
+
+	public void testCustomDataTypes02() {
+		ContactEntry contactEntry = new ContactEntry();
+		contactEntry.setTimestamp((long)1401216003*1000);
+		
+		assertEquals("27.05.2014, 20:40", contactEntry.getTimestampFormatted(getActivity()));
+	}
+
+	public void testCustomDataTypes03() {
+		ContactEntry contactEntry = new ContactEntry();
+		contactEntry.setLatitude(10.0);
+		contactEntry.setLongitude(12.0);
+
+		Location myLocation = new Location("dummy");
+		myLocation.setLatitude(10.0);
+		myLocation.setLongitude(15.0);
+
+		assertEquals("328,92 km", contactEntry.getDistanceFormatted(myLocation, "Unknown"));
+	}
+
+	public void testCustomDataTypes04() {
+		ContactEntry contactEntry = new ContactEntry();
+		contactEntry.setLatitude(10.0);
+		contactEntry.setLongitude(12.0);
+
+		assertEquals("Unknown", contactEntry.getDistanceFormatted(null, "Unknown"));
 	}
 
 }
