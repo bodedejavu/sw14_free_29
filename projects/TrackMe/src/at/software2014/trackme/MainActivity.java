@@ -241,6 +241,8 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		}
 		
 		setLocationPriority(true, true);
+
+		loadData();
 	}
 
 	private void registerUserAtFirstLaunch() {
@@ -262,7 +264,21 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 			editor.commit();
 
-			mServerInterface.registerOwnUser(eMail, name);
+			mServerInterface.registerOwnUser(eMail, name, new AsyncCallback<Void>() {
+				
+				@Override
+				public void onSuccess(Void response) {
+					Toast.makeText(MainActivity.this, "Registration successful.", Toast.LENGTH_SHORT).show(); 
+					
+				}
+				
+				@Override
+				public void onFailure(Exception failure) {
+					Toast.makeText(MainActivity.this, "Registration failed!", Toast.LENGTH_SHORT).show(); 
+					Log.d("Registration", "Registration failed! " + failure.getMessage());
+					
+				}
+			}); 
 
 		}
 
