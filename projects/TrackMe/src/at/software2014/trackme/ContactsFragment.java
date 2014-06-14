@@ -29,6 +29,7 @@ public class ContactsFragment extends Fragment {
 	private static final String ARG_SECTION_NUMBER = "section_number";
 	private static final int REQUEST_CODE_CONTACT_PICKER = 1001;
 	private static final int REQUEST_CODE_ADD = 1002;
+	private MainActivity mMainActivity;
 	private ListView mListView;
 	private ContactsAdapter mListAdapter;
 	private ContactsItem mSelectedItem;
@@ -67,8 +68,9 @@ public class ContactsFragment extends Fragment {
 
 	@Override
 	public void onViewCreated(View v, Bundle savedInstanceState) {
-		super.onViewCreated(v, savedInstanceState);
-
+		super.onViewCreated(v, savedInstanceState);		
+		
+		mMainActivity = (MainActivity) getActivity();
 		setListData();
 	}
 
@@ -107,8 +109,7 @@ public class ContactsFragment extends Fragment {
 	}
 
 	private void setListData() {
-		List<ContactEntry> contacts = ((MainActivity) getActivity())
-				.getContacts();
+		List<ContactEntry> contacts = mMainActivity.getContacts();
 		ArrayList<ContactsItem> contactsList = new ArrayList<ContactsItem>();
 		
 		TextView empty = (TextView) this.getView().findViewById(
@@ -150,23 +151,37 @@ public class ContactsFragment extends Fragment {
 	}
 
 	private void addContact() {
+		mMainActivity.loadRegisteredUsers();
+		List<ContactEntry> registeredUsers = mMainActivity.getRegisteredUsers();
+		ArrayList<String> userEMail = new ArrayList<String>();
+		ArrayList<String> userNames = new ArrayList<String>();
+		
+		if (!registeredUsers.isEmpty()) {			
+			for (int i = 0; i < registeredUsers.size(); i++) {
+				ContactEntry contactEntry = registeredUsers.get(i);
+				userEMail.add(contactEntry.geteMail());
+				userNames.add(contactEntry.getName());
+			}
+		}
+		
 		Intent intent = new Intent(getActivity(), AddContactActivity.class);
+		intent.putStringArrayListExtra("UserEMail", (ArrayList<String>) userEMail);
+		intent.putStringArrayListExtra("UserNames", (ArrayList<String>) userNames);
 		startActivityForResult(intent, REQUEST_CODE_ADD);
 	}
 
 	private void deleteContact() {
-
 		if (mSelectedItem != null) {
 			String key = mSelectedItem.getKey();
-			if (((MainActivity) getActivity()).deleteContact(key)) {
+			if (mMainActivity.deleteContact(key)) {
 				setListData();
 				mListAdapter.notifyDataSetChanged();
 				mSelectedItem = null;
 				mListView.clearChoices();
 
-				Toast.makeText(getActivity(),
-						R.string.action_contact_delete_successful,
-						Toast.LENGTH_LONG).show();
+//				Toast.makeText(getActivity(),
+//						R.string.action_contact_delete_successful,
+//						Toast.LENGTH_LONG).show();
 			} else {
 				Toast.makeText(getActivity(),
 						R.string.action_contact_delete_failed,
@@ -215,17 +230,17 @@ public class ContactsFragment extends Fragment {
 
 		case REQUEST_CODE_ADD:
 			if (resultCode == Activity.RESULT_OK) {
-				// TODO send eMail
-				//String eMail = data.getExtras().getString("eMail");
+				String eMail = data.getExtras().getString("eMail");
+				mMainActivity.addContact(eMail);
 				Toast.makeText(getActivity(), getResources()
-						.getString(R.string.action_contact_add_in_progress), 
+						.getString(R.string.action_contact_add_in_progress)+"\n"+eMail, 
 						Toast.LENGTH_LONG).show();
 			} else if (resultCode == Activity.RESULT_CANCELED) {
 				// do nothing
 			} else {
-				Toast.makeText(getActivity(),
-						R.string.action_contact_add_failed, Toast.LENGTH_LONG)
-						.show();
+//				Toast.makeText(getActivity(),
+//						R.string.action_contact_add_failed, Toast.LENGTH_LONG)
+//						.show();
 			}
 			break;
 		}

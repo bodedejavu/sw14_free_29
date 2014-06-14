@@ -182,7 +182,7 @@ public class GMapFragment extends MapFragment {
 		switch (item.getItemId()) {
 		case R.id.action_map_refresh:
 			Toast.makeText(getActivity(), "Refreshing...", Toast.LENGTH_LONG).show();
-			((MainActivity) getActivity()).loadData();
+			((MainActivity) getActivity()).loadAllowedUsers();
 			return true;
 		case R.id.action_zoom_to_friends:
 			if (mMarkers.size() == 0) {

@@ -97,6 +97,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	private int mCurrentPosition = 0;
 
 	private List<ContactEntry> mContacts;
+	private List<ContactEntry> mRegisteredUsers;
 
 	LocationClient mLocationClient;
 	LocationRequest mLocationRequest;
@@ -128,13 +129,15 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		mDisableLocation = getDisableLocationServices();
 
 		mContacts = new ArrayList<ContactEntry>();
+		mRegisteredUsers = new ArrayList<ContactEntry>();
 
 		mLocationRequest = LocationRequest.create();
 		mLocationClient = new LocationClient(this, this, this);
 		
 		setLocationPriority(true, false);
 
-		loadData();
+		loadAllowedUsers();
+		loadRegisteredUsers();
 
 		mTitle = getTitle();
 		mMenuTitles = getResources().getStringArray(R.array.navigation_menu);
@@ -281,7 +284,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		
 		setLocationPriority(true, true);
 
-		loadData();
+		loadAllowedUsers();
 	}
 
 	private void registerUserAtFirstLaunch() {
@@ -372,36 +375,55 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		}
 	}
 
-	public void loadData() {
+	public void loadAllowedUsers() {
+		if (mDisableServerComm == false) {
+			mServerInterface.getAllowedUsers(mEMail, new AsyncCallback<List<UserData>>() {
+//			mServerInterface.getRegisteredUsers(new AsyncCallback<List<UserData>>() {
+
+				@Override
+				public void onSuccess(List<UserData> response) {
+
+					if (response != null) {
+						mContacts.clear();
+
+						for(UserData data : response) {
+							Log.d("Allowed User", data.getUserName() + " " + data.getUserEmail() + " " + data.getUserLastLatitude() + " " + data.getUserLastLongitude());
+
+							mContacts.add(new ContactEntry(data));
+						}	
+					}
+					Toast.makeText(MainActivity.this, "Updating friends list successfully.", Toast.LENGTH_SHORT).show();
+					refreshCurrentFragment();
+				}
+
+				@Override
+				public void onFailure(Exception failure) {
+					Toast.makeText(MainActivity.this, "Updating friends list failed!", Toast.LENGTH_SHORT).show(); 
+					Log.d("Allowed User", "Updating friends list failed! " + failure.getMessage());
+				}
+			});
+		}
+	}
+	
+	public void loadRegisteredUsers() {
 		if (mDisableServerComm == false) {
 			mServerInterface.getRegisteredUsers(new AsyncCallback<List<UserData>>() {
-			//mServerInterface.getAllowedUsers(mEMail, new AsyncCallback<List<UserData>>() {
 
-					@Override
-					public void onSuccess(List<UserData> response) {
-
-						if (response != null) {
-							mContacts.clear();
-
-							for(UserData data : response) {
-								Log.d("Allowed User", data.getUserName() + " " + data.getUserEmail() + " " + data.getUserLastLatitude() + " " + data.getUserLastLongitude());
-
-								mContacts.add(new ContactEntry(data));
-							}	
-						}
-
-						Toast.makeText(MainActivity.this, "Updating friends list successfully.", Toast.LENGTH_SHORT).show();
-
-						refreshCurrentFragment();
+				@Override
+				public void onSuccess(List<UserData> response) {
+					if (response != null) {
+						mRegisteredUsers.clear();
+						for(UserData data : response) {
+							mRegisteredUsers.add(new ContactEntry(data));
+						}	
 					}
+				}
 
-					@Override
-					public void onFailure(Exception failure) {
-						Toast.makeText(MainActivity.this, "Updating friends list failed!", Toast.LENGTH_SHORT).show(); 
-						Log.d("Allowed User", "Updating friends list failed! " + failure.getMessage());
-						
-					}
-				});
+				@Override
+				public void onFailure(Exception failure) { 
+					Log.d("Registered User", "Updating registered users failed! " + failure.getMessage());
+				}
+			});
 		}
 	}
 
@@ -422,13 +444,55 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		return mContacts;
 	}
 
-	public void setContacts(List<ContactEntry> mContacts) {
-		this.mContacts = mContacts;
+	public void setContacts(List<ContactEntry> contacts) {
+		this.mContacts = contacts;
+	}
+	
+	public List<ContactEntry> getRegisteredUsers() {
+		return mRegisteredUsers;
+	}
+
+	public void setRegisteredUsers(List<ContactEntry> contacts) {
+		this.mRegisteredUsers = contacts;
+	}
+	
+	public void addContact(String eMail) {
+		if (mDisableServerComm == false) {
+			mServerInterface.addAllowedUser(mEMail, eMail, new AsyncCallback<Void>() {
+				
+				@Override
+				public void onSuccess(Void response) {
+					Toast.makeText(MainActivity.this, "Adding user successful", 
+							Toast.LENGTH_LONG).show();
+				}
+				
+				@Override
+				public void onFailure(Exception failure) {
+					Toast.makeText(MainActivity.this, "Adding user failed " + 
+							failure.getMessage(), Toast.LENGTH_LONG).show();
+				}
+			});
+		}
 	}
 
 	public boolean deleteContact(String eMail) {
 		ContactEntry contactEntry = getContactByEMail(eMail);
-		if(contactEntry != null) {
+		if (mDisableServerComm == false) {
+			if(contactEntry != null) {
+				mServerInterface.removeAllowedUser(mEMail, eMail, new AsyncCallback<Void>() {
+	
+					@Override
+					public void onSuccess(Void response) {
+						Toast.makeText(MainActivity.this, "Successful", Toast.LENGTH_LONG).show();
+					}
+	
+					@Override
+					public void onFailure(Exception failure) {
+						Toast.makeText(MainActivity.this, "Failed " + failure.getMessage(), Toast.LENGTH_LONG).show();
+					}
+				});
+			}
+			// TODO: improve local handling
 			mContacts.remove(contactEntry);
 			return true;
 		}

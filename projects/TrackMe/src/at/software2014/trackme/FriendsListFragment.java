@@ -90,7 +90,7 @@ public class FriendsListFragment extends Fragment {
 		switch (item.getItemId()) {
 		case R.id.action_friends_refresh:
 			Toast.makeText(getActivity(), "Refreshing...", Toast.LENGTH_LONG).show();
-			((MainActivity) getActivity()).loadData();
+			((MainActivity) getActivity()).loadAllowedUsers();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

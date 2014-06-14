@@ -1,7 +1,6 @@
 package at.software2014.trackme;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -67,32 +66,28 @@ public class AddContactActivity extends BaseActivity {
 	}
 
 	private void setListData() {
-		List<ContactEntry> contacts = new ArrayList<ContactEntry>();
 		ArrayList<ContactsItem> contactsList = new ArrayList<ContactsItem>();
-
-		contacts.add(new ContactEntry("Anna Weber", "anna.weber@gmail.com",
-				(long) 1401216003 * 1000, 47.1, 15.4));
-		contacts.add(new ContactEntry("Rainer Lankmayr",
-				"rainer.lankmayr@gmail.com", (long) 1401215993 * 1000, 47.0,
-				15.5));
-		contacts.add(new ContactEntry("Benjamin Steinacher",
-				"benjamin.steinacher@gmail.com", (long) 1401216000 * 1000,
-				47.08, 15.35));
+		ArrayList<String> userEMail = new ArrayList<String>();
+		ArrayList<String> userNames = new ArrayList<String>();
+		
+		if (getIntent().getExtras() != null) {
+			userEMail = getIntent().getStringArrayListExtra("UserEMail");
+			userNames = getIntent().getStringArrayListExtra("UserNames");
+			
+			for (int i = 0; i < userEMail.size(); i++) {
+				String eMail = userEMail.get(i);
+				String name = userNames.get(i);
+				contactsList.add(new ContactsItem(eMail, name));
+			}
+        }
 		
 		TextView empty = (TextView) this.findViewById(
 				R.id.contacts_add_empty);
 
-		if (contacts.isEmpty()) {			
+		if (contactsList.isEmpty()) {			
 			empty.setVisibility(View.VISIBLE);
 		} else {
 			empty.setVisibility(View.INVISIBLE);
-
-			for (int i = 0; i < contacts.size(); i++) {
-				ContactEntry contactEntry = contacts.get(i);
-				String eMail = contactEntry.geteMail();
-				String name = contactEntry.getName();
-				contactsList.add(new ContactsItem(eMail, name));
-			}
 		}
 
 		mListAdapter.setData(contactsList);
@@ -101,9 +96,9 @@ public class AddContactActivity extends BaseActivity {
 	@Override
 	public void finish() {
 		if (mSelectedItem != null) {
-			Intent data = new Intent();
-			data.putExtra("eMail", mSelectedItem.getKey());
-			setResult(RESULT_OK, data);
+			Intent intent = new Intent();
+			intent.putExtra("eMail", mSelectedItem.getKey());
+			setResult(RESULT_OK, intent);
 		} else {
 			setResult(RESULT_CANCELED);
 		}

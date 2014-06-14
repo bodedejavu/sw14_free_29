@@ -35,13 +35,14 @@ public class MainActivityTest extends
 
 		mMainActivity = (MainActivity)mSolo.getCurrentActivity();
 		
-		List<ContactEntry> mContacts = new ArrayList<ContactEntry>();
+		List<ContactEntry> contacts = new ArrayList<ContactEntry>();
 
-		mContacts.add(new ContactEntry("Anna Weber", "anna.weber@gmail.com", (long)1401216003*1000, 47.1, 15.4));
-		mContacts.add(new ContactEntry("Rainer Lankmayr", "rainer.lankmayr@gmail.com", (long)1401215993*1000, 47.0, 15.5));
-		mContacts.add(new ContactEntry("Benjamin Steinacher", "benjamin.steinacher@gmail.com", (long)1401216000*1000, 47.08, 15.35));
+		contacts.add(new ContactEntry("Anna Weber", "anna.weber@gmail.com", (long)1401216003*1000, 47.1, 15.4));
+		contacts.add(new ContactEntry("Rainer Lankmayr", "rainer.lankmayr@gmail.com", (long)1401215993*1000, 47.0, 15.5));
+		contacts.add(new ContactEntry("Benjamin Steinacher", "benjamin.steinacher@gmail.com", (long)1401216000*1000, 47.08, 15.35));
 		
-		mMainActivity.setContacts(mContacts);
+		mMainActivity.setContacts(contacts);
+		mMainActivity.setRegisteredUsers(contacts);
 	}
 
 	@Override
@@ -129,7 +130,7 @@ public class MainActivityTest extends
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(2);
 		mSolo.clickOnView(mSolo.getView("action_friends_refresh"));
-		assertTrue(this.mSolo.waitForText("Refresh"));
+		assertTrue(this.mSolo.waitForText("Refreshing..."));
 	}
 
 	public void testContacts_ListView() {
