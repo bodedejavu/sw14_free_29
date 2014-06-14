@@ -78,6 +78,10 @@ public class GMapFragment extends MapFragment {
     public GMapFragment() {
     }
 
+    public Marker getMyMarker() {
+    	return mMyMarker;
+    }
+
     public HashMap<String, Marker> getMarkers() {
 		return mMarkers;
 	}

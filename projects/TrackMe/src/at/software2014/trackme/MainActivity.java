@@ -620,7 +620,11 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		mMyLocation = location;
 		refreshCurrentFragment();
 	}
-	
+
+	public void setMyLocation(Location myLocation) {
+		mMyLocation = myLocation;
+	}
+
 	public Location getMyLocation() {
 		return mMyLocation;
 	}

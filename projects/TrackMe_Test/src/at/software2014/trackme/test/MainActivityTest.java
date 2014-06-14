@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.robotium.solo.Solo;
 
 import android.app.Fragment;
+import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
 import android.test.ActivityInstrumentationTestCase2;
@@ -372,6 +373,107 @@ public class MainActivityTest extends
 		mSolo.sleep(2000);
 		mSolo.clickOnView(mSolo.getView("action_zoom_to_friends"));
 		mSolo.sleep(2000);
+	}
+
+	public void testGoogleMapsMyMarkerShowInfoWindow() {
+		Fragment fragment = mSolo.getCurrentActivity().getFragmentManager().findFragmentById(at.software2014.trackme.R.id.content_frame);
+		GMapFragment gMapFragment = (GMapFragment)fragment;
+
+		Handler handler = new Handler(Looper.getMainLooper());
+
+		handler.post(new Runnable() {
+			private GMapFragment gMapFragment;
+
+			@Override
+			public void run() {
+				mMainActivity.refreshCurrentFragment();
+
+				Marker myMarker = gMapFragment.getMyMarker();
+				myMarker.showInfoWindow();
+			}
+
+			private Runnable init(GMapFragment gMapFragment) {
+				this.gMapFragment = gMapFragment;
+				return this;
+			}
+
+		}.init(gMapFragment));
+
+		mSolo.sleep(1000);
+	}
+
+	public void testLocation01_Disable() {
+		mMainActivity.setDisableLocationServices(true);
+	}
+
+	public void testLocation99_Enable() {
+		mMainActivity.setDisableLocationServices(false);
+	}
+
+	public void testLocation02_DistanceKnown() {
+		Location myLocation = new Location("dummy");
+		myLocation.setLatitude(10.0);
+		myLocation.setLongitude(20.0);
+
+		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
+
+		mainActivity.setMyLocation(myLocation);
+
+		Fragment fragment = mSolo.getCurrentActivity().getFragmentManager().findFragmentById(at.software2014.trackme.R.id.content_frame);
+		GMapFragment gMapFragment = (GMapFragment)fragment;
+
+		Handler handler = new Handler(Looper.getMainLooper());
+
+		handler.post(new Runnable() {
+			private GMapFragment gMapFragment;
+
+			@Override
+			public void run() {
+				mMainActivity.refreshCurrentFragment();
+
+				HashMap<String, Marker> markers = gMapFragment.getMarkers();
+				Marker marker;
+
+				marker = markers.get("rainer.lankmayr@gmail.com");
+				assertEquals("Distance: 4123,41 km\nLast Update: 27.05.2014, 20:39", marker.getSnippet());
+			}
+
+			private Runnable init(GMapFragment gMapFragment) {
+				this.gMapFragment = gMapFragment;
+				return this;
+			}
+
+		}.init(gMapFragment));
+
+	}
+
+	public void testLocation03_DistanceUnknown() {
+		Fragment fragment = mSolo.getCurrentActivity().getFragmentManager().findFragmentById(at.software2014.trackme.R.id.content_frame);
+		GMapFragment gMapFragment = (GMapFragment)fragment;
+
+		Handler handler = new Handler(Looper.getMainLooper());
+
+		handler.post(new Runnable() {
+			private GMapFragment gMapFragment;
+
+			@Override
+			public void run() {
+				mMainActivity.refreshCurrentFragment();
+
+				HashMap<String, Marker> markers = gMapFragment.getMarkers();
+				Marker marker;
+
+				marker = markers.get("rainer.lankmayr@gmail.com");
+				assertEquals("Distance: Unknown\nLast Update: 27.05.2014, 20:39", marker.getSnippet());
+			}
+
+			private Runnable init(GMapFragment gMapFragment) {
+				this.gMapFragment = gMapFragment;
+				return this;
+			}
+
+		}.init(gMapFragment));
+
 	}
 
 }
