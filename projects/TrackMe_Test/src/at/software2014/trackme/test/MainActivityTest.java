@@ -20,8 +20,9 @@ import android.widget.TextView;
 
 public class MainActivityTest extends
 		ActivityInstrumentationTestCase2<MainActivity> {
-
+	
 	private Solo mSolo;
+	private MainActivity mMainActivity;
 
 	public MainActivityTest() {
 		super(MainActivity.class);
@@ -32,15 +33,15 @@ public class MainActivityTest extends
 		super.setUp();
 		mSolo = new Solo(getInstrumentation(), getActivity());
 
-		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
-
+		mMainActivity = (MainActivity)mSolo.getCurrentActivity();
+		
 		List<ContactEntry> mContacts = new ArrayList<ContactEntry>();
 
 		mContacts.add(new ContactEntry("Anna Weber", "anna.weber@gmail.com", (long)1401216003*1000, 47.1, 15.4));
 		mContacts.add(new ContactEntry("Rainer Lankmayr", "rainer.lankmayr@gmail.com", (long)1401215993*1000, 47.0, 15.5));
 		mContacts.add(new ContactEntry("Benjamin Steinacher", "benjamin.steinacher@gmail.com", (long)1401216000*1000, 47.08, 15.35));
-
-		mainActivity.setContacts(mContacts);
+		
+		mMainActivity.setContacts(mContacts);
 	}
 
 	@Override
@@ -48,6 +49,15 @@ public class MainActivityTest extends
 		// TODO Auto-generated method stub
 		mSolo.finishOpenedActivities();
 		super.tearDown();
+	}
+	
+	public void test0001_SetPreferences() {
+		mMainActivity.setDisableServerComm(true);
+		mSolo.sleep(10000);
+	}
+	
+	public void testZZZZ_SetPreferences() {
+		mMainActivity.setDisableServerComm(false);
 	}
 	
 	public void testData() {
