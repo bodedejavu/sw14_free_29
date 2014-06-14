@@ -1,12 +1,12 @@
 {
   "extends" : "thirdParty.api",
   "abstract" : false,
-  "root" : "https://chrome-lambda-586.appspot.com/_ah/api",
+  "root" : "https://trackme-sw2014.appspot.com/_ah/api",
   "name" : "userdataendpoint",
   "version" : "v1",
   "defaultVersion" : false,
   "adapter" : {
-    "bns" : "https://chrome-lambda-586.appspot.com/_ah/spi",
+    "bns" : "https://trackme-sw2014.appspot.com/_ah/spi",
     "deadline" : 65.0,
     "type" : "lily"
   },
@@ -77,6 +77,31 @@
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "userdataendpoint.removeAllowedUser" : {
+      "path" : "alloweduser/{ownEmail}/{userEmail}",
+      "httpMethod" : "DELETE",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.removeAllowedUser",
+      "request" : {
+        "parameters" : {
+          "ownEmail" : {
+            "type" : "string",
+            "required" : true
+          },
+          "userEmail" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
       }
     },
     "userdataendpoint.listUserData" : {
@@ -322,6 +347,8 @@
         "response" : {
           "$ref" : "UserData"
         }
+      },
+      "at.software2014.trackme.UserDataEndpoint.removeAllowedUser" : {
       },
       "at.software2014.trackme.UserDataEndpoint.listUserData" : {
         "response" : {

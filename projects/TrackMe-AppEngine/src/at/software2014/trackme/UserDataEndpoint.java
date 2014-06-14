@@ -162,35 +162,34 @@ public class UserDataEndpoint {
 		return contains;
 	}
 	
+	
 	@ApiMethod(name = "register")
 	public void register(@Named("email") String email, @Named("name") String name) {
 			
 		UserData ud = getUserData(email); 
-		if(ud == null)
-		{
+		if(ud == null) {
+			
 			ud = new UserData();
 			ud.setUserEmail(email);
 			ud.setUserName(name);
 			insertUserData(ud); 
 			System.out.println("User " + email + " " + name + " was registered successfully."); 
 		}
-		else
-		{
+		else {
 			System.out.println("User " + email + " is already registered."); 
 		}
 	}
+	
 	
 	@ApiMethod(name = "updateLocation")
 	public void updateLocation(@Named("email")String email, @Named("latitude") double latitude, @Named("longitude") double longitude, @Named("timestamp") long timestamp)
 	{
 		EntityManager mgr = getEntityManager();
 		UserData ud = mgr.find(UserData.class, email);
-		if(ud == null)
-		{
+		if(ud == null) {
 			System.out.println("User " + email + " does not exist."); 
 		}
-		else
-		{
+		else {
 			ud.setUserLastLatitude(latitude);
 			ud.setUserLastLongitude(longitude);
 			ud.setTimestamp(timestamp);
@@ -200,6 +199,7 @@ public class UserDataEndpoint {
 		
 		mgr.close(); 
 	}
+	
 	
 	@ApiMethod(name = "addAllowedUser")
 	public void addAllowedUser(@Named("ownEmail") String ownEmail, @Named("userEmail") String userEmail) {
@@ -221,6 +221,22 @@ public class UserDataEndpoint {
 	}
 	
 	
+	@ApiMethod(name = "removeAllowedUser")
+	public void removeAllowedUser(@Named("ownEmail") String ownEmail, @Named("userEmail") String userEmail) {
+		
+		EntityManager mgr = getEntityManager();
+		UserData ownUd = mgr.find(UserData.class, ownEmail);
+		
+		List<String> allowedUsers = ownUd.getAllowedUsersForQuerying();
+		
+		if(allowedUsers.contains(userEmail)) {
+			allowedUsers.remove(userEmail);
+		}
+		
+		mgr.close();
+	}
+	
+	
 	@ApiMethod(name = "getAllowedUsers")
 	public List<UserData> getAllowedUsers(@Named("ownEmail") String ownEmail) {
 		
@@ -228,14 +244,14 @@ public class UserDataEndpoint {
 		UserData ownUd = mgr.find(UserData.class, ownEmail);
 
 		List<UserData> allowedUsers = new ArrayList<UserData>();
-		for(String allowedUserIds : ownUd.getAllowedUsersForQuerying())
-		{
+		for(String allowedUserIds : ownUd.getAllowedUsersForQuerying()) {
 			allowedUsers.add(mgr.find(UserData.class,allowedUserIds)); 
 		}
 		
 		mgr.close();
 		return allowedUsers;	
 	}
+	
 	
 	@ApiMethod(name = "getRegisteredUsers")
 	public List<UserData> getRegisteredUsers() {

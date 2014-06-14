@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/di7kDblghxJGT1NxdjMZlagnuu8\"",
+ "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/FblAukEkBxQayRYeZiqsOw2nEew\"",
  "discoveryVersion": "v1",
  "id": "userdataendpoint:v1",
  "name": "userdataendpoint",
@@ -14,9 +14,9 @@
   "x32": "http://www.google.com/images/icons/product/search-32.gif"
  },
  "protocol": "rest",
- "baseUrl": "https://chrome-lambda-586.appspot.com/_ah/api/userdataendpoint/v1/",
+ "baseUrl": "https://trackme-sw2014.appspot.com/_ah/api/userdataendpoint/v1/",
  "basePath": "/_ah/api/userdataendpoint/v1/",
- "rootUrl": "https://chrome-lambda-586.appspot.com/_ah/api/",
+ "rootUrl": "https://trackme-sw2014.appspot.com/_ah/api/",
  "servicePath": "userdataendpoint/v1/",
  "batchPath": "batch",
  "parameters": {
@@ -266,6 +266,30 @@
    "parameterOrder": [
     "email",
     "name"
+   ],
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "removeAllowedUser": {
+   "id": "userdataendpoint.removeAllowedUser",
+   "path": "alloweduser/{ownEmail}/{userEmail}",
+   "httpMethod": "DELETE",
+   "parameters": {
+    "ownEmail": {
+     "type": "string",
+     "required": true,
+     "location": "path"
+    },
+    "userEmail": {
+     "type": "string",
+     "required": true,
+     "location": "path"
+    }
+   },
+   "parameterOrder": [
+    "ownEmail",
+    "userEmail"
    ],
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"

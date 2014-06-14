@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/f_B_I99oBjpCflj8c5fres80_xw\"",
+ "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/6XDEIldG7K2QgKizcIFt6TGGIb4\"",
  "discoveryVersion": "v1",
  "id": "messageEndpoint:v1",
  "name": "messageEndpoint",
@@ -14,8 +14,8 @@
   "x32": "http://www.google.com/images/icons/product/search-32.gif"
  },
  "protocol": "rpc",
- "rootUrl": "https://chrome-lambda-586.appspot.com/_ah/api/",
- "rpcUrl": "https://chrome-lambda-586.appspot.com/_ah/api/rpc",
+ "rootUrl": "https://trackme-sw2014.appspot.com/_ah/api/",
+ "rpcUrl": "https://trackme-sw2014.appspot.com/_ah/api/rpc",
  "rpcPath": "/_ah/api/rpc",
  "parameters": {
   "alt": {

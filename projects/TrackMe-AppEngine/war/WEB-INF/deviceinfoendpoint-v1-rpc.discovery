@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/3Od6H3l79kQjzOt-Gyduwg4PUsY\"",
+ "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/yxz3efVMN5W9z0qeeWGfnvPi-DU\"",
  "discoveryVersion": "v1",
  "id": "deviceinfoendpoint:v1",
  "name": "deviceinfoendpoint",
@@ -14,8 +14,8 @@
   "x32": "http://www.google.com/images/icons/product/search-32.gif"
  },
  "protocol": "rpc",
- "rootUrl": "https://chrome-lambda-586.appspot.com/_ah/api/",
- "rpcUrl": "https://chrome-lambda-586.appspot.com/_ah/api/rpc",
+ "rootUrl": "https://trackme-sw2014.appspot.com/_ah/api/",
+ "rpcUrl": "https://trackme-sw2014.appspot.com/_ah/api/rpc",
  "rpcPath": "/_ah/api/rpc",
  "parameters": {
   "alt": {

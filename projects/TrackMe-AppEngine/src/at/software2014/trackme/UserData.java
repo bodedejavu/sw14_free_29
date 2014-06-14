@@ -1,5 +1,6 @@
 package at.software2014.trackme;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -7,6 +8,11 @@ import javax.persistence.Id;
 
 @Entity
 public class UserData {
+	
+	public UserData() {
+		
+		allowedUsersForQuerying = new ArrayList<String>();
+	}
 	
 	@Id
 	private String userEmail;	

@@ -1,12 +1,12 @@
 {
   "extends" : "thirdParty.api",
   "abstract" : false,
-  "root" : "https://chrome-lambda-586.appspot.com/_ah/api",
+  "root" : "https://trackme-sw2014.appspot.com/_ah/api",
   "name" : "messageEndpoint",
   "version" : "v1",
   "defaultVersion" : false,
   "adapter" : {
-    "bns" : "https://chrome-lambda-586.appspot.com/_ah/spi",
+    "bns" : "https://trackme-sw2014.appspot.com/_ah/spi",
     "deadline" : 65.0,
     "type" : "lily"
   },

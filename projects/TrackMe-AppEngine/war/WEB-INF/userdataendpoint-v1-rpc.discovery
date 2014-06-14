@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/di7kDblghxJGT1NxdjMZlagnuu8\"",
+ "etag": "\"p_qcyFV0KQVqSB1Aq3pqmPu-2MY/FblAukEkBxQayRYeZiqsOw2nEew\"",
  "discoveryVersion": "v1",
  "id": "userdataendpoint:v1",
  "name": "userdataendpoint",
@@ -14,8 +14,8 @@
   "x32": "http://www.google.com/images/icons/product/search-32.gif"
  },
  "protocol": "rpc",
- "rootUrl": "https://chrome-lambda-586.appspot.com/_ah/api/",
- "rpcUrl": "https://chrome-lambda-586.appspot.com/_ah/api/rpc",
+ "rootUrl": "https://trackme-sw2014.appspot.com/_ah/api/",
+ "rpcUrl": "https://trackme-sw2014.appspot.com/_ah/api/rpc",
  "rpcPath": "/_ah/api/rpc",
  "parameters": {
   "alt": {
@@ -250,6 +250,26 @@
    "parameterOrder": [
     "email",
     "name"
+   ],
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "userdataendpoint.removeAllowedUser": {
+   "id": "userdataendpoint.removeAllowedUser",
+   "parameters": {
+    "ownEmail": {
+     "type": "string",
+     "required": true
+    },
+    "userEmail": {
+     "type": "string",
+     "required": true
+    }
+   },
+   "parameterOrder": [
+    "ownEmail",
+    "userEmail"
    ],
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"

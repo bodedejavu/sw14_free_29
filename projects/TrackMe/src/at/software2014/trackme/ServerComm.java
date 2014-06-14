@@ -40,7 +40,7 @@ public class ServerComm {
 
 	
 	public void registerOwnUser(final String email, final String name) {
-		registerOwnUser(email, name,null);
+		registerOwnUser(email, name, null);
 	}
 
 	public void registerOwnUser(final String email, final String name, final AsyncCallback<Void> onRegisterCompleteCallback) {
@@ -151,9 +151,42 @@ public class ServerComm {
 	private void addAllowedUserSync(String ownEmail, String userEmail) throws IOException {
 		mUserEndpoint.addAllowedUser(ownEmail, userEmail).execute();
 	}
+	
+	public void removeAllowedUser(final String ownEmail, final String userEmail, final AsyncCallback<Void> onDeleteAllowedUserCallback) {
+		
+		new AsyncTask <Void, Void, Void>() {
+			Exception mException;
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				
+				try {
+					removeAllowedUserSync(ownEmail, userEmail);
+				} catch (IOException e){
+					mException = e;
+				}
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(Void result) {
+				if(mException == null) {
+					onDeleteAllowedUserCallback.onSuccess(result); 
+				}
+				else {
+					onDeleteAllowedUserCallback.onFailure(mException); 
+				}
+			}
+		}.execute((Void)null);
+	}
+	
+	
+	private void removeAllowedUserSync(String ownEmail, String userEmail) throws IOException {	
+		mUserEndpoint.removeAllowedUser(ownEmail, userEmail).execute();
+	}
 
 
-	public void unregisterOwnUser(final String ownEmail, final String userEmail, final AsyncCallback<Void> onDeleteAllowedUserCompleteCallback) {
+	public void unregisterOwnUser(final String ownEmail, final AsyncCallback<Void> onDeleteOwnUserCompleteCallback) {
 
 		new AsyncTask<Void,Void,Void>() {
 			Exception mException; 
@@ -161,7 +194,7 @@ public class ServerComm {
 			@Override
 			protected Void doInBackground(Void... params) {
 				try {
-					unregisterOwnUserSync(ownEmail, userEmail);
+					unregisterOwnUserSync(ownEmail);
 				} catch (IOException e) {
 					mException = e; 
 				} 
@@ -171,10 +204,10 @@ public class ServerComm {
 			@Override
 			protected void onPostExecute(Void result) {
 				if(mException == null) {
-					onDeleteAllowedUserCompleteCallback.onSuccess(result); 
+					onDeleteOwnUserCompleteCallback.onSuccess(result); 
 				}
 				else {
-					onDeleteAllowedUserCompleteCallback.onFailure(mException); 
+					onDeleteOwnUserCompleteCallback.onFailure(mException); 
 				}
 			}
 
@@ -182,13 +215,13 @@ public class ServerComm {
 	}
 
 
-	private void unregisterOwnUserSync(String ownEmail, String userEmail) throws IOException {
+	private void unregisterOwnUserSync(String ownEmail) throws IOException {
 
 		UserData ud = mUserEndpoint.getUserData(ownEmail).execute();
 		List<String> users = ud.getAllowedUsersForQuerying();
 
-		if(users.contains(userEmail)) {			
-			mUserEndpoint.removeUserData(userEmail).execute();
+		if(users.contains(ownEmail)) {			
+			mUserEndpoint.removeUserData(ownEmail).execute();
 		}
 	}
 
