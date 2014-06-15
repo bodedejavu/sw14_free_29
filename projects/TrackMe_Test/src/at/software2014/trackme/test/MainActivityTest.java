@@ -38,13 +38,20 @@ public class MainActivityTest extends
 		mMainActivity = (MainActivity)mSolo.getCurrentActivity();
 		
 		List<ContactEntry> contacts = new ArrayList<ContactEntry>();
+		List<ContactEntry> registeredUsers = new ArrayList<ContactEntry>();
 
 		contacts.add(new ContactEntry("Anna Weber", "anna.weber@gmail.com", (long)1401216003*1000, 47.1, 15.4));
 		contacts.add(new ContactEntry("Rainer Lankmayr", "rainer.lankmayr@gmail.com", (long)1401215993*1000, 47.0, 15.5));
 		contacts.add(new ContactEntry("Benjamin Steinacher", "benjamin.steinacher@gmail.com", (long)1401216000*1000, 47.08, 15.35));
 		
 		mMainActivity.setContacts(contacts);
-		mMainActivity.setRegisteredUsers(contacts);
+		
+		registeredUsers.add(contacts.get(0));
+		registeredUsers.add(contacts.get(1));
+		registeredUsers.add(contacts.get(2));
+		registeredUsers.add(new ContactEntry("Paul Bodenbenner", "paul.bodenbenner@gmail.com", (long)1401216003*1000, 47.03, 15.37));
+		
+		mMainActivity.setRegisteredUsers(registeredUsers);
 	}
 
 	@Override
@@ -66,7 +73,8 @@ public class MainActivityTest extends
 	public void testData() {
 		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
 		
-		ContactEntry contactEntry = mainActivity.getContactByEMail("rainer.lankmayr@gmail.com");
+		ContactEntry contactEntry = mainActivity.getContactByEMail(
+				"rainer.lankmayr@gmail.com");
 		
 		assertEquals(contactEntry.getName(), "Rainer Lankmayr");
 	}
@@ -74,7 +82,8 @@ public class MainActivityTest extends
 	public void testData2() {
 		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
 		
-		ContactEntry contactEntry = mainActivity.getContactByEMail("anna.weber@gmail.com");
+		ContactEntry contactEntry = mainActivity.getContactByEMail(
+				"anna.weber@gmail.com");
 		
 		assertEquals(contactEntry.getName(), "Anna Weber");
 	}

@@ -379,7 +379,6 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	public void loadAllowedUsers() {
 		if (mDisableServerComm == false) {
 			mServerInterface.getAllowedUsers(mEMail, new AsyncCallback<List<UserData>>() {
-//			mServerInterface.getRegisteredUsers(new AsyncCallback<List<UserData>>() {
 
 				@Override
 				public void onSuccess(List<UserData> response) {
@@ -446,6 +445,19 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		return contactEntry;
 	}
 	
+	public ContactEntry getRegisteredUserByEMail(String eMail) {
+		ContactEntry contactEntry = null;
+		
+		for (int i=0; i<mRegisteredUsers.size(); i++) {
+			if (mRegisteredUsers.get(i).geteMail() == eMail) {
+				contactEntry = mRegisteredUsers.get(i);
+				break;
+			}
+		}
+		
+		return contactEntry;
+	}
+	
 	public List<ContactEntry> getContacts() {
 		return mContacts;
 	}
@@ -468,6 +480,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 				
 				@Override
 				public void onSuccess(Void response) {
+					refreshCurrentFragment();
 					Toast.makeText(MainActivity.this, 
 							R.string.toast_contact_add_successful, 
 							Toast.LENGTH_LONG).show();
@@ -480,11 +493,23 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 							failure.getMessage(), Toast.LENGTH_LONG).show();
 				}
 			});
+		} else {
+			ContactEntry contactEntry = getRegisteredUserByEMail(eMail);
+			if(contactEntry != null) {
+				mContacts.add(contactEntry);
+				refreshCurrentFragment();
+				Toast.makeText(MainActivity.this, 
+						getResources().getText(R.string.toast_contact_add_successful), 
+						Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(MainActivity.this, 
+						R.string.toast_contact_add_failed, 
+						Toast.LENGTH_LONG).show();
+			}
 		}
 	}
 
 	public void deleteContact(String eMail) {
-		// TODO: improve local handling
 		ContactEntry contactEntry = getContactByEMail(eMail);
 		if (contactEntry != null) {
 			if(mDisableServerComm == false) {

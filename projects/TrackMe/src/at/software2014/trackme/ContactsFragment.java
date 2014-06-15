@@ -220,8 +220,8 @@ public class ContactsFragment extends Fragment {
 				String eMail = data.getExtras().getString("eMail");
 				mMainActivity.addContact(eMail);
 				Toast.makeText(getActivity(), getResources()
-						.getString(R.string.toast_contact_add_in_progress)+"\n"+eMail, 
-						Toast.LENGTH_LONG).show();
+						.getString(R.string.toast_contact_add_in_progress) + 
+						" ...\n" + eMail, Toast.LENGTH_LONG).show();
 			} else if (resultCode == Activity.RESULT_CANCELED) {
 				// do nothing
 			} else {
