@@ -309,15 +309,18 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 					
 					@Override
 					public void onSuccess(Void response) {
-						Toast.makeText(MainActivity.this, "Registration successful.", Toast.LENGTH_SHORT).show(); 
-						
+						Toast.makeText(MainActivity.this,  
+								R.string.toast_registration_successful, 
+								Toast.LENGTH_SHORT).show(); 
 					}
 					
 					@Override
 					public void onFailure(Exception failure) {
-						Toast.makeText(MainActivity.this, "Registration failed!", Toast.LENGTH_SHORT).show(); 
-						Log.d("Registration", "Registration failed! " + failure.getMessage());
-						
+						Toast.makeText(MainActivity.this, 
+								R.string.toast_registration_failed, 
+								Toast.LENGTH_SHORT).show();
+						Log.d("Registration", "Registration failed! " 
+								+ failure.getMessage());
 					}
 				});
 			}
@@ -392,13 +395,17 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 						refreshCurrentFragment();
 					}
-					Toast.makeText(MainActivity.this, "Updating friends list successfully.", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, 
+							R.string.toast_update_friends_sucessful, 
+							Toast.LENGTH_SHORT).show();
 				}
 
 				@Override
 				public void onFailure(Exception failure) {
-					Toast.makeText(MainActivity.this, "Updating friends list failed!", Toast.LENGTH_SHORT).show(); 
-					Log.d("Allowed User", "Updating friends list failed! " + failure.getMessage());
+					Toast.makeText(MainActivity.this, 
+							R.string.toast_update_friends_failed, 
+							Toast.LENGTH_SHORT).show(); 
+					Log.d("Allowed User", "Updating friends failed" + failure.getMessage());
 				}
 			});
 		}
@@ -461,41 +468,56 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 				
 				@Override
 				public void onSuccess(Void response) {
-					Toast.makeText(MainActivity.this, "Adding user successful", 
+					Toast.makeText(MainActivity.this, 
+							R.string.toast_contact_add_successful, 
 							Toast.LENGTH_LONG).show();
 				}
 				
 				@Override
 				public void onFailure(Exception failure) {
-					Toast.makeText(MainActivity.this, "Adding user failed " + 
+					Toast.makeText(MainActivity.this, 
+							R.string.toast_contact_add_failed + 
 							failure.getMessage(), Toast.LENGTH_LONG).show();
 				}
 			});
 		}
 	}
 
-	public boolean deleteContact(String eMail) {
+	public void deleteContact(String eMail) {
+		// TODO: improve local handling
 		ContactEntry contactEntry = getContactByEMail(eMail);
-		if (mDisableServerComm == false) {
-			if(contactEntry != null) {
+		if (contactEntry != null) {
+			if(mDisableServerComm == false) {
 				mServerInterface.removeAllowedUser(mEMail, eMail, new AsyncCallback<Void>() {
 	
 					@Override
 					public void onSuccess(Void response) {
-						Toast.makeText(MainActivity.this, "Successful", Toast.LENGTH_LONG).show();
+						Toast.makeText(MainActivity.this, 
+								R.string.toast_contact_delete_successful,
+								Toast.LENGTH_LONG).show();
+						refreshCurrentFragment();
 					}
 	
 					@Override
 					public void onFailure(Exception failure) {
-						Toast.makeText(MainActivity.this, "Failed " + failure.getMessage(), Toast.LENGTH_LONG).show();
+						Toast.makeText(MainActivity.this, 
+								getResources().getText
+								(R.string.toast_contact_delete_failed)
+								+ failure.getMessage(), Toast.LENGTH_LONG).show();
 					}
 				});
+			} else {
+				mContacts.remove(contactEntry);
+				Toast.makeText(MainActivity.this, 
+						R.string.toast_contact_delete_successful,
+						Toast.LENGTH_LONG).show();
+				refreshCurrentFragment();
 			}
-			// TODO: improve local handling
-			mContacts.remove(contactEntry);
-			return true;
+		} else {
+			Toast.makeText(MainActivity.this, 
+					R.string.toast_contact_delete_failed,
+					Toast.LENGTH_LONG).show();
 		}
-		return false;
 	}
 
 	/* The click listner for ListView in the navigation drawer */
@@ -638,6 +660,9 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 			break;
 		case 1:
 			((FriendsListFragment) fragment).refreshLocation();
+			break;
+		case 2:
+			((ContactsFragment) fragment).refreshContactList();
 			break;
 		}		
 	}

@@ -42,8 +42,8 @@ public class AddContactActivity extends BaseActivity {
 	private void showAffirmationDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-		builder.setTitle(R.string.action_contact_add_dialog_title);
-		builder.setMessage(R.string.action_contact_add_dialog_text);
+		builder.setTitle(R.string.dialog_confirmation_title);
+		builder.setMessage(R.string.dialog_confirmation_text);
 		builder.setCancelable(false);
 		builder.setPositiveButton(R.string.confirm,
 				new DialogInterface.OnClickListener() {

@@ -16,20 +16,10 @@
     
     <string name="action_refresh">Refresh</string>
     <string name="action_contact_invite">Invite</string>
-    <string name="action_contact_invite_no_email">No email-address found</string>
-    <string name="action_contact_invite_cp_fail">Extracting e-mail information failed</string>
     <string name="action_contact_invite_suject">TrackMe Invitation</string>
     <string name="action_contact_invite_text">Hello,\n\ni am inviting you to download and test the APP TrackMe.\n\n-link-</string>
     <string name="action_contact_add">Add</string>
-    <string name="action_contact_add_dialog_title">Confirmation</string>
-    <string name="action_contact_add_dialog_text">By clicking \'Confirm\' you agree to add this person to your contacts and to share your location.</string>
-    <string name="action_contact_add_in_progress">Adding new contact</string>
-    <string name="action_contact_add_successful">Contact added</string>
-    <string name="action_contact_add_failed">Adding new contact failed</string>
     <string name="action_contact_delete">Delete</string>
-    <string name="action_contact_delete_successful">Contact deleted</string>
-    <string name="action_contact_delete_failed">Delition failed</string>
-    <string name="action_contact_delete_no_selection">No Contact selected</string>
     <string name="action_zoom_to_me">Me</string>
     <string name="action_zoom_to_friends">Friends</string>
     
@@ -38,10 +28,27 @@
     <string name="information_last_update">Last Update</string>
     <string name="information_me">Me</string>
     
+    <string name="dialog_confirmation_title">Confirmation</string>
+    <string name="dialog_confirmation_text">By clicking \'Confirm\' you agree to add this person to your contacts and to share your location.</string>
+    
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="canceled">Canceled</string>
     <string name="list_empty">no entries</string>
+    
+    <string name="toast_contact_add_in_progress">Adding new contact</string>
+    <string name="toast_contact_add_successful">Contact added</string>
+    <string name="toast_contact_add_failed">Adding new contact failed</string>
+    <string name="toast_contact_invite_no_email">No email-address found</string>
+    <string name="toast_contact_invite_cp_fail">Extracting e-mail information failed</string>
+    <string name="toast_contact_delete_successful">Contact deleted</string>
+    <string name="toast_contact_delete_failed">Delition failed</string>
+    <string name="toast_contact_delete_no_selection">No Contact selected</string>
+    <string name="toast_refreshing">Refreshing</string>
+    <string name="toast_registration_successful">Registration successful</string>
+    <string name="toast_registration_failed">Registration failed</string>
+    <string name="toast_update_friends_sucessful">Updating friends successful</string>
+    <string name="toast_update_friends_failed">Updating friends failed</string>
     
     <string-array name="navigation_menu">
         <item>Map</item>

@@ -22,6 +22,7 @@ import android.widget.ListView;
 public class FriendsListFragment extends Fragment {
 
 	private static final String ARG_SECTION_NUMBER = "section_number";
+	private MainActivity mMainActivity;
 	private ListView mListView;
 	private FriendsListAdapter mListAdapter;
 	private ArrayList<FriendsListItem> friendslist;
@@ -65,6 +66,8 @@ public class FriendsListFragment extends Fragment {
 	@Override
 	public void onViewCreated(View v, Bundle savedInstanceState) {
 		super.onViewCreated(v, savedInstanceState);
+
+		mMainActivity = (MainActivity) getActivity();
 		setListData();
 	}
 
@@ -89,8 +92,10 @@ public class FriendsListFragment extends Fragment {
 		// handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_friends_refresh:
-			Toast.makeText(getActivity(), "Refreshing...", Toast.LENGTH_LONG).show();
-			((MainActivity) getActivity()).loadAllowedUsers();
+			Toast.makeText(getActivity(),
+					getResources().getText(R.string.toast_refreshing) + " ...",
+					Toast.LENGTH_SHORT).show();
+			mMainActivity.loadAllowedUsers();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -99,33 +104,32 @@ public class FriendsListFragment extends Fragment {
 
 	private void setListData() {
 		friendslist.clear();
-		Location myLocation = ((MainActivity) getActivity()).getMyLocation();
-		List<ContactEntry> contacts = ((MainActivity) getActivity())
-				.getContacts();
-		
+		Location myLocation = mMainActivity.getMyLocation();
+		List<ContactEntry> contacts = mMainActivity.getContacts();
+
 		TextView empty = (TextView) this.getView().findViewById(
 				R.id.friendslist_empty);
 
-		if (contacts.isEmpty()) {			
+		if (contacts.isEmpty()) {
 			empty.setVisibility(View.VISIBLE);
 		} else {
 			empty.setVisibility(View.INVISIBLE);
-			
+
 			for (int i = 0; i < contacts.size(); i++) {
 				ContactEntry contactEntry = contacts.get(i);
-	
+
 				String eMail = contactEntry.geteMail();
 				String name = contactEntry.getName();
 				String timestamp = contactEntry
 						.getTimestampFormatted(getActivity());
 				String distance = contactEntry.getDistanceFormatted(myLocation,
 						getResources().getString(R.string.information_unknown));
-	
+
 				friendslist.add(new FriendsListItem(eMail, name, distance,
 						timestamp));
 			}
 		}
-		
+
 		mListAdapter.setData(friendslist);
 		// mListAdapter.notifyDataSetChanged();
 	}

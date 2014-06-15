@@ -132,7 +132,7 @@ public class MainActivityTest extends
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(2);
 		mSolo.clickOnView(mSolo.getView("action_friends_refresh"));
-		assertTrue(this.mSolo.waitForText("Refreshing..."));
+		assertTrue(this.mSolo.waitForText("Refreshing ..."));
 	}
 
 	public void testContacts_ListView() {
@@ -177,7 +177,6 @@ public class MainActivityTest extends
 		mSolo.clickOnView(mSolo.getView("action_contact_add"));
 		assertNotNull(mSolo.getView("contacts_add_title"));
 		assertNotNull(mSolo.getView("contacts_add_listView"));
-		mSolo.clickOnActionBarHomeButton();
 	}
 	
 	public void testContacts_AddContactActivityConfirmationDialog() {

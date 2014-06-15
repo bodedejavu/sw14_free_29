@@ -173,23 +173,10 @@ public class ContactsFragment extends Fragment {
 	private void deleteContact() {
 		if (mSelectedItem != null) {
 			String key = mSelectedItem.getKey();
-			if (mMainActivity.deleteContact(key)) {
-				setListData();
-				mListAdapter.notifyDataSetChanged();
-				mSelectedItem = null;
-				mListView.clearChoices();
-
-//				Toast.makeText(getActivity(),
-//						R.string.action_contact_delete_successful,
-//						Toast.LENGTH_LONG).show();
-			} else {
-				Toast.makeText(getActivity(),
-						R.string.action_contact_delete_failed,
-						Toast.LENGTH_LONG).show();
-			}
+			mMainActivity.deleteContact(key);
 		} else {
 			Toast.makeText(getActivity(),
-					R.string.action_contact_delete_no_selection,
+					R.string.toast_contact_delete_no_selection,
 					Toast.LENGTH_LONG).show();
 		}
 	}
@@ -216,14 +203,14 @@ public class ContactsFragment extends Fragment {
 					openInvitationMail(email);
 				} else {
 					Toast.makeText(getActivity(),
-							R.string.action_contact_invite_no_email,
+							R.string.toast_contact_invite_no_email,
 							Toast.LENGTH_LONG).show();
 				}
 			} else if (resultCode == Activity.RESULT_CANCELED) {
 				// do nothing
 			} else {
 				Toast.makeText(getActivity(),
-						R.string.action_contact_invite_cp_fail,
+						R.string.toast_contact_invite_cp_fail,
 						Toast.LENGTH_LONG).show();
 			}
 			break;
@@ -233,16 +220,21 @@ public class ContactsFragment extends Fragment {
 				String eMail = data.getExtras().getString("eMail");
 				mMainActivity.addContact(eMail);
 				Toast.makeText(getActivity(), getResources()
-						.getString(R.string.action_contact_add_in_progress)+"\n"+eMail, 
+						.getString(R.string.toast_contact_add_in_progress)+"\n"+eMail, 
 						Toast.LENGTH_LONG).show();
 			} else if (resultCode == Activity.RESULT_CANCELED) {
 				// do nothing
 			} else {
-//				Toast.makeText(getActivity(),
-//						R.string.action_contact_add_failed, Toast.LENGTH_LONG)
-//						.show();
+				// do nothing
 			}
 			break;
 		}
+	}
+	
+	public void refreshContactList() {
+		setListData();
+		//mListAdapter.notifyDataSetChanged();
+		mSelectedItem = null;
+		mListView.clearChoices();
 	}
 }
