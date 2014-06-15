@@ -2,6 +2,21 @@
 <resources>
 
     <string name="app_name">TrackMe</string>
+    <string name="app_description">
+        &lt;b>About&lt;/b>&lt;br>
+        - Let friends track your position&lt;br>
+        - Show your friends on a map&lt;br>
+        - Information shared:&lt;br>
+        \u00A0\u00A0\u00A0\u00A0\u00A0Name&lt;br>
+		\u00A0\u00A0\u00A0\u00A0\u00A0Location (Distance)&lt;br>
+		\u00A0\u00A0\u00A0\u00A0\u00A0Timestamp&lt;br>&lt;br>
+		&lt;b>Authors&lt;/b>&lt;br>
+		- Rainer Lankmayr&lt;br>
+		- Anna Weber&lt;br>
+		- Paul Bodenbenner&lt;br>&lt;br>
+		&lt;b>Web&lt;/b>&lt;br>
+		&lt;a href="https://github.com/bodedejavu/sw14_free_29">https://github.com/bodedejavu/sw14_free_29&lt;/a>
+	</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="drawer_open">Open navigation drawer</string>
@@ -54,6 +69,7 @@
         <item>Map</item>
         <item>Friends</item>
         <item>Contacts</item>
+        <item>About</item>
         <item>Quit</item>
     </string-array>
 

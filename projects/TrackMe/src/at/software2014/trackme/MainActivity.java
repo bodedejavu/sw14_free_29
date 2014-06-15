@@ -211,7 +211,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		editor.commit();
 	}
 
-	private String getEmailAddress() {
+	public String getEmailAddress() {
 		String emailAddress = "";
 		
 		Pattern emailPattern = Patterns.EMAIL_ADDRESS;
@@ -383,6 +383,8 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 	public void loadAllowedUsers() {
 		if (mDisableServerComm == false) {
+			Log.d("Allowed User", "getAllowedUsers with eMail: '" + mEMail + "'.");
+
 			mServerInterface.getAllowedUsers(mEMail, new AsyncCallback<List<UserData>>() {
 
 				@Override
@@ -582,6 +584,9 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 			fragment = ContactsFragment.newInstance(position);
 			break;
 		case 3:
+			fragment = AboutFragment.newInstance(position);
+			break;
+		case 4:
 			exitActivity();
 		}
 
