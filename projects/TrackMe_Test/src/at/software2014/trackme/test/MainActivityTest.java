@@ -114,6 +114,7 @@ public class MainActivityTest extends
 		ListView lv = (ListView) mSolo.getView(
 				at.software2014.trackme.R.id.friendslist).findViewById(
 				at.software2014.trackme.R.id.friendslist_listView);
+		assertEquals(3, lv.getCount());
 		assertNotNull("List view not found", lv);
 		View view;
 		TextView name;
@@ -151,6 +152,7 @@ public class MainActivityTest extends
 				at.software2014.trackme.R.id.contacts).findViewById(
 				at.software2014.trackme.R.id.contacts_listView);
 		assertNotNull("List view not found", lv);
+		assertEquals(3, lv.getCount());
 		View view;
 		TextView name;
 		view = lv.getChildAt(0);
@@ -188,6 +190,20 @@ public class MainActivityTest extends
 		assertNotNull(mSolo.getView("contacts_add_listView"));
 	}
 	
+	public void testContacts_AddContactActivityList() {
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.clickInList(3);
+		mSolo.clickOnView(mSolo.getView("action_contact_add"));
+		ListView lv = (ListView) mSolo.getView(
+				at.software2014.trackme.R.id.contacts_add_listView);
+		assertNotNull("List view not found", lv);
+		assertEquals(1, lv.getCount());
+		View view = lv.getChildAt(0);
+		TextView name = (TextView) view
+				.findViewById(at.software2014.trackme.R.id.contacts_name);
+		assertEquals("Paul Bodenbenner", name.getText().toString());
+	}
+	
 	public void testContacts_AddContactActivityConfirmationDialog() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(3);
@@ -222,6 +238,10 @@ public class MainActivityTest extends
 		mSolo.clickInList(3);
 		mSolo.clickOnView(mSolo.getView("action_contact_delete"));
 		assertTrue(this.mSolo.waitForText("No Contact selected"));
+		ListView lv = (ListView) mSolo.getView(
+				at.software2014.trackme.R.id.contacts).findViewById(
+				at.software2014.trackme.R.id.contacts_listView);
+		assertEquals(3, lv.getCount());
 	}
 
 	public void testContacts_DeleteContactSuccess() {
@@ -233,11 +253,32 @@ public class MainActivityTest extends
 		ListView lv = (ListView) mSolo.getView(
 				at.software2014.trackme.R.id.contacts).findViewById(
 				at.software2014.trackme.R.id.contacts_listView);
+		assertEquals(2, lv.getCount());
 		View view = lv.getChildAt(0);
 		TextView name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
 		assertEquals("Name not found", "Rainer Lankmayr", name.getText()
 				.toString());
+	}
+	
+	public void testContacts_DeleteContactAll() {
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.clickInList(3);
+		mSolo.clickInList(3);
+		mSolo.clickOnView(mSolo.getView("action_contact_delete"));
+		mSolo.clickInList(2);
+		mSolo.clickOnView(mSolo.getView("action_contact_delete"));
+		mSolo.clickInList(1);
+		mSolo.clickOnView(mSolo.getView("action_contact_delete"));
+		mSolo.sleep(1000);
+		ListView lv = (ListView) mSolo.getView(
+				at.software2014.trackme.R.id.contacts).findViewById(
+				at.software2014.trackme.R.id.contacts_listView);
+		assertEquals(0, lv.getCount());
+		TextView empty = (TextView) mSolo.getView(
+				at.software2014.trackme.R.id.contacts).findViewById(
+				at.software2014.trackme.R.id.contacts_empty);
+        assertEquals(View.VISIBLE, empty.getVisibility());
 	}
 
 	public void testGoogleMaps_Layout() {

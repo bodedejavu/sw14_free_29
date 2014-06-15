@@ -19,10 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class ContactsFragment extends Fragment {
 
@@ -153,12 +153,30 @@ public class ContactsFragment extends Fragment {
 	private void addContact() {
 		mMainActivity.loadRegisteredUsers();
 		List<ContactEntry> registeredUsers = mMainActivity.getRegisteredUsers();
+		List<ContactEntry> contacts = mMainActivity.getContacts();
+		List<ContactEntry> relevantUsers = new ArrayList<ContactEntry>();
+		String myEMail = mMainActivity.getEmailAddress();
+		
+		// relevantUsers = RegisteredUsers - contacts - myEMail
+		for (ContactEntry registeredUser : registeredUsers) {
+			if (!registeredUser.geteMail().equals(myEMail)) {
+				boolean isContained = false;
+				for (ContactEntry contact : contacts) {
+					if(registeredUser.geteMail().equals(contact.geteMail())) {
+						isContained = true;
+					}
+				}
+				if(!isContained) {
+					relevantUsers.add(registeredUser);
+				}
+			}
+		}
+		
 		ArrayList<String> userEMail = new ArrayList<String>();
 		ArrayList<String> userNames = new ArrayList<String>();
 		
-		if (!registeredUsers.isEmpty()) {			
-			for (int i = 0; i < registeredUsers.size(); i++) {
-				ContactEntry contactEntry = registeredUsers.get(i);
+		if (!relevantUsers.isEmpty()) {			
+			for (ContactEntry contactEntry : relevantUsers) {
 				userEMail.add(contactEntry.geteMail());
 				userNames.add(contactEntry.getName());
 			}
