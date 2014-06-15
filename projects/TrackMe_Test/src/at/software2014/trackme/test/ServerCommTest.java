@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.google.api.client.googleapis.auth.clientlogin.ClientLogin.Response;
 
 import android.location.Location;
 import android.location.LocationManager;
@@ -18,11 +19,11 @@ import at.software2014.trackme.userdataendpoint.model.UserData;
 
 
 public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivity> {
-	
+
 	public ServerCommTest() {
 		super(MainActivity.class);
 	}
-	
+
 	final static String TEST_USER_2 = "traudl@gmail.com"; 
 	final static String TEST_USER_NAME_2 = "Traudl";
 	final static String TEST_USER = "jakob@gmail.com";
@@ -30,33 +31,31 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 
 	@BeforeClass 
 	public static void setUpClass() {
-		
+
 		ServerComm comm = new ServerComm();
 		final CountDownLatch signal = new CountDownLatch(1);
-		
-		
+
+
 		comm.registerOwnUser(TEST_USER, TEST_USER_NAME, new AsyncCallback<Void>() {
-			
+
 			@Override
 			public void onSuccess(Void response) {
 				signal.countDown();				
 			}
-			
+
 			@Override
 			public void onFailure(Exception failure) {
 				signal.countDown();
 			}
 		});
-		
-		
+
+
 		try {
 			signal.await();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}	
 	}
-	
-	
 
 
 	@Test
@@ -173,7 +172,6 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 	}
 
 
-
 	@Test
 	public void test3AddAllowedUser() {
 
@@ -224,6 +222,50 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 	@Test
 	public void test4RemoveAllowedUser() {
 
+		final ServerComm comm = new ServerComm(); 
+		final CountDownLatch signal = new CountDownLatch(1);
+		final List<UserData> allowedUsers = new ArrayList<UserData>();
+
+		comm.removeAllowedUser(TEST_USER_2, TEST_USER, new AsyncCallback<Void>() {
+
+			@Override
+			public void onSuccess(Void response) {
+
+				comm.getAllowedUsers(TEST_USER_2, new AsyncCallback<List<UserData>>() {
+
+					@Override
+					public void onSuccess(List<UserData> response) {
+						
+						if(response != null) {
+							allowedUsers.addAll(response);							
+						}
+						signal.countDown();						
+					}
+
+					@Override
+					public void onFailure(Exception failure) {
+						failure.printStackTrace(); 
+						signal.countDown();					
+					}
+				});
+			}
+
+			@Override
+			public void onFailure(Exception failure) {
+				failure.printStackTrace(); 
+				signal.countDown();				
+			}
+		});
+		
+		try {
+			signal.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		assertTrue(!allowedUsers.contains(TEST_USER));
 	}
+
+
 
 }
