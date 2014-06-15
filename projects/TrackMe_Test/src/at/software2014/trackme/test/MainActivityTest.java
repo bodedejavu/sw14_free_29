@@ -70,7 +70,7 @@ public class MainActivityTest extends
 		mMainActivity.setDisableServerComm(false);
 	}
 	
-	public void testData() {
+	public void testContactsDataContacts01() {
 		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
 		
 		ContactEntry contactEntry = mainActivity.getContactByEMail(
@@ -79,7 +79,7 @@ public class MainActivityTest extends
 		assertEquals(contactEntry.getName(), "Rainer Lankmayr");
 	}
 
-	public void testData2() {
+	public void testContactsDataContacts02() {
 		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
 		
 		ContactEntry contactEntry = mainActivity.getContactByEMail(
@@ -87,7 +87,43 @@ public class MainActivityTest extends
 		
 		assertEquals(contactEntry.getName(), "Anna Weber");
 	}
-	
+
+	public void testContactsDataContacts03() {
+		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
+		
+		ContactEntry contactEntry = mainActivity.getContactByEMail(
+				"max.mustermann@gmail.com");
+		
+		assertEquals(contactEntry, null);
+	}
+
+	public void testContactsDataRegisteredUser01() {
+		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
+		
+		ContactEntry contactEntry = mainActivity.getRegisteredUserByEMail(
+				"rainer.lankmayr@gmail.com");
+		
+		assertEquals(contactEntry.getName(), "Rainer Lankmayr");
+	}
+
+	public void testContactsDataRegisteredUser02() {
+		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
+		
+		ContactEntry contactEntry = mainActivity.getRegisteredUserByEMail(
+				"anna.weber@gmail.com");
+		
+		assertEquals(contactEntry.getName(), "Anna Weber");
+	}
+
+	public void testContactsDataRegisteredUser03() {
+		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
+		
+		ContactEntry contactEntry = mainActivity.getRegisteredUserByEMail(
+				"max.mustermann@gmail.com");
+		
+		assertEquals(contactEntry, null);
+	}
+
 	public void testActionBar() {
 		mSolo.clickOnView(mSolo.getView("action_map_refresh"));
 	}
