@@ -60,12 +60,20 @@
         android:text="Get allowed Users for User 1"
         android:textSize="16sp" />
     
-        <Button
+    <Button
         android:id="@+id/btn6"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Delete User 2 from User 1"
+        android:textSize="16sp" />
+    
+    <Button
+        android:id="@+id/btn7"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Unregister own user"
         android:textSize="16sp" />
 
 </LinearLayout>

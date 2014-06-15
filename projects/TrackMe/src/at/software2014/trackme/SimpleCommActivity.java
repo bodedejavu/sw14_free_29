@@ -45,6 +45,7 @@ public class SimpleCommActivity extends Activity {
 		Button addAllowedUser = (Button) findViewById(R.id.btn4);
 		Button getAllowedUsers = (Button) findViewById(R.id.btn5);
 		Button deleteAllowedUser = (Button) findViewById(R.id.btn6);
+		Button unregister = (Button) findViewById(R.id.btn7);
 
 
 		register.setOnClickListener(new OnClickListener() {
@@ -236,6 +237,29 @@ public class SimpleCommActivity extends Activity {
 				
 			}
 		});	
+		
+		
+		unregister.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				
+				mServerInterface.unregisterOwnUser("trude@trackertown.com", new AsyncCallback<Void>() {
+					
+					@Override
+					public void onSuccess(Void response) {
+						Toast.makeText(SimpleCommActivity.this, "Unregistration successful", Toast.LENGTH_SHORT).show(); 
+						
+					}
+					
+					@Override
+					public void onFailure(Exception failure) {
+						Toast.makeText(SimpleCommActivity.this, "Unregistration failed " + failure.getMessage(), Toast.LENGTH_SHORT).show(); 
+						
+					}
+				}); 
+			}
+		});
 		
 	}
 

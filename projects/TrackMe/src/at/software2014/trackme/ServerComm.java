@@ -38,13 +38,13 @@ public class ServerComm {
 		void onFailure(Exception failure); 
 	}
 
-	
+
 	public void registerOwnUser(final String email, final String name) {
 		registerOwnUser(email, name, null);
 	}
 
 	public void registerOwnUser(final String email, final String name, final AsyncCallback<Void> onRegisterCompleteCallback) {
-		
+
 		new AsyncTask<Void,Void,Void>() {
 			Exception mException; 
 
@@ -62,12 +62,12 @@ public class ServerComm {
 			protected void onPostExecute(Void result) {
 				if(mException == null) {
 					if(onRegisterCompleteCallback != null)	{
-					onRegisterCompleteCallback.onSuccess(result); 
+						onRegisterCompleteCallback.onSuccess(result); 
 					}
 				}
 				else {
 					if(onRegisterCompleteCallback != null)	{
-					onRegisterCompleteCallback.onFailure(mException); 
+						onRegisterCompleteCallback.onFailure(mException); 
 					}
 					else
 					{
@@ -151,15 +151,15 @@ public class ServerComm {
 	private void addAllowedUserSync(String ownEmail, String userEmail) throws IOException {
 		mUserEndpoint.addAllowedUser(ownEmail, userEmail).execute();
 	}
-	
+
 	public void removeAllowedUser(final String ownEmail, final String userEmail, final AsyncCallback<Void> onDeleteAllowedUserCallback) {
-		
+
 		new AsyncTask <Void, Void, Void>() {
 			Exception mException;
 
 			@Override
 			protected Void doInBackground(Void... params) {
-				
+
 				try {
 					removeAllowedUserSync(ownEmail, userEmail);
 				} catch (IOException e){
@@ -167,7 +167,7 @@ public class ServerComm {
 				}
 				return null;
 			}
-			
+
 			@Override
 			protected void onPostExecute(Void result) {
 				if(mException == null) {
@@ -179,8 +179,8 @@ public class ServerComm {
 			}
 		}.execute((Void)null);
 	}
-	
-	
+
+
 	private void removeAllowedUserSync(String ownEmail, String userEmail) throws IOException {	
 		mUserEndpoint.removeAllowedUser(ownEmail, userEmail).execute();
 	}
@@ -215,17 +215,11 @@ public class ServerComm {
 	}
 
 
-	private void unregisterOwnUserSync(String ownEmail) throws IOException {
-
-		UserData ud = mUserEndpoint.getUserData(ownEmail).execute();
-		List<String> users = ud.getAllowedUsersForQuerying();
-
-		if(users.contains(ownEmail)) {			
-			mUserEndpoint.removeUserData(ownEmail).execute();
-		}
+	private void unregisterOwnUserSync(String ownEmail) throws IOException {		
+		mUserEndpoint.removeUserData(ownEmail).execute();
 	}
 
-	
+
 	public void getAllowedUsers(final String ownEmail, final AsyncCallback<List<UserData>> onGetAllowedUsersCompleteCallback) {
 
 		new AsyncTask<Void,Void,List<UserData>>() {
@@ -260,9 +254,9 @@ public class ServerComm {
 		return users.getItems();
 	}
 
-	
+
 	public void getRegisteredUsers(final AsyncCallback<List<UserData>> onGetRegisteredUsersCompleteCallback) {
-		
+
 		new AsyncTask<Void,Void,List<UserData>>() {
 			Exception mException; 
 
@@ -288,13 +282,13 @@ public class ServerComm {
 
 		}.execute((Void)null);
 	}
-	
-	
+
+
 	private List<UserData> getAllRegisteredUsersSync() throws IOException {
-		
+
 		List<UserData> registeredUsers = mUserEndpoint.getRegisteredUsers().execute().getItems();
 		return registeredUsers; 
 	}
 
-	
+
 }
