@@ -27,21 +27,6 @@
   "ownerName" : "software2014.at",
   "packagePath" : "trackme",
   "methods" : {
-    "userdataendpoint.getRegisteredUsers" : {
-      "path" : "userdatacollection",
-      "httpMethod" : "GET",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ ],
-      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.getRegisteredUsers",
-      "request" : {
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "userdataendpoint.updateUserData" : {
       "path" : "userdata",
       "httpMethod" : "PUT",
@@ -53,6 +38,21 @@
       "request" : {
         "body" : "autoTemplate(backendRequest)",
         "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "userdataendpoint.getRegisteredUsers" : {
+      "path" : "userdatacollection",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "at.software2014.trackme.UserDataEndpoint.getRegisteredUsers",
+      "request" : {
+        "body" : "empty"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -330,17 +330,17 @@
       }
     },
     "methods" : {
-      "at.software2014.trackme.UserDataEndpoint.getRegisteredUsers" : {
-        "response" : {
-          "$ref" : "UserDataCollection"
-        }
-      },
       "at.software2014.trackme.UserDataEndpoint.updateUserData" : {
         "request" : {
           "$ref" : "UserData"
         },
         "response" : {
           "$ref" : "UserData"
+        }
+      },
+      "at.software2014.trackme.UserDataEndpoint.getRegisteredUsers" : {
+        "response" : {
+          "$ref" : "UserDataCollection"
         }
       },
       "at.software2014.trackme.UserDataEndpoint.getUserData" : {
