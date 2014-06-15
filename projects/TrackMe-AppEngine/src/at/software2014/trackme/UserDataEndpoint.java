@@ -21,6 +21,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.validator.routines.EmailValidator;
+
 @Api(name = "userdataendpoint", namespace = @ApiNamespace(ownerDomain = "software2014.at", ownerName = "software2014.at", packagePath = "trackme"))
 public class UserDataEndpoint {
 
@@ -162,6 +164,19 @@ public class UserDataEndpoint {
 		try {
 			UserData userdata = mgr.find(UserData.class, id);
 			mgr.remove(userdata);
+			
+			List<UserData> otherUsers = getRegisteredUsers(); 
+			
+			for(UserData otherUser : otherUsers) {
+				for(String email : otherUser.getAllowedUsersForQuerying()) {
+					
+					if(email.equals(userdata.getUserEmail())) {
+						
+						removeAllowedUser(otherUser.getUserEmail(),email);
+					}
+				}
+			}
+			
 		} finally {
 			mgr.close();
 		}
@@ -287,6 +302,7 @@ public class UserDataEndpoint {
 
 	@ApiMethod(name = "getRegisteredUsers")
 	public List<UserData> getRegisteredUsers() {
+		
 		EntityManager mgr = getEntityManager();
 		Query query = mgr.createQuery("select from UserData as UserData");
 		List<UserData> users = (List<UserData>) query.getResultList();
@@ -298,13 +314,20 @@ public class UserDataEndpoint {
 	}
 
 	
-	private static final Pattern rfc2822 = Pattern.compile("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+	//private static final Pattern rfc2822 = Pattern.compile("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+//	if (!rfc2822.matcher(email).matches()) {
+//	    throw new BadRequestException(email + " is not a valid address."); 
+//	}
+	
 	private static void validateEmailAddress(String email)
 			throws BadRequestException {
 		
-		if (!rfc2822.matcher(email).matches()) {
-		    throw new BadRequestException(email + " is not a valid address."); 
+		if( email == null || email.length() == 0 || !EmailValidator.getInstance().isValid(email))
+		{
+			 throw new BadRequestException(email + " is not a valid email address."); 
 		}
+		
+	
 	}
 
 }

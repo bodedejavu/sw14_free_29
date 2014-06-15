@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.location.Location;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import at.software2014.trackme.userdataendpoint.Userdataendpoint;
 import at.software2014.trackme.userdataendpoint.model.UserData;
 import at.software2014.trackme.userdataendpoint.model.UserDataCollection;
@@ -81,6 +82,7 @@ public class ServerComm {
 
 
 	private void registerOwnUserSync(String email, String name) throws IOException {	
+		isValidEmail(email);
 		mUserEndpoint.register(email, name).execute();		
 	}
 
@@ -115,6 +117,7 @@ public class ServerComm {
 
 
 	private void updateOwnLocationSync(String ownEmail, Location location) throws IOException {
+		isValidEmail(ownEmail);
 		mUserEndpoint.updateLocation(ownEmail, location.getLatitude(), location.getLongitude(), location.getTime()).execute();
 	}
 
@@ -149,6 +152,7 @@ public class ServerComm {
 
 
 	private void addAllowedUserSync(String ownEmail, String userEmail) throws IOException {
+		isValidEmail(ownEmail);
 		mUserEndpoint.addAllowedUser(ownEmail, userEmail).execute();
 	}
 
@@ -182,6 +186,7 @@ public class ServerComm {
 
 
 	private void removeAllowedUserSync(String ownEmail, String userEmail) throws IOException {	
+		isValidEmail(ownEmail);
 		mUserEndpoint.removeAllowedUser(ownEmail, userEmail).execute();
 	}
 
@@ -215,7 +220,8 @@ public class ServerComm {
 	}
 
 
-	private void unregisterOwnUserSync(String ownEmail) throws IOException {		
+	private void unregisterOwnUserSync(String ownEmail) throws IOException {	
+		isValidEmail(ownEmail);
 		mUserEndpoint.removeUserData(ownEmail).execute();
 	}
 
@@ -250,6 +256,7 @@ public class ServerComm {
 
 
 	private List<UserData> getAllowedUsersSync(String ownEmail) throws IOException {
+		isValidEmail(ownEmail);
 		UserDataCollection users = mUserEndpoint.getAllowedUsers(ownEmail).execute();
 		return users.getItems();
 	}
@@ -285,9 +292,17 @@ public class ServerComm {
 
 
 	private List<UserData> getAllRegisteredUsersSync() throws IOException {
-
 		List<UserData> registeredUsers = mUserEndpoint.getRegisteredUsers().execute().getItems();
 		return registeredUsers; 
+	}
+	
+
+	public final static void isValidEmail(String address) throws IOException {
+		boolean valid = !TextUtils.isEmpty(address) && android.util.Patterns.EMAIL_ADDRESS.matcher(address).matches();
+		
+		if(!valid) {
+			throw new IOException("'" + address + "'"  + " is not a valid email address."); 
+		}
 	}
 
 

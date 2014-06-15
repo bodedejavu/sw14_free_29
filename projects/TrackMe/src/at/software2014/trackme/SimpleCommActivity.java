@@ -244,7 +244,7 @@ public class SimpleCommActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				
-				mServerInterface.unregisterOwnUser("trude@trackertown.com", new AsyncCallback<Void>() {
+				mServerInterface.unregisterOwnUser("jakob@trackertown.com", new AsyncCallback<Void>() {
 					
 					@Override
 					public void onSuccess(Void response) {
