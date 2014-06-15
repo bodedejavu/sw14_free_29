@@ -150,6 +150,13 @@ public class MainActivityTest extends
 		assertTrue(mSolo.waitForText("About"));
 	}
 
+	public void testAbout_Layout() {
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.clickInList(4);
+		assertNotNull(mSolo.getView("about_title"));
+		assertNotNull(mSolo.getView("about_text"));
+	}
+
 	public void testFriends_ListView() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(2);
