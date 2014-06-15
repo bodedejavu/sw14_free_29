@@ -1,11 +1,7 @@
 package at.software2014.trackme;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,15 +30,7 @@ public class GInfoWindowAdapter implements InfoWindowAdapter {
 			textView2.setText(marker.getSnippet());
 			
 			ImageView imageView1 = (ImageView) v.findViewById(R.id.imageView1);
-			try {
-				InputStream ims = mActivity.getAssets().open("ic_action_person.png");
-				Drawable d = Drawable.createFromStream(ims,  null);
-				imageView1.setImageDrawable(d);
-			}
-			catch(IOException ex) {
-				return null;
-			}
-			
+			imageView1.setImageResource(R.drawable.ic_action_person_light);
 		}
 		
 		return v;
