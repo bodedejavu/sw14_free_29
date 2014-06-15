@@ -112,6 +112,8 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	private boolean mDisableServerComm = false;
 	private boolean mDisableLocation = false;
 
+	private boolean mIsGooglePlayServicesAvailable = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -276,8 +278,11 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		super.onResume();
 		
 		//if(ConnectionResult.SUCCESS == GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext())) {			
-			selectItem(mCurrentPosition, "");
+		//	selectItem(mCurrentPosition, "");
 		//}
+		
+		mIsGooglePlayServicesAvailable = isGooglePlayServicesConnected();
+		selectItem(mCurrentPosition, "");
 		
 		setLocationPriority(true, true);
 
@@ -561,11 +566,13 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 		switch(position) {
 		case 0:
-			if (argument == "") {
-				fragment = GMapFragment.newInstance(position, mName);
-			}
-			else {
-				fragment = GMapFragment.newInstance(position, mName, argument);
+			if (mIsGooglePlayServicesAvailable == true) {
+				if (argument == "") {
+					fragment = GMapFragment.newInstance(position, mName);
+				}
+				else {
+					fragment = GMapFragment.newInstance(position, mName, argument);
+				}
 			}
 			break;
 		case 1:
@@ -681,7 +688,9 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 
 		switch(mCurrentPosition) {
 		case 0:
-			((GMapFragment) fragment).refreshLocation();
+			if (mIsGooglePlayServicesAvailable == true) {
+				((GMapFragment) fragment).refreshLocation();
+			}
 			break;
 		case 1:
 			((FriendsListFragment) fragment).refreshLocation();
