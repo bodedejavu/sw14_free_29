@@ -419,7 +419,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	
 	public void loadRegisteredUsers() {
 		if (mDisableServerComm == false) {
-			mServerInterface.getRegisteredUsers(new AsyncCallback<List<UserData>>() {
+			mServerInterface.getRegisteredUsers(mEMail, new AsyncCallback<List<UserData>>() {
 
 				@Override
 				public void onSuccess(List<UserData> response) {

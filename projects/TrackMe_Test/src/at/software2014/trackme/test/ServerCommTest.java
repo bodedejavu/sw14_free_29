@@ -7,8 +7,6 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.api.client.googleapis.auth.clientlogin.ClientLogin.Response;
-
 import android.location.Location;
 import android.location.LocationManager;
 import android.test.ActivityInstrumentationTestCase2;
@@ -69,7 +67,7 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 
 			@Override
 			public void onSuccess(Void response) {
-				comm.getRegisteredUsers(new AsyncCallback<List<UserData>>() {
+				comm.getRegisteredUsers(TEST_USER_2, new AsyncCallback<List<UserData>>() {
 
 					@Override
 					public void onSuccess(List<UserData> response) {
@@ -135,7 +133,7 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 
 			@Override
 			public void onSuccess(Void response) {
-				comm.getRegisteredUsers(new AsyncCallback<List<UserData>>() {
+				comm.getRegisteredUsers(TEST_USER_2, new AsyncCallback<List<UserData>>() {
 
 					@Override
 					public void onSuccess(List<UserData> response) {

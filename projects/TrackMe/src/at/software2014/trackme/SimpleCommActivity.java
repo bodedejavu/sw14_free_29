@@ -142,7 +142,7 @@ public class SimpleCommActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				
-				mServerInterface.getRegisteredUsers(new AsyncCallback<List<UserData>>() {
+				mServerInterface.getRegisteredUsers("trude@trackertown.com", new AsyncCallback<List<UserData>>() {
 					
 					@Override
 					public void onSuccess(List<UserData> response) {

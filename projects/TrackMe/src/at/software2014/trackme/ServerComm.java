@@ -262,7 +262,7 @@ public class ServerComm {
 	}
 
 
-	public void getRegisteredUsers(final AsyncCallback<List<UserData>> onGetRegisteredUsersCompleteCallback) {
+	public void getRegisteredUsers(final String ownEmail, final AsyncCallback<List<UserData>> onGetRegisteredUsersCompleteCallback) {
 
 		new AsyncTask<Void,Void,List<UserData>>() {
 			Exception mException; 
@@ -270,7 +270,7 @@ public class ServerComm {
 			@Override
 			protected List<UserData> doInBackground(Void... params) {
 				try {
-					return getAllRegisteredUsersSync();
+					return getAllRegisteredUsersSync(ownEmail);
 				} catch (IOException e) {
 					mException = e; 
 				} 
@@ -291,7 +291,8 @@ public class ServerComm {
 	}
 
 
-	private List<UserData> getAllRegisteredUsersSync() throws IOException {
+	private List<UserData> getAllRegisteredUsersSync(String ownEmail) throws IOException {
+		isValidEmail(ownEmail);
 		List<UserData> registeredUsers = mUserEndpoint.getRegisteredUsers().execute().getItems();
 		return registeredUsers; 
 	}
