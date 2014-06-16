@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import android.location.Location;
@@ -26,35 +25,7 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 	final static String TEST_USER_NAME_2 = "Traudl";
 	final static String TEST_USER = "jakob@gmail.com";
 	final static String TEST_USER_NAME = "Jakob";
-
-	@BeforeClass 
-	public static void setUpClass() {
-
-		ServerComm comm = new ServerComm();
-		final CountDownLatch signal = new CountDownLatch(1);
-
-
-		comm.registerOwnUser(TEST_USER, TEST_USER_NAME, new AsyncCallback<Void>() {
-
-			@Override
-			public void onSuccess(Void response) {
-				signal.countDown();				
-			}
-
-			@Override
-			public void onFailure(Exception failure) {
-				signal.countDown();
-			}
-		});
-
-
-		try {
-			signal.await();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}	
-	}
-
+	
 
 	@Test
 	public void test1Register() {
@@ -67,6 +38,13 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 
 			@Override
 			public void onSuccess(Void response) {
+				
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
 				comm.getRegisteredUsers(TEST_USER_2, new AsyncCallback<List<UserData>>() {
 
 					@Override
@@ -175,7 +153,27 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 
 		final ServerComm comm = new ServerComm(); 
 		final CountDownLatch signal = new CountDownLatch(1);
+		final CountDownLatch signal2 = new CountDownLatch(1);
 		final StringBuffer responseName = new StringBuffer();
+		
+		comm.registerOwnUser(TEST_USER, TEST_USER_NAME, new AsyncCallback<Void>() {
+
+			@Override
+			public void onSuccess(Void response) {
+				signal.countDown();				
+			}
+
+			@Override
+			public void onFailure(Exception failure) {
+				signal.countDown();
+			}
+		});
+		
+		try {
+			signal.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		comm.addAllowedUser(TEST_USER_2, TEST_USER, new AsyncCallback<Void>() {
 
@@ -189,13 +187,13 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 
 						UserData allowedUser = findUser(TEST_USER ,response);
 						responseName.append(allowedUser.getUserEmail());
-						signal.countDown();
+						signal2.countDown();
 					}
 
 					@Override
 					public void onFailure(Exception failure) {
 						failure.printStackTrace(); 
-						signal.countDown();
+						signal2.countDown();
 					}
 				});
 			}
@@ -203,12 +201,12 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 			@Override
 			public void onFailure(Exception failure) {
 				failure.printStackTrace(); 
-				signal.countDown();
+				signal2.countDown();
 			}
 		});
 
 		try {
-			signal.await();
+			signal2.await();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
