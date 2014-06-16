@@ -1,6 +1,7 @@
 package at.software2014.trackme;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
@@ -127,6 +128,7 @@ public class ContactsFragment extends Fragment {
 				contactsList.add(new ContactsItem(eMail, name));
 			}
 		}
+		Collections.sort(contactsList);
 
 		mListAdapter.setData(contactsList);
 	}

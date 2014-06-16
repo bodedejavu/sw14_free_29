@@ -1,6 +1,6 @@
 package at.software2014.trackme;
 
-public class ContactsItem {
+public class ContactsItem implements Comparable<ContactsItem> {
 	private String mKey;
 	private String mName;
 
@@ -23,5 +23,10 @@ public class ContactsItem {
 
 	public void setName(String name) {
 		this.mName = name;
+	}
+
+	@Override
+	public int compareTo(ContactsItem contactsItem) {
+		return this.mName.compareTo(contactsItem.getName());
 	}
 }

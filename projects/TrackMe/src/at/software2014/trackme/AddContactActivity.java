@@ -1,6 +1,7 @@
 package at.software2014.trackme;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -89,6 +90,7 @@ public class AddContactActivity extends BaseActivity {
 		} else {
 			empty.setVisibility(View.INVISIBLE);
 		}
+		Collections.sort(contactsList);
 
 		mListAdapter.setData(contactsList);
 	}

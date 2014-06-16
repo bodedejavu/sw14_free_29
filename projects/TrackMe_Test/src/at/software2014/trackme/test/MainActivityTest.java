@@ -40,16 +40,16 @@ public class MainActivityTest extends
 		List<ContactEntry> contacts = new ArrayList<ContactEntry>();
 		List<ContactEntry> registeredUsers = new ArrayList<ContactEntry>();
 
-		contacts.add(new ContactEntry("Anna Weber", "anna.weber@gmail.com", (long)1401216003*1000, 47.1, 15.4));
-		contacts.add(new ContactEntry("Rainer Lankmayr", "rainer.lankmayr@gmail.com", (long)1401215993*1000, 47.0, 15.5));
-		contacts.add(new ContactEntry("Benjamin Steinacher", "benjamin.steinacher@gmail.com", (long)1401216000*1000, 47.08, 15.35));
+		contacts.add(new ContactEntry("Rainer Lankmayr", "rainer.lankmayr@gmail.com", (long)1401215993*1000, 47.1, 15.4));
+		contacts.add(new ContactEntry("Anna Weber", "anna.weber@gmail.com", (long)1401216003*1000, 47.03, 15.37));
+		contacts.add(new ContactEntry("Paul Bodenbenner", "paul.bodenbenner@gmail.com", (long)1401216003*1000, 47.0, 15.5));
 		
 		mMainActivity.setContacts(contacts);
 		
 		registeredUsers.add(contacts.get(0));
 		registeredUsers.add(contacts.get(1));
 		registeredUsers.add(contacts.get(2));
-		registeredUsers.add(new ContactEntry("Paul Bodenbenner", "paul.bodenbenner@gmail.com", (long)1401216003*1000, 47.03, 15.37));
+		registeredUsers.add(new ContactEntry("Benjamin Steinacher", "benjamin.steinacher@gmail.com", (long)1401216000*1000, 47.08, 15.35));
 		
 		mMainActivity.setRegisteredUsers(registeredUsers);
 	}
@@ -76,7 +76,7 @@ public class MainActivityTest extends
 		ContactEntry contactEntry = mainActivity.getContactByEMail(
 				"rainer.lankmayr@gmail.com");
 		
-		assertEquals(contactEntry.getName(), "Rainer Lankmayr");
+		assertEquals("Rainer Lankmayr", contactEntry.getName());
 	}
 
 	public void testContactsDataContacts02() {
@@ -85,7 +85,7 @@ public class MainActivityTest extends
 		ContactEntry contactEntry = mainActivity.getContactByEMail(
 				"anna.weber@gmail.com");
 		
-		assertEquals(contactEntry.getName(), "Anna Weber");
+		assertEquals("Anna Weber", contactEntry.getName());
 	}
 
 	public void testContactsDataContacts03() {
@@ -94,7 +94,7 @@ public class MainActivityTest extends
 		ContactEntry contactEntry = mainActivity.getContactByEMail(
 				"max.mustermann@gmail.com");
 		
-		assertEquals(contactEntry, null);
+		assertEquals(null, contactEntry);
 	}
 
 	public void testContactsDataRegisteredUser01() {
@@ -103,7 +103,7 @@ public class MainActivityTest extends
 		ContactEntry contactEntry = mainActivity.getRegisteredUserByEMail(
 				"rainer.lankmayr@gmail.com");
 		
-		assertEquals(contactEntry.getName(), "Rainer Lankmayr");
+		assertEquals("Rainer Lankmayr", contactEntry.getName());
 	}
 
 	public void testContactsDataRegisteredUser02() {
@@ -112,7 +112,7 @@ public class MainActivityTest extends
 		ContactEntry contactEntry = mainActivity.getRegisteredUserByEMail(
 				"anna.weber@gmail.com");
 		
-		assertEquals(contactEntry.getName(), "Anna Weber");
+		assertEquals("Anna Weber", contactEntry.getName());
 	}
 
 	public void testContactsDataRegisteredUser03() {
@@ -121,7 +121,7 @@ public class MainActivityTest extends
 		ContactEntry contactEntry = mainActivity.getRegisteredUserByEMail(
 				"max.mustermann@gmail.com");
 		
-		assertEquals(contactEntry, null);
+		assertEquals(null, contactEntry);
 	}
 
 	public void testActionBar() {
@@ -163,19 +163,19 @@ public class MainActivityTest extends
 		ListView lv = (ListView) mSolo.getView(
 				at.software2014.trackme.R.id.friendslist).findViewById(
 				at.software2014.trackme.R.id.friendslist_listView);
-		assertEquals(3, lv.getCount());
 		assertNotNull("List view not found", lv);
+		assertEquals(3, lv.getCount());
 		View view;
 		TextView name;
 		view = lv.getChildAt(0);
 		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.friend_name);
-		assertEquals("Name not found", "Anna Weber", name.getText()
+		assertEquals("Name not found", "Rainer Lankmayr", name.getText()
 				.toString());
 		view = lv.getChildAt(0);
 		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.friend_timestamp);
-		assertEquals("Timestamp not found", "27.05.2014, 20:40", name.getText()
+		assertEquals("Timestamp not found", "27.05.2014, 20:39", name.getText()
 				.toString());
 	}
 	
@@ -212,12 +212,12 @@ public class MainActivityTest extends
 		view = lv.getChildAt(1);
 		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
-		assertEquals("Name not found", "Rainer Lankmayr", name.getText()
+		assertEquals("Name not found", "Paul Bodenbenner", name.getText()
 				.toString());
 		view = lv.getChildAt(2);
 		name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
-		assertEquals("Name not found", "Benjamin Steinacher", 
+		assertEquals("Name not found", "Rainer Lankmayr", 
 				name.getText().toString());
 	}
 	
@@ -250,7 +250,7 @@ public class MainActivityTest extends
 		View view = lv.getChildAt(0);
 		TextView name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
-		assertEquals("Paul Bodenbenner", name.getText().toString());
+		assertEquals("Benjamin Steinacher", name.getText().toString());
 	}
 	
 	public void testContacts_AddContactActivityConfirmationDialog() {
@@ -306,7 +306,7 @@ public class MainActivityTest extends
 		View view = lv.getChildAt(0);
 		TextView name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
-		assertEquals("Name not found", "Rainer Lankmayr", name.getText()
+		assertEquals("Name not found", "Paul Bodenbenner", name.getText()
 				.toString());
 	}
 	
@@ -419,8 +419,8 @@ public class MainActivityTest extends
 				assertEquals("Rainer Lankmayr", marker.getTitle());
 				marker = markers.get("anna.weber@gmail.com");
 				assertEquals("Anna Weber", marker.getTitle());
-				marker = markers.get("benjamin.steinacher@gmail.com");
-				assertEquals("Benjamin Steinacher", marker.getTitle());
+				marker = markers.get("paul.bodenbenner@gmail.com");
+				assertEquals("Paul Bodenbenner", marker.getTitle());
 			}
 
 			private Runnable init(GMapFragment gMapFragment) {
@@ -438,7 +438,7 @@ public class MainActivityTest extends
 
 		Handler handler = new Handler(Looper.getMainLooper());
 
-		String[] keys = {"rainer.lankmayr@gmail.com", "anna.weber@gmail.com", "benjamin.steinacher@gmail.com"};
+		String[] keys = {"rainer.lankmayr@gmail.com", "anna.weber@gmail.com", "paul.bodenbenner@gmail.com"};
 
 		for (int i=0; i<keys.length; i++) {
 
@@ -534,7 +534,7 @@ public class MainActivityTest extends
 				Marker marker;
 
 				marker = markers.get("rainer.lankmayr@gmail.com");
-				assertEquals("Distance: 4123,41 km\nLast Update: 27.05.2014, 20:39", marker.getSnippet());
+				assertEquals("Distance: 4135,42 km\nLast Update: 27.05.2014, 20:39", marker.getSnippet());
 			}
 
 			private Runnable init(GMapFragment gMapFragment) {
