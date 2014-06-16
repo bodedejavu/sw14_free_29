@@ -71,56 +71,38 @@ public class MainActivityTest extends
 	}
 	
 	public void testContactsDataContacts01() {
-		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
-		
-		ContactEntry contactEntry = mainActivity.getContactByEMail(
-				"rainer.lankmayr@gmail.com");
-		
+		ContactEntry contactEntry = mMainActivity.getContactByEMail(
+				"rainer.lankmayr@gmail.com");		
 		assertEquals("Rainer Lankmayr", contactEntry.getName());
 	}
 
 	public void testContactsDataContacts02() {
-		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
-		
-		ContactEntry contactEntry = mainActivity.getContactByEMail(
-				"anna.weber@gmail.com");
-		
+		ContactEntry contactEntry = mMainActivity.getContactByEMail(
+				"anna.weber@gmail.com");		
 		assertEquals("Anna Weber", contactEntry.getName());
 	}
 
 	public void testContactsDataContacts03() {
-		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
-		
-		ContactEntry contactEntry = mainActivity.getContactByEMail(
-				"max.mustermann@gmail.com");
-		
+		ContactEntry contactEntry = mMainActivity.getContactByEMail(
+				"max.mustermann@gmail.com");		
 		assertEquals(null, contactEntry);
 	}
 
 	public void testContactsDataRegisteredUser01() {
-		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
-		
-		ContactEntry contactEntry = mainActivity.getRegisteredUserByEMail(
-				"rainer.lankmayr@gmail.com");
-		
+		ContactEntry contactEntry = mMainActivity.getRegisteredUserByEMail(
+				"rainer.lankmayr@gmail.com");		
 		assertEquals("Rainer Lankmayr", contactEntry.getName());
 	}
 
 	public void testContactsDataRegisteredUser02() {
-		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
-		
-		ContactEntry contactEntry = mainActivity.getRegisteredUserByEMail(
-				"anna.weber@gmail.com");
-		
+		ContactEntry contactEntry = mMainActivity.getRegisteredUserByEMail(
+				"anna.weber@gmail.com");		
 		assertEquals("Anna Weber", contactEntry.getName());
 	}
 
 	public void testContactsDataRegisteredUser03() {
-		MainActivity mainActivity = (MainActivity)mSolo.getCurrentActivity();
-		
-		ContactEntry contactEntry = mainActivity.getRegisteredUserByEMail(
-				"max.mustermann@gmail.com");
-		
+		ContactEntry contactEntry = mMainActivity.getRegisteredUserByEMail(
+				"max.mustermann@gmail.com");		
 		assertEquals(null, contactEntry);
 	}
 
@@ -130,6 +112,27 @@ public class MainActivityTest extends
 
 	public void testNavigationDrawer() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.setNavigationDrawer(Solo.CLOSED);
+	}
+	
+	public void testNavigationDrawer_Content() {
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		View view = mSolo.getView(at.software2014.trackme.R.id.drawer_layout);
+		ListView lv = (ListView) view.findViewById(at.software2014.trackme.R.id.left_drawer);
+		assertNotNull("List view not found", lv);
+		assertEquals(5, lv.getCount());
+		
+		TextView item;
+		item = (TextView) lv.getChildAt(0);
+		assertEquals("Map", item.getText());
+		item = (TextView) lv.getChildAt(1);
+		assertEquals("Friends", item.getText());
+		item = (TextView) lv.getChildAt(2);
+		assertEquals("Contacts", item.getText());
+		item = (TextView) lv.getChildAt(3);
+		assertEquals("About", item.getText());
+		item = (TextView) lv.getChildAt(4);
+		assertEquals("Quit", item.getText());
 	}
 
 	public void testNavigationDrawer_Friends() {
@@ -179,6 +182,23 @@ public class MainActivityTest extends
 				.toString());
 	}
 	
+	public void testFriends_ListViewEmpty() {
+		ArrayList<ContactEntry> contacts = new ArrayList<ContactEntry>();
+		mMainActivity.setContacts(contacts);
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.clickInList(2);
+		View view = mSolo.getView(
+				at.software2014.trackme.R.id.friendslist);
+		ListView lv = (ListView) view.findViewById(
+				at.software2014.trackme.R.id.friendslist_listView);
+		assertEquals(0, lv.getCount());
+		
+		TextView empty = (TextView) view.findViewById(
+				at.software2014.trackme.R.id.friendslist_empty);
+		assertEquals("no entries", empty.getText());
+        assertEquals(View.VISIBLE, empty.getVisibility());
+	}
+	
 	public void testFriends_Layout() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(2);
@@ -221,6 +241,23 @@ public class MainActivityTest extends
 				name.getText().toString());
 	}
 	
+	public void testContacts_ListViewEmpty() {
+		ArrayList<ContactEntry> contacts = new ArrayList<ContactEntry>();
+		mMainActivity.setContacts(contacts);
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.clickInList(3);
+		View view = mSolo.getView(
+				at.software2014.trackme.R.id.contacts);
+		ListView lv = (ListView) view.findViewById(
+				at.software2014.trackme.R.id.contacts_listView);
+		assertEquals(0, lv.getCount());
+		
+		TextView empty = (TextView) view.findViewById(
+				at.software2014.trackme.R.id.contacts_empty);
+		assertEquals("no entries", empty.getText());
+        assertEquals(View.VISIBLE, empty.getVisibility());
+	}
+	
 	public void testContacts_Layout() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(3);
@@ -251,6 +288,24 @@ public class MainActivityTest extends
 		TextView name = (TextView) view
 				.findViewById(at.software2014.trackme.R.id.contacts_name);
 		assertEquals("Benjamin Steinacher", name.getText().toString());
+	}
+	
+	public void testContacts_AddContactActivityListEmpty() {
+		ArrayList<ContactEntry> contacts = new ArrayList<ContactEntry>();
+		mMainActivity.setRegisteredUsers(contacts);
+		mSolo.setNavigationDrawer(Solo.OPENED);
+		mSolo.clickInList(3);
+		mSolo.clickOnView(mSolo.getView("action_contact_add"));
+		View view = mSolo.getView(
+				at.software2014.trackme.R.id.contacts_add);
+		ListView lv = (ListView) view.findViewById(
+				at.software2014.trackme.R.id.contacts_add_listView);
+		assertEquals(0, lv.getCount());
+		
+		TextView empty = (TextView) view.findViewById(
+				at.software2014.trackme.R.id.contacts_add_empty);
+		assertEquals("no entries", empty.getText());
+        assertEquals(View.VISIBLE, empty.getVisibility());
 	}
 	
 	public void testContacts_AddContactActivityConfirmationDialog() {
@@ -298,7 +353,7 @@ public class MainActivityTest extends
 		mSolo.clickInList(3);
 		mSolo.clickInList(0);
 		mSolo.clickOnView(mSolo.getView("action_contact_delete"));
-		assertTrue(this.mSolo.searchText("Contact deleted"));
+		assertTrue(this.mSolo.waitForText("Contact deleted"));
 		ListView lv = (ListView) mSolo.getView(
 				at.software2014.trackme.R.id.contacts).findViewById(
 				at.software2014.trackme.R.id.contacts_listView);
@@ -313,20 +368,25 @@ public class MainActivityTest extends
 	public void testContacts_DeleteContactAll() {
 		mSolo.setNavigationDrawer(Solo.OPENED);
 		mSolo.clickInList(3);
+		
+		View view = mSolo.getView(
+				at.software2014.trackme.R.id.contacts);
+		ListView lv = (ListView) view.findViewById(
+				at.software2014.trackme.R.id.contacts_listView);
+		TextView empty = (TextView) view.findViewById(
+				at.software2014.trackme.R.id.contacts_empty);
+		assertEquals(3, lv.getCount());
+		assertEquals(View.INVISIBLE, empty.getVisibility());
+		
 		mSolo.clickInList(3);
 		mSolo.clickOnView(mSolo.getView("action_contact_delete"));
 		mSolo.clickInList(2);
 		mSolo.clickOnView(mSolo.getView("action_contact_delete"));
 		mSolo.clickInList(1);
 		mSolo.clickOnView(mSolo.getView("action_contact_delete"));
-		mSolo.sleep(1000);
-		ListView lv = (ListView) mSolo.getView(
-				at.software2014.trackme.R.id.contacts).findViewById(
-				at.software2014.trackme.R.id.contacts_listView);
+		mSolo.waitForText("Contact deleted");
+		
 		assertEquals(0, lv.getCount());
-		TextView empty = (TextView) mSolo.getView(
-				at.software2014.trackme.R.id.contacts).findViewById(
-				at.software2014.trackme.R.id.contacts_empty);
         assertEquals(View.VISIBLE, empty.getVisibility());
 	}
 
