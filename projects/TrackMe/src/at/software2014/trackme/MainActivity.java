@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-		mDrawerText.setText(mEMail);
+		mDrawerText.setText(mName);
 		
 		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mMenuTitles));
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -487,7 +487,7 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 				
 				@Override
 				public void onSuccess(Void response) {
-					refreshCurrentFragment();
+					//refreshCurrentFragment();
 					Toast.makeText(MainActivity.this, 
 							R.string.toast_contact_add_successful, 
 							Toast.LENGTH_LONG).show();
@@ -517,13 +517,16 @@ public class MainActivity extends BaseActivity implements GooglePlayServicesClie
 	}
 
 	public void deleteContact(String eMail) {
-		ContactEntry contactEntry = getContactByEMail(eMail);
+		final ContactEntry contactEntry = getContactByEMail(eMail);
 		if (contactEntry != null) {
 			if(mDisableServerComm == false) {
 				mServerInterface.removeAllowedUser(mEMail, eMail, new AsyncCallback<Void>() {
 	
 					@Override
 					public void onSuccess(Void response) {
+						if (mContacts.contains(contactEntry)) {
+							mContacts.remove(contactEntry);
+						}
 						Toast.makeText(MainActivity.this, 
 								R.string.toast_contact_delete_successful,
 								Toast.LENGTH_LONG).show();
