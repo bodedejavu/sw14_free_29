@@ -1,17 +1,19 @@
 package at.software2014.trackme;
 
-public class FriendsListItem {
+public class FriendsListItem implements Comparable<FriendsListItem> {
 	private String mKey;
 	private String mName;
-	private String mDistance;
+	private String mDistanceFormatted;
 	private String mTimestamp;
+	private Float mDistance;
 
-	public FriendsListItem(String key, String name, String distance,
-			String timestamp) {
+	public FriendsListItem(String key, String name, String distanceFormatted,
+			String timestamp, Float distance) {
 		this.mKey = key;
 		this.mName = name;
-		this.mDistance = distance;
+		this.mDistanceFormatted = distanceFormatted;
 		this.mTimestamp = timestamp;
+		this.mDistance = distance;
 	}
 
 	public String getKey() {
@@ -30,11 +32,19 @@ public class FriendsListItem {
 		this.mName = name;
 	}
 
-	public String getDistance() {
+	public String getDistanceFormatted() {
+		return mDistanceFormatted;
+	}
+
+	public void setDistanceFormatted(String distanceFormatted) {
+		this.mDistanceFormatted = distanceFormatted;
+	}
+	
+	public Float getDistance() {
 		return mDistance;
 	}
 
-	public void setDistance(String distance) {
+	public void setDistance(Float distance) {
 		this.mDistance = distance;
 	}
 
@@ -44,5 +54,10 @@ public class FriendsListItem {
 
 	public void setTimestamp(String timestamp) {
 		this.mTimestamp = timestamp;
+	}
+
+	@Override
+	public int compareTo(FriendsListItem friendsListItem) {
+		return this.mDistance.compareTo(friendsListItem.getDistance());
 	}
 }

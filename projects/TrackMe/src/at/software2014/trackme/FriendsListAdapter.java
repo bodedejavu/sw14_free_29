@@ -45,7 +45,7 @@ public class FriendsListAdapter extends ArrayAdapter<FriendsListItem> {
 		((TextView) view.findViewById(R.id.friend_name))
 				.setText(item.getName());
 		((TextView) view.findViewById(R.id.friend_distance)).setText(item
-				.getDistance());
+				.getDistanceFormatted());
 		((TextView) view.findViewById(R.id.friend_timestamp)).setText(item
 				.getTimestamp());
 

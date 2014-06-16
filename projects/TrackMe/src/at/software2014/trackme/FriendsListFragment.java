@@ -1,6 +1,7 @@
 package at.software2014.trackme;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.app.Fragment;
@@ -122,13 +123,16 @@ public class FriendsListFragment extends Fragment {
 				String name = contactEntry.getName();
 				String timestamp = contactEntry
 						.getTimestampFormatted(getActivity());
-				String distance = contactEntry.getDistanceFormatted(myLocation,
+				String distanceFormatted = contactEntry.getDistanceFormatted(myLocation,
 						getResources().getString(R.string.information_unknown));
+				Float distance = contactEntry.getDistance(myLocation);
 
-				friendslist.add(new FriendsListItem(eMail, name, distance,
-						timestamp));
+				friendslist.add(new FriendsListItem(eMail, name, distanceFormatted,
+						timestamp, distance));
 			}
 		}
+
+		Collections.sort(friendslist);
 
 		mListAdapter.setData(friendslist);
 		// mListAdapter.notifyDataSetChanged();

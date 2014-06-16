@@ -9,7 +9,7 @@ public class ContactEntry {
 
 	private String name = "";
 	private String eMail = "";
-	private long timestamp = 0;
+	private long timestamp = 0L;
 	private double latitude = 0.0;
 	private double longitude = 0.0;
 	
@@ -77,25 +77,34 @@ public class ContactEntry {
 	}
 	
 	public String getTimestampFormatted(Context context) {
-		//String timestamp = historyEntry.getTimestamp().toLocaleString();
 		String date = DateFormat.getDateFormat(context).format(timestamp);
 		String time = DateFormat.getTimeFormat(context).format(timestamp);
 		String timestampFormatted = date + ", " + time;
 		return timestampFormatted;
 	}
 	
+	public Float getDistance(Location locationTo) {
+		Float distance = Float.POSITIVE_INFINITY;
+		
+		if (locationTo != null) {
+			Location location = new Location("dummy");
+			location.setLatitude(latitude);
+			location.setLongitude(longitude);
+			
+			distance = location.distanceTo(locationTo);
+		}
+		
+		return distance;
+	}
+	
 	public String getDistanceFormatted(Location locationTo, String textUnknown) {
-		if(locationTo == null){
+		if (locationTo == null) {
 			return textUnknown;
 		}
 		
 		String distanceFormatted;
 		
-		Location location = new Location("dummy");
-		location.setLatitude(latitude);
-		location.setLongitude(longitude);
-		
-		float distance = location.distanceTo(locationTo);
+		Float distance = getDistance(locationTo);
 		
 		if (distance < 1000.0) {
 			distanceFormatted = String.format("%.0f", distance) + " m";

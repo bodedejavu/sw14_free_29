@@ -37,7 +37,7 @@ public class GMapFragment extends MapFragment {
 	private static final String ARG_SECTION_NUMBER = "section_number";
 	private static final String ARG_CONTACT_KEY = "contact_key";
 	private static final String ARG_NAME = "name";
-	private static final float mDefaultZoomLevel = (float)15.0;
+	private static final float mDefaultZoomLevel = 15.0f;
 
     private GoogleMap mGoogleMap = null;
     private HashMap<String, Marker> mMarkers;
