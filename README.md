@@ -23,7 +23,7 @@
 ![Mockup 3](./images/mockup3.png)
 
 ## Screencast
-[![Screencast](./images/mockup3.png)](http://youtu.be/UnffXQtDL2I)
+[![Screencast](./images/screencast.png)](http://youtu.be/UnffXQtDL2I)
 
 ## Screenshots
 ![Screenshot 1](./images/screenshot1.png)
