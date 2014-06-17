@@ -22,7 +22,7 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
-    <string name="action_settings">Test GCM</string>
+    <string name="action_settings">Test Server</string>
     <string name="friends">Friends</string>
     <string name="your_contacts">Your Contacts</string>
     <string name="contacts_add">Registered Users</string>
