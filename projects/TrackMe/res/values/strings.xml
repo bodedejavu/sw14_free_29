@@ -65,6 +65,16 @@
     <string name="toast_update_friends_sucessful">Updating friends successful</string>
     <string name="toast_update_friends_failed">Updating friends failed</string>
     
+    <string name="server_comm_test_msg1">Register User 1</string>
+    <string name="server_comm_test_msg2">Register User 2</string>
+    <string name="server_comm_test_msg3">Send Location User 1</string>
+    <string name="server_comm_test_msg4">Send Location User 2</string>
+    <string name="server_comm_test_msg5">Get all Users</string>
+    <string name="server_comm_test_msg6">Add allowed User 2 to User 1</string>
+    <string name="server_comm_test_msg7">Get allowed Users for User 1</string>
+    <string name="server_comm_test_msg8">Delete User 2 from User 1</string>
+    <string name="server_comm_test_msg9">Unregister User 2</string>
+    
     <string-array name="navigation_menu">
         <item>Map</item>
         <item>Friends</item>
