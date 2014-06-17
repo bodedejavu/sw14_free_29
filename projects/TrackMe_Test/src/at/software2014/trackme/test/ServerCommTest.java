@@ -21,14 +21,69 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 		super(MainActivity.class);
 	}
 
-	final static String TEST_USER_2 = "traudl@gmail.com"; 
-	final static String TEST_USER_NAME_2 = "Traudl";
-	final static String TEST_USER = "jakob@gmail.com";
-	final static String TEST_USER_NAME = "Jakob";
-	
+	final static String TEST_USER_2;
+	final static String TEST_USER_NAME_2 = "traudl";
+	final static String TEST_USER;
+	final static String TEST_USER_NAME = "thomas";
+
+	static {
+		TEST_USER = (int)(Math.random() * 100) + "." + "thomas@gmail.com";
+		TEST_USER_2 = (int)(Math.random() * 100) + "." +  "traudl@gmail.com";	
+	}
 
 	@Test
 	public void test1Register() {
+
+		final ServerComm comm = new ServerComm(); 
+		final StringBuffer responseName = new StringBuffer();
+		final CountDownLatch signal = new CountDownLatch(1);
+
+		comm.registerOwnUser(TEST_USER, TEST_USER_NAME, new AsyncCallback<Void>() {
+
+			@Override
+			public void onSuccess(Void response) {
+
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				comm.getRegisteredUsers(TEST_USER, new AsyncCallback<List<UserData>>() {
+
+					@Override
+					public void onSuccess(List<UserData> response) {
+						responseName.append(findUser(TEST_USER, response).getUserName()); 
+						signal.countDown(); 
+					}
+
+					@Override
+					public void onFailure(Exception failure) {
+						failure.printStackTrace(); 
+						signal.countDown(); 
+					}
+				});
+			}
+
+			@Override
+			public void onFailure(Exception failure) {
+				failure.printStackTrace(); 
+				signal.countDown(); 
+			}
+		}); 
+
+		try {
+			signal.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		assertEquals(responseName.toString(),TEST_USER_NAME); 
+	}
+
+
+	@Test
+	public void test2Register() {
 
 		final ServerComm comm = new ServerComm(); 
 		final StringBuffer responseName = new StringBuffer();
@@ -38,13 +93,13 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 
 			@Override
 			public void onSuccess(Void response) {
-				
+
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
+
 				comm.getRegisteredUsers(TEST_USER_2, new AsyncCallback<List<UserData>>() {
 
 					@Override
@@ -94,7 +149,7 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 
 
 	@Test
-	public void test2LocationUpdate()
+	public void test3LocationUpdate()
 	{
 		final ServerComm comm = new ServerComm(); 
 		final CountDownLatch signal = new CountDownLatch(1);
@@ -149,31 +204,11 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 
 
 	@Test
-	public void test3AddAllowedUser() {
+	public void test4AddAllowedUser() {
 
 		final ServerComm comm = new ServerComm(); 
 		final CountDownLatch signal = new CountDownLatch(1);
-		final CountDownLatch signal2 = new CountDownLatch(1);
 		final StringBuffer responseName = new StringBuffer();
-		
-		comm.registerOwnUser(TEST_USER, TEST_USER_NAME, new AsyncCallback<Void>() {
-
-			@Override
-			public void onSuccess(Void response) {
-				signal.countDown();				
-			}
-
-			@Override
-			public void onFailure(Exception failure) {
-				signal.countDown();
-			}
-		});
-		
-		try {
-			signal.await();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 
 		comm.addAllowedUser(TEST_USER_2, TEST_USER, new AsyncCallback<Void>() {
 
@@ -187,13 +222,13 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 
 						UserData allowedUser = findUser(TEST_USER ,response);
 						responseName.append(allowedUser.getUserEmail());
-						signal2.countDown();
+						signal.countDown();
 					}
 
 					@Override
 					public void onFailure(Exception failure) {
 						failure.printStackTrace(); 
-						signal2.countDown();
+						signal.countDown();
 					}
 				});
 			}
@@ -201,22 +236,22 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 			@Override
 			public void onFailure(Exception failure) {
 				failure.printStackTrace(); 
-				signal2.countDown();
+				signal.countDown();
 			}
 		});
 
 		try {
-			signal2.await();
+			signal.await();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		assertEquals(TEST_USER,responseName.toString());
+		assertEquals(TEST_USER, responseName.toString());
 	}
 
 
 	@Test
-	public void test4RemoveAllowedUser() {
+	public void test5RemoveAllowedUser() {
 
 		final ServerComm comm = new ServerComm(); 
 		final CountDownLatch signal = new CountDownLatch(1);
@@ -231,7 +266,7 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 
 					@Override
 					public void onSuccess(List<UserData> response) {
-						
+
 						if(response != null) {
 							allowedUsers.addAll(response);							
 						}
@@ -252,16 +287,111 @@ public class ServerCommTest extends ActivityInstrumentationTestCase2<MainActivit
 				signal.countDown();				
 			}
 		});
-		
+
 		try {
 			signal.await();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		assertTrue(!allowedUsers.contains(TEST_USER));
 	}
 
+	
+	@Test
+	public void test6UnregisterUser() {
+
+		final ServerComm comm = new ServerComm(); 
+		final CountDownLatch signal = new CountDownLatch(1);
+		final List<UserData> existingUsers = new ArrayList<UserData>();
+
+		comm.unregisterOwnUser(TEST_USER_2, new AsyncCallback<Void>() {
+
+			@Override
+			public void onSuccess(Void response) {
+
+				comm.getRegisteredUsers(TEST_USER_2, new AsyncCallback<List<UserData>>() {
+
+					@Override
+					public void onSuccess(List<UserData> response) {
+
+						if(response != null) {
+							existingUsers.addAll(response);						
+						}
+						signal.countDown();						
+					}
+
+					@Override
+					public void onFailure(Exception failure) {
+						failure.printStackTrace(); 
+						signal.countDown();					
+					}
+				});
+			}
+
+			@Override
+			public void onFailure(Exception failure) {
+				failure.printStackTrace(); 
+				signal.countDown();				
+			}
+		});
+
+		try {
+			signal.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		assertTrue(!existingUsers.contains(TEST_USER_2));
+	}
+	
+	
+	@Test
+	public void test7UnregisterUser() {
+
+		final ServerComm comm = new ServerComm(); 
+		final CountDownLatch signal = new CountDownLatch(1);
+		final List<UserData> existingUsers = new ArrayList<UserData>();
+
+		comm.unregisterOwnUser(TEST_USER, new AsyncCallback<Void>() {
+
+			@Override
+			public void onSuccess(Void response) {
+
+				comm.getRegisteredUsers(TEST_USER, new AsyncCallback<List<UserData>>() {
+
+					@Override
+					public void onSuccess(List<UserData> response) {
+
+						if(response != null) {
+							existingUsers.addAll(response);						
+						}
+						signal.countDown();						
+					}
+
+					@Override
+					public void onFailure(Exception failure) {
+						failure.printStackTrace(); 
+						signal.countDown();					
+					}
+				});
+			}
+
+			@Override
+			public void onFailure(Exception failure) {
+				failure.printStackTrace(); 
+				signal.countDown();				
+			}
+		});
+
+		try {
+			signal.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		assertTrue(!existingUsers.contains(TEST_USER));
+	}
 
 
 }
